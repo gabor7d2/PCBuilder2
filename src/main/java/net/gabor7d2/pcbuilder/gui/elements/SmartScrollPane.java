@@ -1,4 +1,4 @@
-package net.gabor7d2.pcbuilder.gui;
+package net.gabor7d2.pcbuilder.gui.elements;
 
 import javax.swing.*;
 import java.awt.*;
