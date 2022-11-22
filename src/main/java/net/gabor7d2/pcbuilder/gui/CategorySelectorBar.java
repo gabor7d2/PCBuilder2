@@ -1,5 +1,7 @@
 package net.gabor7d2.pcbuilder.gui;
 
+import net.gabor7d2.pcbuilder.gui.elements.SmartScrollPane;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;

@@ -1,6 +1,8 @@
 package net.gabor7d2.pcbuilder.gui;
 
 import net.gabor7d2.pcbuilder.Application;
+import net.gabor7d2.pcbuilder.gui.elements.ScrollPane2D;
+import net.gabor7d2.pcbuilder.gui.elements.SmartScrollPane;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,7 +10,7 @@ import java.awt.*;
 public class MainFrame extends JFrame {
 
     private final static String TITLE = "PC Builder";
-    private final static int WIDTH = 900;
+    private final static int WIDTH = 800;
     private final static int HEIGHT = 720;
     private final static int MIN_WIDTH = 480;
     private final static int MIN_HEIGHT = 360;
@@ -23,17 +25,25 @@ public class MainFrame extends JFrame {
         setSize(WIDTH, HEIGHT);
         setLocationRelativeTo(null);
 
-        ControlBar controlBar = new ControlBar();
-        add(controlBar, BorderLayout.SOUTH);
-
         CategorySelectorBar categorySelectorBar = new CategorySelectorBar();
         add(categorySelectorBar, BorderLayout.NORTH);
         categorySelectorBar.addCategorySelectedListener((n, s) -> System.out.println(n + ":" + s));
+
+        ControlBar controlBar = new ControlBar();
+        add(controlBar, BorderLayout.SOUTH);
+
+        ScrollPane2D panel = new ScrollPane2D();
+        panel.addRow(new TestRow());
+        panel.addRow(new TestRow());
+
+        add(panel, BorderLayout.CENTER);
     }
 
     private void setupLookAndFeel() {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            /*FlatDarculaLaf.setup();
+            UIManager.setLookAndFeel(new FlatDarculaLaf());*/
         } catch (Exception ignored) {
             try {
                 for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
