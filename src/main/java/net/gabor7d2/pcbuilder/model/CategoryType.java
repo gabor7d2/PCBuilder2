@@ -28,6 +28,13 @@ public class CategoryType {
         return CATEGORY_TYPES.get(name);
     }
 
+    /**
+     * Get all registered category types.
+     */
+    public static Map<String, CategoryType> getCategoryTypes() {
+        return CATEGORY_TYPES;
+    }
+
     private final String name;
     private final String displayName;
     private final String iconImagePath;

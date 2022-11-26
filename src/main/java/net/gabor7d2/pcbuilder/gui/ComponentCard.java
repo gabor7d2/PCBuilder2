@@ -49,7 +49,9 @@ public class ComponentCard extends JPanel implements MouseListener {
         rPanel.add(radioButton);
         add(rPanel);
 
-        ImageLabel imageLabel = new ImageLabel(c.getImagePath(), 104, 104);
+        ImageLabel imageLabel = new ImageLabel();
+        imageLabel.setImageFromFileAsync(c.getImagePath(), 104, 104);
+        //imageLabel.setBorder(BorderFactory.createLineBorder(Color.WHITE, 4));
         imageLabel.setBorder(Color.WHITE, 4);
         imageLabel.setBackground(Color.WHITE);
         imageLabel.setName("image");

@@ -9,6 +9,7 @@ import java.awt.*;
 
 public class CategoryCard extends JPanel {
 
+    // TODO cache category icons here
     private final static Dimension CATEGORY_CARD_SIZE = new Dimension(128, 188);
 
     public CategoryCard(Category category) {
@@ -18,7 +19,8 @@ public class CategoryCard extends JPanel {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-        ImageLabel imageLabel = new ImageLabel(category.getShortName(), 80, 80, false);
+        ImageLabel imageLabel = new ImageLabel();
+        imageLabel.setImageFromClasspath("/category_icons/" + category.getShortName() + ".png", 80, 80);
         imageLabel.setAlignmentX(CENTER_ALIGNMENT);
         panel.add(imageLabel);
 

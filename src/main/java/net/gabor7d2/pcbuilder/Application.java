@@ -3,7 +3,7 @@ package net.gabor7d2.pcbuilder;
 import com.formdev.flatlaf.FlatIntelliJLaf;
 import com.formdev.flatlaf.FlatLaf;
 import net.gabor7d2.pcbuilder.gui.MainFrame;
-import net.gabor7d2.pcbuilder.gui.general.ImageLabel;
+import net.gabor7d2.pcbuilder.gui.general.ImageLoader;
 
 import javax.swing.*;
 import java.awt.*;
@@ -28,7 +28,7 @@ public class Application {
         JFrame frame = new MainFrame();
         frame.setVisible(true);
         //frame.createBufferStrategy(2);
-        ImageLabel.startWorkers();
+        ImageLoader.processQueue();
     }
 
     private static Image getImageByPath(String pathInJar) {
