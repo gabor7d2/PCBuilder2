@@ -29,8 +29,8 @@ public class CategorySelectorBar extends SmartScrollPane {
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.X_AXIS));
         setViewportView(contentPanel);
 
-        contentPanel.setBackground(BG_COLOR);
-        contentPanel.setBorder(BorderFactory.createMatteBorder(12, 8, 12, 8, BG_COLOR));
+        //contentPanel.setBackground(BG_COLOR);
+        contentPanel.setBorder(BorderFactory.createMatteBorder(12, 8, 12, 8, contentPanel.getBackground()));
 
         Category c1 = new Category();
         c1.setType(CategoryType.getCategoryTypeFromName("CPU"));
@@ -58,10 +58,10 @@ public class CategorySelectorBar extends SmartScrollPane {
 
     public void addCategory(Category c) {
         JCheckBox ch = new JCheckBox(c.toString());
-        ch.setBackground(BG_COLOR);
-        ch.setForeground(FG_COLOR);
+        //ch.setBackground(BG_COLOR);
+        //ch.setForeground(FG_COLOR);
         ch.setSelected(c.isEnabled());
-        ch.setBorder(BorderFactory.createMatteBorder(0, 8, 0, 8, BG_COLOR));
+        ch.setBorder(BorderFactory.createMatteBorder(0, 8, 0, 8, ch.getBackground()));
         ch.addActionListener(e -> {
             selectedListeners.forEach(s -> s.categorySelected(c, ch.isSelected()));
         });

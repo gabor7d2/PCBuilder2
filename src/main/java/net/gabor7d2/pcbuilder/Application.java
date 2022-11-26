@@ -1,5 +1,7 @@
 package net.gabor7d2.pcbuilder;
 
+import com.formdev.flatlaf.FlatIntelliJLaf;
+import com.formdev.flatlaf.FlatLaf;
 import net.gabor7d2.pcbuilder.gui.MainFrame;
 import net.gabor7d2.pcbuilder.gui.general.ImageLabel;
 
@@ -22,31 +24,20 @@ public class Application {
     }
 
     public static void main(String[] args) {
+        setupLookAndFeel();
         JFrame frame = new MainFrame();
         frame.setVisible(true);
+        //frame.createBufferStrategy(2);
         ImageLabel.startWorkers();
-        /*JFrame frame = new JFrame();
-
-        JPanel outer = new JPanel();
-
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setBackground(Color.YELLOW);
-        panel.add(new JLabel("wakroro3ro 3kro3kr"));
-        panel.add(new JLabel("regrt r"));
-        outer.add(panel);
-        System.out.println("Preferred size: " + panel.getPreferredSize());
-        System.out.println("Size: " + panel.getSize());
-        GUIUtils.freezeSize(panel);
-
-
-        frame.add(outer, BorderLayout.CENTER);
-        frame.setVisible(true);*/
     }
 
     private static Image getImageByPath(String pathInJar) {
         return Toolkit.getDefaultToolkit().getImage(MainFrame.class.getResource(pathInJar));
     }
 
-
+    private static void setupLookAndFeel() {
+        FlatIntelliJLaf.setup();
+        FlatLaf.setUseNativeWindowDecorations(true);
+        UIManager.getDefaults().put("TextArea.font", UIManager.getFont("TextField.font"));
+    }
 }

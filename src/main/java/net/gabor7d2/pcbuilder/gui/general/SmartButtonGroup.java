@@ -19,14 +19,30 @@ public class SmartButtonGroup extends javax.swing.ButtonGroup {
     private final List<AbstractButton> buttons = new ArrayList<>();
     private final List<ButtonGroupListener> listeners = new ArrayList<>();
 
+    /**
+     * Creates a new SmartButtonGroup.
+     */
     public SmartButtonGroup() {
         selectFirst = false;
     }
 
+    /**
+     * Creates a new SmartButtonGroup.
+     *
+     * @param selectFirstButton Set to true to automatically select the
+     *                          first button that gets added to the group.
+     */
     public SmartButtonGroup(boolean selectFirstButton) {
         selectFirst = selectFirstButton;
     }
 
+    /**
+     * Adds a button to the group. If it is the first button and
+     * <code>selectFirstButton</code> was set in the constructor,
+     * selects the button.
+     *
+     * @param button The button to be added.
+     */
     @Override
     public void add(AbstractButton button) {
         if (button == null) return;
@@ -38,13 +54,22 @@ public class SmartButtonGroup extends javax.swing.ButtonGroup {
         }
     }
 
+    /**
+     * Removes a button from the group.
+     *
+     * @param button The button to be removed.
+     */
     @Override
     public void remove(AbstractButton button) {
-        if (buttons.indexOf(button) < 0) return;
+        if (!buttons.contains(button)) return;
         super.remove(button);
         buttons.remove(button);
     }
 
+    /**
+     * Gets selected button in group. Returns null if
+     * no button is selected.
+     */
     public AbstractButton getSelected() {
         for (AbstractButton button : buttons) {
             if (button.isSelected()) return button;
@@ -52,14 +77,23 @@ public class SmartButtonGroup extends javax.swing.ButtonGroup {
         return null;
     }
 
+    /**
+     * Gets index of selected button in group. Returns
+     * -1 if no button is selected.
+     */
     public int getSelectedIndex() {
         AbstractButton button = getSelected();
         if (button == null) return -1;
         else return buttons.indexOf(button);
     }
 
+    /**
+     * Sets which button should be selected. All other
+     * buttons will be deselected.
+     * @param index The index of the button to be selected.
+     */
     public void setSelectedIndex(int index) {
-        if (buttons.size() <= index) return;
+        if (index < 0 || index >= buttons.size()) return;
 
         AbstractButton button = buttons.get(index);
         button.setSelected(true);
@@ -77,10 +111,18 @@ public class SmartButtonGroup extends javax.swing.ButtonGroup {
         }
     }
 
+    /**
+     * Adds a button group listener.
+     * @param listener The listener to add.
+     */
     public void addButtonGroupListener(ButtonGroupListener listener) {
         listeners.add(listener);
     }
 
+    /**
+     * Removes a button group listener.
+     * @param listener The listener to remove.
+     */
     public void removeButtonGroupListener(ButtonGroupListener listener) {
         listeners.remove(listener);
     }

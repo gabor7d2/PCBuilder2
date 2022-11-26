@@ -1,11 +1,7 @@
 package net.gabor7d2.pcbuilder.gui;
 
-import com.formdev.flatlaf.FlatDarculaLaf;
-import com.formdev.flatlaf.FlatIntelliJLaf;
-import com.formdev.flatlaf.FlatLaf;
 import net.gabor7d2.pcbuilder.Application;
 import net.gabor7d2.pcbuilder.gui.general.ScrollPane2D;
-import net.gabor7d2.pcbuilder.model.Component;
 import net.gabor7d2.pcbuilder.model.Profile;
 import net.gabor7d2.pcbuilder.model.Settings;
 import net.gabor7d2.pcbuilder.repositoryimpl.RepositoryFactory;
@@ -24,8 +20,6 @@ public class MainFrame extends JFrame {
 
     public MainFrame() {
         setIconImages(Application.APP_ICONS);
-        setupLookAndFeel();
-        UIManager.getDefaults().put("TextArea.font", UIManager.getFont("TextField.font"));
         setTitle(TITLE);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
@@ -40,7 +34,7 @@ public class MainFrame extends JFrame {
         ControlBar controlBar = new ControlBar();
         add(controlBar, BorderLayout.SOUTH);
 
-        ScrollPane2D panel = new ScrollPane2D();
+        ScrollPane2D panel = new ScrollPane2D(new Color(160, 160, 160));
 
         Settings settings = RepositoryFactory.getSettingsRepository().loadSettings();
         System.out.println(settings.getSelectedProfile());
@@ -59,26 +53,5 @@ public class MainFrame extends JFrame {
         panel.addRow(crow);
 
         add(panel, BorderLayout.CENTER);
-    }
-
-    private void setupLookAndFeel() {
-        try {
-            FlatLaf.setUseNativeWindowDecorations(true);
-            getRootPane().putClientProperty("JRootPane.useWindowDecorations", true);
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            FlatIntelliJLaf.setup();
-            UIManager.put("flatlaf.useWindowDecorations", true);
-            UIManager.setLookAndFeel(new FlatIntelliJLaf());
-        } catch (Exception ignored) {
-            try {
-                for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-                    if (info.getName().equals("Nimbus")) {
-                        UIManager.setLookAndFeel(info.getClassName());
-                        break;
-                    }
-                }
-            } catch (Exception ignored2) {
-            }
-        }
     }
 }

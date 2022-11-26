@@ -21,7 +21,7 @@ public class SmartScrollPane extends JScrollPane implements ComponentListener {
         addComponentListener(this);
         revalidate();
 
-        putClientProperty("JScrollPane.smoothScrolling", true);
+        //putClientProperty("JScrollPane.smoothScrolling", true);
     }
 
     public SmartScrollPane() {

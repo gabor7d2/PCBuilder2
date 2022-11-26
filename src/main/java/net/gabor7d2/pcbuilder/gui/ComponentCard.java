@@ -1,5 +1,7 @@
 package net.gabor7d2.pcbuilder.gui;
 
+import com.formdev.flatlaf.FlatDarculaLaf;
+import com.formdev.flatlaf.FlatLaf;
 import net.gabor7d2.pcbuilder.gui.general.ImageLabel;
 import net.gabor7d2.pcbuilder.gui.general.ClickableLabel;
 import net.gabor7d2.pcbuilder.model.Component;
@@ -23,9 +25,7 @@ public class ComponentCard extends JPanel implements MouseListener {
 
         setBorder(BorderFactory.createMatteBorder(8, 8, 8, 8, Color.WHITE));
 
-        //Utils.fixSize(this, size);
         addMouseListener(this);
-
         setBackground(Color.WHITE);
         setAlignmentY(TOP_ALIGNMENT);
         setAlignmentX(CENTER_ALIGNMENT);
