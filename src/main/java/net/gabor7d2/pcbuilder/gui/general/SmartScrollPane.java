@@ -1,4 +1,4 @@
-package net.gabor7d2.pcbuilder.gui.elements;
+package net.gabor7d2.pcbuilder.gui.general;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,6 +20,8 @@ public class SmartScrollPane extends JScrollPane implements ComponentListener {
         setBorder(null);
         addComponentListener(this);
         revalidate();
+
+        putClientProperty("JScrollPane.smoothScrolling", true);
     }
 
     public SmartScrollPane() {

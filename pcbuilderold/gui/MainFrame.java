@@ -20,49 +20,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 // TODO implement shops to choose from and separate section for displaying the price of each category
 public class MainFrame extends JFrame implements KeyEventDispatcher {
 
-    public final static List<Image> APP_ICONS = new ArrayList<>();
-
-    private static JScrollPane hoveredHorizontalScrollPane;
-    private static JScrollPane hoveredVerticalScrollPane;
-
-    private final static int WIDTH = 900;
-    private final static int HEIGHT = 720;
-    private final static int MIN_WIDTH = 480;
-    private final static int MIN_HEIGHT = 360;
-
-    //private final ComparisonPane comparisonPane;
+    private final ComparisonPane comparisonPane;
 
     private AtomicBoolean loading = new AtomicBoolean(true);
-    private AtomicBoolean welcomeDialog = new AtomicBoolean(false);
-
-    static {
-        APP_ICONS.add(getImageByPath("/icons/icon.png"));
-        APP_ICONS.add(getImageByPath("/icons/icon-512.png"));
-        APP_ICONS.add(getImageByPath("/icons/icon-256.png"));
-        APP_ICONS.add(getImageByPath("/icons/icon-128.png"));
-        APP_ICONS.add(getImageByPath("/icons/icon-64.png"));
-        APP_ICONS.add(getImageByPath("/icons/icon-32.png"));
-        APP_ICONS.add(getImageByPath("/icons/icon-16.png"));
-    }
 
     public MainFrame() {
         super();
-        setIconImages(APP_ICONS);
-
         KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(this);
-        setupLookAndFeel();
-        UIManager.getDefaults().put("TextArea.font", UIManager.getFont("TextField.font"));
-
-        setTitle("PC Builder");
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
-        setMinimumSize(new Dimension(MIN_WIDTH, MIN_HEIGHT));
-        setSize(WIDTH, HEIGHT);
-        setLocationRelativeTo(null);
-
-        add(new MainPanel(WIDTH, HEIGHT));
-
-        setVisible(true);
 
         System.out.println(PersistenceManager.getSettings().getSelectedProfile());
 
@@ -70,35 +34,11 @@ public class MainFrame extends JFrame implements KeyEventDispatcher {
             System.out.println(p.getName());
         }
 
-        /*ProgressDialog progressDialog = new ProgressDialog(this, ProgressDialogType.STARTUP);
+        ProgressDialog progressDialog = new ProgressDialog(this, ProgressDialogType.STARTUP);
         progressDialog.setVisible(loading);
 
         comparisonPane = new ComparisonPane(WIDTH, HEIGHT, this);
-        ComponentManager.autoLoad(progressDialog);*/
-    }
-
-    private void setupLookAndFeel() {
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception ignored) {
-            try {
-                for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-                    if (info.getName().equals("Nimbus")) {
-                        UIManager.setLookAndFeel(info.getClassName());
-                        break;
-                    }
-                }
-            } catch (Exception ignored2) {
-            }
-        }
-    }
-
-    public static void setHoveredHorizontalScrollPane(JScrollPane pane) {
-        hoveredHorizontalScrollPane = pane;
-    }
-
-    public static void setHoveredVerticalScrollPane(JScrollPane pane) {
-        hoveredVerticalScrollPane = pane;
+        ComponentManager.autoLoad(progressDialog);
     }
 
     @Override
@@ -163,33 +103,6 @@ public class MainFrame extends JFrame implements KeyEventDispatcher {
                 return true;
         }
 
-        if (e.getComponent() instanceof JComboBox) return false;
-
-        // TODO fix program not rechecking what the cursor hovers over when we move the vertical pane with up/down key
-        if (hoveredHorizontalScrollPane != null) {
-            switch (e.getKeyCode()) {
-                case KeyEvent.VK_RIGHT:
-                    hoveredHorizontalScrollPane.getHorizontalScrollBar().setValue(hoveredHorizontalScrollPane.getHorizontalScrollBar().getValue() + 32);
-                    return true;
-                case KeyEvent.VK_LEFT:
-                    hoveredHorizontalScrollPane.getHorizontalScrollBar().setValue(hoveredHorizontalScrollPane.getHorizontalScrollBar().getValue() - 32);
-                    return true;
-            }
-        }
-        if (hoveredVerticalScrollPane != null) {
-            switch (e.getKeyCode()) {
-                case KeyEvent.VK_UP:
-                    hoveredVerticalScrollPane.getVerticalScrollBar().setValue(hoveredVerticalScrollPane.getVerticalScrollBar().getValue() - 32);
-                    return true;
-                case KeyEvent.VK_DOWN:
-                    hoveredVerticalScrollPane.getVerticalScrollBar().setValue(hoveredVerticalScrollPane.getVerticalScrollBar().getValue() + 32);
-                    return true;
-            }
-        }*/
         return false;
-    }
-
-    private static Image getImageByPath(String pathInJar) {
-        return Toolkit.getDefaultToolkit().getImage(MainFrame.class.getResource(pathInJar));
     }
 }

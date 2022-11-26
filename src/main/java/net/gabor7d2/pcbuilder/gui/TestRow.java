@@ -1,8 +1,8 @@
 package net.gabor7d2.pcbuilder.gui;
 
 
-import net.gabor7d2.pcbuilder.gui.elements.ScrollPane2D;
-import net.gabor7d2.pcbuilder.gui.elements.SmartScrollPane;
+import net.gabor7d2.pcbuilder.gui.general.ScrollPane2D;
+import net.gabor7d2.pcbuilder.gui.general.SmartScrollPane;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,7 +13,6 @@ public class TestRow extends ScrollPane2D.ScrollPane2DRow {
 
     public TestRow() {
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-        setBorder(BorderFactory.createMatteBorder(8, 8, 0, 8, Color.LIGHT_GRAY));
 
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));

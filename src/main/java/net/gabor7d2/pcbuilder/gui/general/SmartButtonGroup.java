@@ -1,21 +1,29 @@
-package net.gabor7d2.pcbuilderold.gui.elements;
+package net.gabor7d2.pcbuilder.gui.general;
 
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ButtonGroup extends javax.swing.ButtonGroup {
+/**
+ * Class for grouping a set of buttons whose selection is exclusive,
+ * meaning that selecting a button in the group will deselect all other
+ * buttons. Behaves the same way as {@link ButtonGroup}, except that
+ * you can add {@link ButtonGroupListener ButtonGroupListeners} which
+ * will fire when any button has been selected, telling you which was
+ * selected.
+ */
+public class SmartButtonGroup extends javax.swing.ButtonGroup {
 
     private final boolean selectFirst;
 
     private final List<AbstractButton> buttons = new ArrayList<>();
     private final List<ButtonGroupListener> listeners = new ArrayList<>();
 
-    public ButtonGroup() {
+    public SmartButtonGroup() {
         selectFirst = false;
     }
 
-    public ButtonGroup(boolean selectFirstButton) {
+    public SmartButtonGroup(boolean selectFirstButton) {
         selectFirst = selectFirstButton;
     }
 
@@ -78,6 +86,12 @@ public class ButtonGroup extends javax.swing.ButtonGroup {
     }
 
     public interface ButtonGroupListener {
+        /**
+         * Called when a button is selected from the {@link SmartButtonGroup}
+         * this listener is registered on.
+         * @param button The button component.
+         * @param index The index of the button in the button group.
+         */
         void buttonSelected(AbstractButton button, int index);
     }
 }

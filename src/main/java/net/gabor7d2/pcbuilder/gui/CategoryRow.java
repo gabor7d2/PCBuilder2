@@ -1,36 +1,39 @@
 package net.gabor7d2.pcbuilder.gui;
 
-import net.gabor7d2.pcbuilder.gui.elements.ScrollPane2D;
-import net.gabor7d2.pcbuilder.gui.elements.SmartScrollPane;
+import net.gabor7d2.pcbuilder.gui.general.ScrollPane2D;
+import net.gabor7d2.pcbuilder.gui.general.SmartScrollPane;
+import net.gabor7d2.pcbuilder.model.Category;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class CategoryRow extends ScrollPane2D.ScrollPane2DRow {
+    private final static Color BG_COLOR = Color.WHITE;
 
     private JPanel headerPanel;
     private final SmartScrollPane scrollPane = new SmartScrollPane();
 
-    private final JPanel contentPanel = new JPanel();
+    //private final JPanel contentPanel = new JPanel();
 
     public CategoryRow() {
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-        setBorder(BorderFactory.createMatteBorder(8, 8, 0, 8, Color.LIGHT_GRAY));
 
-        scrollPane.getViewport().setBackground(Color.WHITE);
-        contentPanel.setBackground(Color.WHITE);
+        scrollPane.getViewport().setBackground(BG_COLOR);
+        //contentPanel.setBackground(BG_COLOR);
 
-        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.X_AXIS));
-        scrollPane.setViewportView(contentPanel);
+        //contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.X_AXIS));
+        //scrollPane.setViewportView(contentPanel);
         add(scrollPane);
     }
 
-    public JPanel getHeaderPanel() {
-        return headerPanel;
-    }
+    public void displayCategory(Category category) {
+        setHeaderPanel(new CategoryCard(category));
 
-    public JPanel getContentPanel() {
-        return contentPanel;
+        //contentPanel.removeAll();
+        ComponentsPanel panel = new ComponentsPanel();
+        panel.displayComponents(category.getComponents());
+        scrollPane.setViewportView(panel);
+        //contentPanel.add(panel);
     }
 
     public void setHeaderPanel(JPanel headerPanel) {
