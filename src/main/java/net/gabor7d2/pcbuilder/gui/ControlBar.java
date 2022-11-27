@@ -52,16 +52,29 @@ public class ControlBar extends JPanel implements ProfileEventListener {
                 profileSelector.addItem(e.getProfile());
             }
         }
+        if (e.getType() == ProfileEvent.ProfileEventType.SELECT) {
+            if (e.getProfile() != null) {
+                updateTotalPrice(1234, e.getProfile().getCurrencyPrefix(), e.getProfile().getCurrencySuffix());
+                totalPriceLabel.setVisible(true);
+            } else {
+                updateTotalPrice(0, "", "");
+                totalPriceLabel.setVisible(false);
+            }
+        }
     }
 
     private void setupTotalPriceLabel() {
-        totalPriceLabel = new JLabel("Total Price: 7 849 485 Ft");
+        totalPriceLabel = new JLabel();
         totalPriceLabel.setForeground(TEXT_COLOR);
         totalPriceLabel.setFont(totalPriceLabel.getFont().deriveFont(Font.BOLD, 13));
         totalPriceLabel.setBorder(BorderFactory.createMatteBorder(0, 8, 0, 8, getBackground()));
 
-        //totalPriceLabel.setVisible(false);
+        totalPriceLabel.setVisible(false);
         add(totalPriceLabel);
+    }
+
+    private void updateTotalPrice(double value, String prefix, String suffix) {
+        totalPriceLabel.setText("Total Price: " + prefix + value + suffix);
     }
 
     private void setupProfileSelector() {
