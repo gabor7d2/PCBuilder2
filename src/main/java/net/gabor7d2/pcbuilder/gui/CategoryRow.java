@@ -13,27 +13,27 @@ public class CategoryRow extends ScrollPane2D.ScrollPane2DRow {
     private JPanel headerPanel;
     private final SmartScrollPane scrollPane = new SmartScrollPane();
 
-    //private final JPanel contentPanel = new JPanel();
+    private Category category;
 
-    public CategoryRow() {
+    public CategoryRow(Category category) {
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 
         scrollPane.getViewport().setBackground(BG_COLOR);
-        //contentPanel.setBackground(BG_COLOR);
-
-        //contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.X_AXIS));
-        //scrollPane.setViewportView(contentPanel);
         add(scrollPane);
+
+        displayCategory(category);
     }
 
-    public void displayCategory(Category category) {
+    private void displayCategory(Category category) {
+        this.category = category;
+
+        // component category header
         setHeaderPanel(new CategoryCard(category));
 
-        //contentPanel.removeAll();
+        // components in the scroll pane
         ComponentsPanel panel = new ComponentsPanel();
         panel.displayComponents(category.getComponents());
         scrollPane.setViewportView(panel);
-        //contentPanel.add(panel);
     }
 
     public void setHeaderPanel(JPanel headerPanel) {

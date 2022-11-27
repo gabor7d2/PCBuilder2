@@ -59,6 +59,8 @@ public class JsonProfileRepository implements ProfileRepository {
 
     private void loadComponentsForProfile(Profile p) {
         for (Category category : p.getCategories()) {
+            category.setProfile(p);
+
             File categoryFile = new File(p.getProfileFolder(), category.getShortName().toLowerCase() + ".json");
             if (!categoryFile.isFile()) {
                 System.out.println("Failed to load components from file " + categoryFile.getPath() + ": file not found.");
@@ -69,6 +71,7 @@ public class JsonProfileRepository implements ProfileRepository {
 
                 // construct image path string for components
                 for (Component comp : components) {
+                    comp.setCategory(category);
                     comp.setImagePath(p.getProfileFolder().getPath()
                             + File.separator + category.getShortName().toLowerCase().replace(' ', '_')
                             + File.separator + comp.getBrand().toLowerCase().replace(' ', '_')

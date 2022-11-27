@@ -1,7 +1,5 @@
 package net.gabor7d2.pcbuilder.gui;
 
-import com.formdev.flatlaf.FlatDarculaLaf;
-import com.formdev.flatlaf.FlatLaf;
 import net.gabor7d2.pcbuilder.gui.general.ImageLabel;
 import net.gabor7d2.pcbuilder.gui.general.ClickableLabel;
 import net.gabor7d2.pcbuilder.model.Component;
@@ -15,7 +13,7 @@ public class ComponentCard extends JPanel implements MouseListener {
 
     private final static int COMPONENT_CARD_WIDTH = 144;
 
-    private ComponentsPanel componentsPanel;
+    private final ComponentsPanel componentsPanel;
 
     private Component component;
 
@@ -36,7 +34,7 @@ public class ComponentCard extends JPanel implements MouseListener {
         displayComponent(component);
     }
 
-    public void displayComponent(Component c) {
+    private void displayComponent(Component c) {
         component = c;
         removeAll();
 
@@ -51,7 +49,6 @@ public class ComponentCard extends JPanel implements MouseListener {
 
         ImageLabel imageLabel = new ImageLabel();
         imageLabel.setImageFromFileAsync(c.getImagePath(), 104, 104);
-        //imageLabel.setBorder(BorderFactory.createLineBorder(Color.WHITE, 4));
         imageLabel.setBorder(Color.WHITE, 4);
         imageLabel.setBackground(Color.WHITE);
         imageLabel.setName("image");
@@ -88,7 +85,9 @@ public class ComponentCard extends JPanel implements MouseListener {
             pricePanel.setBackground(Color.WHITE);
             textPanel.add(pricePanel);
 
-            JLabel priceLabel = new JLabel(String.valueOf(c.getPrice().getValue()));
+            String prefix = c.getCategory().getProfile().getCurrencyPrefix();
+            String suffix = c.getCategory().getProfile().getCurrencySuffix();
+            JLabel priceLabel = new JLabel(prefix + c.getPrice().getValue() + suffix);
             priceLabel.setFont(priceLabel.getFont().deriveFont(Font.PLAIN, 12));
             pricePanel.add(priceLabel);
 
@@ -113,21 +112,14 @@ public class ComponentCard extends JPanel implements MouseListener {
             textPanel.add(priceSite);
         }
 
-        /*ClickableLabel price = new ClickableLabel(String.valueOf(c.getPrice()) + " Kompker webáruház", "price", this);
-        price.setFont(price.getFont().deriveFont(Collections.singletonMap(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON)));
-        price.setFont(price.getFont().deriveFont(Font.PLAIN, 12));
-        price.setHorizontalAlignment(SwingConstants.CENTER);
-        price.setAlignmentX(CENTER_ALIGNMENT);
-        textPanel.add(price);*/
-
-
-        //Utils.adjustHeight(this, price);
-
-        // Make the panel larger if the text doesn't fit
-        /*if (textPanel.getPreferredSize().width > getWidth()) {
-            Utils.fixSize(this, textPanel.getPreferredSize().width, getHeight());
-        }*/
         GUIUtils.freezeSize(this, new Dimension(COMPONENT_CARD_WIDTH, getPreferredSize().height));
+    }
+
+    /**
+     * Get currently displayed Component.
+     */
+    public Component getComponent() {
+        return component;
     }
 
     @Override
@@ -137,7 +129,7 @@ public class ComponentCard extends JPanel implements MouseListener {
         if ("image".equals(comp.getName())) {
             if (e.getButton() == MouseEvent.BUTTON1) {
                 System.out.println("image left click");
-                //Utils.openWebsite(component.getPriceSite());
+                // TODO component image viewer
             }
         }
     }

@@ -1,5 +1,7 @@
 package net.gabor7d2.pcbuilder.gui;
 
+import net.gabor7d2.pcbuilder.gui.event.ProfileEvent;
+import net.gabor7d2.pcbuilder.gui.event.ProfileEventListener;
 import net.gabor7d2.pcbuilder.gui.general.SmartScrollPane;
 import net.gabor7d2.pcbuilder.model.Category;
 import net.gabor7d2.pcbuilder.model.CategoryType;
@@ -10,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 // TODO use flowlayout instead of boxlayout
-public class CategorySelectorBar extends SmartScrollPane {
+public class CategorySelectorBar extends SmartScrollPane implements ProfileEventListener {
 
     private static final Color BG_COLOR = Color.DARK_GRAY;
     private static final Color FG_COLOR = Color.WHITE;
@@ -30,26 +32,7 @@ public class CategorySelectorBar extends SmartScrollPane {
         setViewportView(contentPanel);
 
         //contentPanel.setBackground(BG_COLOR);
-        contentPanel.setBorder(BorderFactory.createMatteBorder(12, 8, 12, 8, contentPanel.getBackground()));
-
-        Category c1 = new Category();
-        c1.setType(CategoryType.getCategoryTypeFromName("CPU"));
-
-        Category c2 = new Category();
-        c2.setType(CategoryType.getCategoryTypeFromName("GPU"));
-        c2.setEnabled(false);
-
-        Category c3 = new Category();
-        c3.setType(CategoryType.getCategoryTypeFromName("MB"));
-        c3.setEnabled(false);
-
-        Category c4 = new Category();
-        c4.setType(CategoryType.getCategoryTypeFromName("AirCooler"));
-
-        addCategory(c1);
-        addCategory(c2);
-        addCategory(c3);
-        addCategory(c4);
+        contentPanel.setBorder(BorderFactory.createMatteBorder(8, 8, 8, 8, contentPanel.getBackground()));
     }
 
     public void addCategorySelectedListener(CategorySelectedListener l) {
@@ -68,7 +51,12 @@ public class CategorySelectorBar extends SmartScrollPane {
         contentPanel.add(ch);
     }
 
-    public void addCategories(List<Category> categories) {
-
+    @Override
+    public void processProfileEvent(ProfileEvent e) {
+        if (e.getType() == ProfileEvent.ProfileEventType.SELECT) {
+            setVisible(e.getProfile() != null);
+            contentPanel.removeAll();
+            if (e.getProfile() != null) e.getProfile().getCategories().forEach(this::addCategory);
+        }
     }
 }

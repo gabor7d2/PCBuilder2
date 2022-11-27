@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Category {
+
+    private String id;
+
+    private Profile profile;
+
     private CategoryType type;
 
     private boolean enabled = true;
@@ -17,6 +22,22 @@ public class Category {
     @Override
     public String toString() {
         return type.getDisplayName();
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public Profile getProfile() {
+        return profile;
+    }
+
+    public void setProfile(Profile profile) {
+        this.profile = profile;
     }
 
     public String getShortName() {

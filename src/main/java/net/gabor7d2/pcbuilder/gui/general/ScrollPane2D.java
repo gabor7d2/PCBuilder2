@@ -94,6 +94,11 @@ public class ScrollPane2D extends JScrollPane implements MouseWheelListener {
         this.addRow(-1, row);
     }
 
+    @Override
+    public void removeAll() {
+        outerPanel.removeAll();
+    }
+
     /**
      * Gets row count.
      */

@@ -3,6 +3,10 @@ package net.gabor7d2.pcbuilder.model;
 // TODO separate models into model json-s
 public class Component {
 
+    private String id;
+
+    private Category category;
+
     private String brand = "";
     private String modelName = "";
     private String imagePath = "";
@@ -21,6 +25,22 @@ public class Component {
         this.shopSite = shopSite;
         this.price = price;
     }*/
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
 
     public String getBrand() {
         return brand;

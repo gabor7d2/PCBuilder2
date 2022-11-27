@@ -1,25 +1,29 @@
 package net.gabor7d2.pcbuilder.gui;
 
+import net.gabor7d2.pcbuilder.gui.event.ProfileEvent;
+import net.gabor7d2.pcbuilder.gui.event.ProfileEventListener;
 import net.gabor7d2.pcbuilder.model.Profile;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
-public class ControlBar extends JPanel {
+public class ControlBar extends JPanel implements ProfileEventListener {
 
     private static final Color BG_COLOR = Color.DARK_GRAY;
     private static final Color FG_COLOR = Color.WHITE;
     private static final Color TEXT_COLOR = Color.WHITE;
+    private final ProfileEventListener parentProfileEventListener;
 
     private JLabel totalPriceLabel;
 
     private JComboBox<Profile> profileSelector;
 
-    public ControlBar() {
+    public ControlBar(ProfileEventListener parentProfileEventListener) {
+        this.parentProfileEventListener = parentProfileEventListener;
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         setBackground(BG_COLOR);
-        setBorder(BorderFactory.createMatteBorder(12, 8, 12, 8, BG_COLOR));
+        setBorder(BorderFactory.createMatteBorder(12, 8, 12, 8, getBackground()));
 
         setupTotalPriceLabel();
 
@@ -27,18 +31,34 @@ public class ControlBar extends JPanel {
         setupProfileSelector();
         add(Box.createRigidArea(new Dimension(4, 1)));
 
-        addButton("Rename", null);
-        addButton("Add", null);
-        addButton("Remove", null);
-        addButton("Reload", null);
-        addButton("Help", null);
+        addButton("Import", null);
+        addButton("Delete", null);
+        addButton("Edit Mode", null);
+        JButton helpButton = addButton("Help", null);
+        helpButton.putClientProperty("JButton.buttonType", "help");
+    }
+
+    @Override
+    public void processProfileEvent(ProfileEvent e) {
+        if (e.getType() == ProfileEvent.ProfileEventType.ADD) {
+            if (profileSelector.getItemCount() == 0) {
+                // add first item without selecting it
+                ActionListener l = profileSelector.getActionListeners()[0];
+                profileSelector.removeActionListener(l);
+                profileSelector.addItem(e.getProfile());
+                profileSelector.setSelectedIndex(-1);
+                profileSelector.addActionListener(l);
+            } else {
+                profileSelector.addItem(e.getProfile());
+            }
+        }
     }
 
     private void setupTotalPriceLabel() {
         totalPriceLabel = new JLabel("Total Price: 7 849 485 Ft");
         totalPriceLabel.setForeground(TEXT_COLOR);
         totalPriceLabel.setFont(totalPriceLabel.getFont().deriveFont(Font.BOLD, 13));
-        totalPriceLabel.setBorder(BorderFactory.createMatteBorder(0, 8, 0, 8, BG_COLOR));
+        totalPriceLabel.setBorder(BorderFactory.createMatteBorder(0, 8, 0, 8, getBackground()));
 
         //totalPriceLabel.setVisible(false);
         add(totalPriceLabel);
@@ -46,22 +66,20 @@ public class ControlBar extends JPanel {
 
     private void setupProfileSelector() {
         profileSelector = new JComboBox<>();
-        //profileSelector.setBorder(BorderFactory.createMatteBorder(8, 0, 8, 0, BG_COLOR));
         profileSelector.addActionListener(e -> {
-            System.out.println(profileSelector.getSelectedItem());
+            parentProfileEventListener.processProfileEvent(new ProfileEvent(ProfileEvent.ProfileEventType.SELECT, (Profile) profileSelector.getSelectedItem()));
         });
-
         add(profileSelector);
     }
 
-    private void addButton(String name, ActionListener listener) {
+    private JButton addButton(String name, ActionListener listener) {
         JButton btn = new JButton(name);
-        //btn.setBackground(BG_COLOR);
-        //btn.setForeground(FG_COLOR);
         btn.addActionListener(listener);
 
         add(Box.createRigidArea(new Dimension(4, 1)));
         add(btn);
         add(Box.createRigidArea(new Dimension(4, 1)));
+
+        return btn;
     }
 }
