@@ -2,8 +2,8 @@ package net.gabor7d2.pcbuilder.gui;
 
 import net.gabor7d2.pcbuilder.gui.event.ProfileEvent;
 import net.gabor7d2.pcbuilder.gui.event.ProfileEventListener;
+import net.gabor7d2.pcbuilder.gui.general.ImageLoader;
 import net.gabor7d2.pcbuilder.gui.general.ScrollPane2D;
-import net.gabor7d2.pcbuilder.model.Category;
 import net.gabor7d2.pcbuilder.model.Profile;
 
 import javax.swing.*;
@@ -34,6 +34,7 @@ public class MainPanel extends JPanel implements ProfileEventListener {
             add(profilePane, profile.getId());
         }
         cardLayout.show(this, profile.getId());
+        ImageLoader.processQueue();
     }
 
     @Override

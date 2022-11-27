@@ -28,9 +28,6 @@ public class ComponentCard extends JPanel implements MouseListener {
         setAlignmentY(TOP_ALIGNMENT);
         setAlignmentX(CENTER_ALIGNMENT);
 
-        System.out.println(getSize());
-        System.out.println(getMaximumSize());
-
         displayComponent(component);
     }
 

@@ -20,7 +20,7 @@ public class CategoryCard extends JPanel {
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
         ImageLabel imageLabel = new ImageLabel();
-        imageLabel.setImageFromClasspath("/category_icons/" + category.getShortName() + ".png", 80, 80);
+        imageLabel.setImageFromClasspathAsync(category.getIconImagePath(), 80, 80);
         imageLabel.setAlignmentX(CENTER_ALIGNMENT);
         panel.add(imageLabel);
 

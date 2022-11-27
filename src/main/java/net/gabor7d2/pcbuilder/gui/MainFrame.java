@@ -42,11 +42,6 @@ public class MainFrame extends JFrame implements ProfileEventListener {
         controlBar = new ControlBar(this);
         add(controlBar, BorderLayout.SOUTH);
 
-        Settings settings = RepositoryFactory.getSettingsRepository().loadSettings();
-        System.out.println(settings.getSelectedProfile());
-        settings.setSelectedProfile("Testing");
-        RepositoryFactory.getSettingsRepository().saveSettings(settings);
-
         List<Profile> profiles = RepositoryFactory.getProfileRepository().loadProfiles();
 
         mainPanel = new MainPanel();
