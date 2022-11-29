@@ -17,12 +17,19 @@ import java.util.List;
  */
 public class ScrollPane2D extends JScrollPane implements MouseWheelListener {
 
-    // The scroll pane's panel
+    /**
+     * The JScrollPane's viewport panel.
+     */
     private final ScrollablePanel outerPanel;
 
-    // The list of rows
+    /**
+     * The list of rows.
+     */
     private final List<ScrollPane2DRow> rows = new ArrayList<>();
 
+    /**
+     * The color to use for the background.
+     */
     private final Color backgroundColor;
 
     /**
@@ -64,7 +71,7 @@ public class ScrollPane2D extends JScrollPane implements MouseWheelListener {
      * Adds a row to this scrollpane.
      *
      * @param index Which position to add the row to.
-     * @param row The row to be added.
+     * @param row   The row to be added.
      */
     public void addRow(int index, ScrollPane2DRow row) {
         // Wrap the row in a panel to give it a border
@@ -102,13 +109,27 @@ public class ScrollPane2D extends JScrollPane implements MouseWheelListener {
 
     /**
      * Gets row count.
+     *
+     * @return The amount of rows.
      */
     public int getRowCount() {
         return rows.size();
     }
 
     /**
+     * Gets the index of the specified row.
+     *
+     * @param row The row to look up.
+     * @return The index of the row, or -1 if it is
+     * not inside this ScrollPane2D.
+     */
+    public int indexOfRow(ScrollPane2DRow row) {
+        return rows.indexOf(row);
+    }
+
+    /**
      * Gets a specific row.
+     *
      * @param index The index of the row to retrieve.
      * @return The row at the index.
      */
@@ -118,29 +139,22 @@ public class ScrollPane2D extends JScrollPane implements MouseWheelListener {
 
     /**
      * Sets the visibility of the row at the specified index.
-     * @param index The index of the row.
+     *
+     * @param index   The index of the row.
      * @param visible Whether the row should be visible or not.
      */
     public void setRowVisible(int index, boolean visible) {
-        //outerPanel.getComponent(index).setVisible(visible);
         rows.get(index).setVisible(visible);
     }
 
     /**
      * Gets whether the row at the specified index is visible.
+     *
      * @param index The index of the row.
+     * @return whether the row at the specified index is visible.
      */
     public boolean isRowVisible(int index) {
-        //return outerPanel.getComponent(index).isVisible();
         return rows.get(index).isVisible();
-    }
-
-    /**
-     * Toggles visibility of the row at the specified index.
-     * @param index The index of the row.
-     */
-    public void toggleRowVisible(int index) {
-        setRowVisible(index, !isRowVisible(index));
     }
 
     /**
@@ -153,6 +167,7 @@ public class ScrollPane2D extends JScrollPane implements MouseWheelListener {
 
     /**
      * Removes a row from this scrollpane.
+     *
      * @param index The index of the row to remove.
      */
     public void removeRow(int index) {
@@ -172,11 +187,20 @@ public class ScrollPane2D extends JScrollPane implements MouseWheelListener {
      * <p>
      * Since ScrollPane2D is itself a JScrollPane, placing any component under it
      * that's also a JScrollPane will cause weird behaviour. If your row
-     * contains scroll panes, override {@link ScrollPane2DRow#placedInsideScrollPane(JScrollPane)}
+     * contains scroll panes, override {@link ScrollPane2DRow#placedInsideScrollPane(ScrollPane2D)}
      * to set them up properly. This method is called when the row is added to a ScrollPane2D.
      */
     public abstract static class ScrollPane2DRow extends JPanel {
 
-        public abstract void placedInsideScrollPane(JScrollPane outerScrollPane);
+        /**
+         * Called when the row is added to a ScrollPane2D.
+         * <p>
+         * Set up the JScrollPanes in the row to forward mouse wheel events to
+         * the given ScrollPane2D so that the horizontal scrolling is done on the
+         * outer JScrollPane instead of in a JScrollPane inside the row.
+         *
+         * @param outerScrollPane The ScrollPane2D instance the row is added to.
+         */
+        public abstract void placedInsideScrollPane(ScrollPane2D outerScrollPane);
     }
 }

@@ -37,6 +37,11 @@ public class CategoryRow extends ScrollPane2D.ScrollPane2DRow implements Categor
         panel.displayComponents(category.getComponents());
         scrollPane.setViewportView(panel);
 
+        // select specified default selection
+        if (category.getDefaultSelection() > 0 && category.getDefaultSelection() <= category.getComponents().size()) {
+            panel.getButtonGroup().setSelectedIndex(category.getDefaultSelection() - 1);
+        }
+
         setVisible(category.isEnabled());
     }
 
@@ -47,7 +52,7 @@ public class CategoryRow extends ScrollPane2D.ScrollPane2DRow implements Categor
     }
 
     @Override
-    public void placedInsideScrollPane(JScrollPane outerScrollPane) {
+    public void placedInsideScrollPane(ScrollPane2D outerScrollPane) {
         // fix scrolling when placed inside another ScrollPane
         scrollPane.setWheelScrollingEnabled(false);
         scrollPane.addMouseWheelListener(e -> {
@@ -63,6 +68,7 @@ public class CategoryRow extends ScrollPane2D.ScrollPane2DRow implements Categor
 
     @Override
     public void processCategoryEvent(CategoryEvent e) {
+        // TODO fix setVisible
         if (e.getCategory() == category) {
             if (e.getType() == CategoryEvent.CategoryEventType.ENABLE) {
                 setVisible(true);

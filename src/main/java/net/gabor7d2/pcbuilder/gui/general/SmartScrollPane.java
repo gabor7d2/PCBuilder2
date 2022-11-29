@@ -12,6 +12,11 @@ import java.awt.event.ComponentListener;
  */
 public class SmartScrollPane extends JScrollPane implements ComponentListener {
 
+    /**
+     * Creates a new SmartScrollPane.
+     *
+     * @param view The view to use as the viewport's view.
+     */
     public SmartScrollPane(Component view) {
         super(view);
 
@@ -24,6 +29,9 @@ public class SmartScrollPane extends JScrollPane implements ComponentListener {
         //putClientProperty("JScrollPane.smoothScrolling", true);
     }
 
+    /**
+     * Creates a new SmartScrollPane, with no view inside.
+     */
     public SmartScrollPane() {
         this(null);
     }

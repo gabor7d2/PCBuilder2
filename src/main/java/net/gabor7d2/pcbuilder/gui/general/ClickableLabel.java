@@ -10,7 +10,7 @@ import java.awt.font.TextAttribute;
 import java.util.Collections;
 
 /**
- * ClickableLabel is a JLabel that can have an URL set, which
+ * ClickableLabel is a JLabel that can have a URL set, which
  * is opened when the user clicks on the label. If it has a URL
  * set, it is shown visually by underlining the text and changing
  * the cursor to the Hand Cursor when hovering over the label.

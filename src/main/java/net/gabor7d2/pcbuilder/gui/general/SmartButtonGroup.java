@@ -14,9 +14,20 @@ import java.util.List;
  */
 public class SmartButtonGroup extends javax.swing.ButtonGroup {
 
+    /**
+     * Whether to automatically select the first
+     * button that gets added to the group.
+     */
     private final boolean selectFirst;
 
+    /**
+     * List of buttons added to the group.
+     */
     private final List<AbstractButton> buttons = new ArrayList<>();
+
+    /**
+     * List of listeners added to the group.
+     */
     private final List<ButtonGroupListener> listeners = new ArrayList<>();
 
     /**
@@ -90,6 +101,7 @@ public class SmartButtonGroup extends javax.swing.ButtonGroup {
     /**
      * Sets which button should be selected. All other
      * buttons will be deselected.
+     *
      * @param index The index of the button to be selected.
      */
     public void setSelectedIndex(int index) {
@@ -99,6 +111,15 @@ public class SmartButtonGroup extends javax.swing.ButtonGroup {
         button.setSelected(true);
     }
 
+    /**
+     * Sets the specified button to selected, deselecting all other buttons.
+     * <p>
+     * Also notifies all added listeners.
+     *
+     * @param m the <code>ButtonModel</code>
+     * @param b <code>true</code> if this button is to be
+     *          selected, otherwise <code>false</code>
+     */
     @Override
     public void setSelected(ButtonModel m, boolean b) {
         super.setSelected(m, b);
@@ -113,6 +134,7 @@ public class SmartButtonGroup extends javax.swing.ButtonGroup {
 
     /**
      * Adds a button group listener.
+     *
      * @param listener The listener to add.
      */
     public void addButtonGroupListener(ButtonGroupListener listener) {
@@ -121,6 +143,7 @@ public class SmartButtonGroup extends javax.swing.ButtonGroup {
 
     /**
      * Removes a button group listener.
+     *
      * @param listener The listener to remove.
      */
     public void removeButtonGroupListener(ButtonGroupListener listener) {
@@ -131,8 +154,9 @@ public class SmartButtonGroup extends javax.swing.ButtonGroup {
         /**
          * Called when a button is selected from the {@link SmartButtonGroup}
          * this listener is registered on.
+         *
          * @param button The button component.
-         * @param index The index of the button in the button group.
+         * @param index  The index of the button in the button group.
          */
         void buttonSelected(AbstractButton button, int index);
     }
