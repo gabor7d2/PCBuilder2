@@ -10,6 +10,7 @@ public interface PCBuilderEventListener {
 
     /**
      * Gets called when any kind of PCBuilderEvent is received on the EventBus.
+     *
      * @param e The event.
      */
     void processPCBuilderEvent(PCBuilderEvent e);

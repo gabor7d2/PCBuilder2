@@ -27,7 +27,8 @@ public class ProfileEvent extends PCBuilderEvent {
 
     /**
      * Creates a new ProfileEvent.
-     * @param type the type
+     *
+     * @param type    the type
      * @param profile the Profile instance the event is about
      */
     public ProfileEvent(ProfileEventType type, Profile profile) {
@@ -37,6 +38,7 @@ public class ProfileEvent extends PCBuilderEvent {
 
     /**
      * Gets the ProfileEvent's type.
+     *
      * @return the ProfileEvent's type
      */
     public ProfileEventType getType() {
@@ -45,6 +47,7 @@ public class ProfileEvent extends PCBuilderEvent {
 
     /**
      * Gets the Profile instance this event is about.
+     *
      * @return the Profile instance this event is about
      */
     public Profile getProfile() {

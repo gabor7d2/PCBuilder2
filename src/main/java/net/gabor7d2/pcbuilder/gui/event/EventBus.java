@@ -62,6 +62,7 @@ public class EventBus {
 
     /**
      * Posts an event that gets dispatched to the event listeners subscribed to it.
+     *
      * @param e The event to dispatch.
      */
     public void postEvent(PCBuilderEvent e) {
@@ -77,6 +78,7 @@ public class EventBus {
 
     /**
      * Gets the EventBus singleton.
+     *
      * @return the EventBus singleton
      */
     public static EventBus getInstance() {

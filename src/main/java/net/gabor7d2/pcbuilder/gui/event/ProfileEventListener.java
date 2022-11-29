@@ -10,6 +10,7 @@ public interface ProfileEventListener {
 
     /**
      * Gets called when a ProfileEvent is received on the EventBus.
+     *
      * @param e The event.
      */
     void processProfileEvent(ProfileEvent e);

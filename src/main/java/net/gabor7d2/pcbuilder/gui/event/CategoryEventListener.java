@@ -10,6 +10,7 @@ public interface CategoryEventListener {
 
     /**
      * Gets called when a CategoryEvent is received on the EventBus.
+     *
      * @param e The event.
      */
     void processCategoryEvent(CategoryEvent e);

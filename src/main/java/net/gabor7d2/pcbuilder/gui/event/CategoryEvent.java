@@ -27,7 +27,8 @@ public class CategoryEvent extends PCBuilderEvent {
 
     /**
      * Creates a new CategoryEvent.
-     * @param type the type
+     *
+     * @param type     the type
      * @param category the Category instance the event is about
      */
     public CategoryEvent(CategoryEventType type, Category category) {
@@ -37,6 +38,7 @@ public class CategoryEvent extends PCBuilderEvent {
 
     /**
      * Gets the CategoryEvent's type.
+     *
      * @return the CategoryEvent's type
      */
     public CategoryEventType getType() {
@@ -45,6 +47,7 @@ public class CategoryEvent extends PCBuilderEvent {
 
     /**
      * Gets the Category instance this event is about.
+     *
      * @return the Category instance this event is about
      */
     public Category getCategory() {
