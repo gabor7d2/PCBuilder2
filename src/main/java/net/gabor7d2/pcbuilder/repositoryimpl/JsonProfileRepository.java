@@ -12,11 +12,27 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
+/**
+ * Implementation for handling {@link Profile} persistence, loading and storing
+ * profiles from/to json files,
+ * along with Profiles' {@link Category Categories} and the Categories'
+ * {@link Component Components}.
+ */
 public class JsonProfileRepository implements ProfileRepository {
 
+    /**
+     * The root directory of the app.
+     */
     private final File appDirectory = new File(System.getProperty("user.home"), ".pcbuilder");
+
+    /**
+     * The profiles directory inside the appDir.
+     */
     private final File profilesDirectory = new File(appDirectory, "profiles");
 
+    /**
+     * The Jackson ObjectMapper instance used for serializing/deserializing JSON from/to Java objects.
+     */
     private final ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 
     @Override
@@ -25,10 +41,13 @@ public class JsonProfileRepository implements ProfileRepository {
         List<Profile> profiles = new ArrayList<>();
 
         try {
+            // Go through all folders in profiles dir
             for (File f : Objects.requireNonNull(profilesDirectory.listFiles())) {
                 if (f.isDirectory()) {
+                    // Try loading the profile.json file
                     Profile p = loadProfile(f);
                     if (p != null) {
+                        // Set and load extra parameters of profile, add it to the list of profiles
                         p.setProfileFolder(f);
                         loadComponentsForProfile(p);
                         profiles.add(p);
@@ -42,6 +61,13 @@ public class JsonProfileRepository implements ProfileRepository {
         return profiles;
     }
 
+    /**
+     * Tries loading a profile from the specified directory.
+     *
+     * @param profileDir The profile directory.
+     * @return The loaded profile, or null if the profile.json file
+     * is not present in this dir or if an error occurred.
+     */
     private Profile loadProfile(File profileDir) {
         File profileFile = new File(profileDir, "profile.json");
         if (!profileFile.isFile()) {
@@ -57,7 +83,14 @@ public class JsonProfileRepository implements ProfileRepository {
         }
     }
 
+    /**
+     * Tries loading all components for the categories of
+     * the specified profile.
+     *
+     * @param p The profile.
+     */
     private void loadComponentsForProfile(Profile p) {
+        // Go through all categories of the profile.
         for (Category category : p.getCategories()) {
             category.setProfile(p);
 
@@ -67,7 +100,8 @@ public class JsonProfileRepository implements ProfileRepository {
                 continue;
             }
             try {
-                List<Component> components = mapper.readValue(categoryFile, new TypeReference<List<Component>>(){});
+                List<Component> components = mapper.readValue(categoryFile, new TypeReference<List<Component>>() {
+                });
 
                 // construct image path string for components
                 for (Component comp : components) {
@@ -86,6 +120,9 @@ public class JsonProfileRepository implements ProfileRepository {
         }
     }
 
+    /**
+     * Creates default folders and files if not found.
+     */
     private void createDefaultsIfNotFound() {
         if (!appDirectory.isDirectory()) {
             appDirectory.mkdirs();

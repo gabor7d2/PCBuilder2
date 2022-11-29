@@ -5,6 +5,9 @@ import java.io.*;
 import java.net.URI;
 import java.net.URL;
 
+/**
+ * Class containing common utilities.
+ */
 public class Utils {
 
     /**
@@ -12,7 +15,7 @@ public class Utils {
      * running a JAR file) to the specified destination directory.
      *
      * @param filePathInClasspath The file's path inside the current classpath.
-     * @param destDir The destination directory for the file.
+     * @param destDir             The destination directory for the file.
      * @return The file instance that points to the newly created file. The copy can
      * fail if the destDir doesn't exist, or if the file couldn't be found on the classpath,
      * or some other file access error occurs, in these cases it returns null.
@@ -26,8 +29,8 @@ public class Utils {
 
         try (InputStream is = Utils.class.getResourceAsStream(filePathInClasspath)) {
             if (is == null) return null;
-            try(BufferedInputStream bis = new BufferedInputStream(is);
-            BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(destFile))) {
+            try (BufferedInputStream bis = new BufferedInputStream(is);
+                 BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(destFile))) {
                 while (bis.available() > 0) {
                     bos.write(bis.readNBytes(32768));
                 }

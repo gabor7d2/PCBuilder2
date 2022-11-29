@@ -9,14 +9,34 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+/**
+ * A ComponentCard is a panel that displays a given Component, with
+ * its image, brand, model name, etc. and a radio button above it, that
+ * is used to select the component.
+ */
 public class ComponentCard extends JPanel implements MouseListener {
 
+    /**
+     * The fixed width of ComponentCards.
+     */
     private final static int COMPONENT_CARD_WIDTH = 144;
 
+    /**
+     * The ComponentsPanel this card is in.
+     */
     private final ComponentsPanel componentsPanel;
 
+    /**
+     * Reference to the displayed component.
+     */
     private Component component;
 
+    /**
+     * Creates a new ComponentCard.
+     *
+     * @param component The component to display.
+     * @param componentsPanel The ComponentsPanel this card is placed in.
+     */
     public ComponentCard(Component component, ComponentsPanel componentsPanel) {
         this.componentsPanel = componentsPanel;
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -31,6 +51,11 @@ public class ComponentCard extends JPanel implements MouseListener {
         displayComponent(component);
     }
 
+    /**
+     * Displays the specified component.
+     *
+     * @param c The component to display.
+     */
     private void displayComponent(Component c) {
         component = c;
         removeAll();

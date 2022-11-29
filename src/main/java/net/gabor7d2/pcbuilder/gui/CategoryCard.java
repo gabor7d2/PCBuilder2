@@ -7,18 +7,34 @@ import net.gabor7d2.pcbuilder.model.Category;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * A CategoryCard is a panel that shows a category's icon and display name,
+ * and has a price site url link that opens the price site when clicked.
+ */
 public class CategoryCard extends JPanel {
 
-    // TODO cache category icons here
+    // TODO cache category icons/panels here
+
+    /**
+     * The fixed size of the category card.
+     */
     private final static Dimension CATEGORY_CARD_SIZE = new Dimension(128, 188);
 
+    /**
+     * Creates a new CategoryCard.
+     *
+     * @param category The category to display.
+     */
     public CategoryCard(Category category) {
+        // setup this
         setLayout(new GridBagLayout());
         GUIUtils.freezeSize(this, CATEGORY_CARD_SIZE);
 
+        // setup panel
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
+        // setup components
         ImageLabel imageLabel = new ImageLabel();
         imageLabel.setImageFromClasspathAsync(category.getIconImagePath(), 80, 80);
         imageLabel.setAlignmentX(CENTER_ALIGNMENT);

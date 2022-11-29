@@ -17,6 +17,11 @@ import java.util.List;
  */
 public class ScrollPane2D extends JScrollPane implements MouseWheelListener {
 
+    // TODO replace with a better scroll pane
+    // https://codereview.stackexchange.com/questions/209546/mouse-wheel-scrolling-for-nested-scrollable-swing-components
+    // https://stackoverflow.com/questions/1377887/jtextpane-prevents-scrolling-in-the-parent-jscrollpane
+    // https://tips4java.wordpress.com/2009/09/06/global-event-dispatching/
+
     /**
      * The JScrollPane's viewport panel.
      */

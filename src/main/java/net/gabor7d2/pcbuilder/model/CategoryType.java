@@ -4,9 +4,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CategoryType {
+
+    /**
+     * List of possible CategoryTypes
+     */
     private static final Map<String, CategoryType> CATEGORY_TYPES = new HashMap<>();
 
     static {
+        // register possible category types
         CATEGORY_TYPES.put("MB", new CategoryType("MB", "Motherboard", "/category_icons/mb.png"));
         CATEGORY_TYPES.put("CPU", new CategoryType("CPU", null, "/category_icons/cpu.png"));
         CATEGORY_TYPES.put("RAM", new CategoryType("RAM", null, "/category_icons/ram.png"));
@@ -21,6 +26,7 @@ public class CategoryType {
 
     /**
      * Get a category type corresponding to the specified name.
+     *
      * @param name The category's internal name.
      * @return The category type, or null if no category type by that name exists.
      */
@@ -35,17 +41,28 @@ public class CategoryType {
         return CATEGORY_TYPES;
     }
 
+    /**
+     * The internal name of the category.
+     */
     private final String name;
+
+    /**
+     * The display name of the category.
+     */
     private final String displayName;
+
+    /**
+     * The category icon path on the classpath.
+     */
     private final String iconImagePath;
 
     /**
      * Creates a new instance of CategoryType.
      *
-     * @param name        The internal name of the category.
-     * @param displayName The display name of the category. If set to null,
-     *                    it will be set to the internal name.
-     * @param iconImagePath   The path to the icon on classpath for this category
+     * @param name          The internal name of the category.
+     * @param displayName   The display name of the category. If set to null,
+     *                      it will be set to the internal name.
+     * @param iconImagePath The path to the icon on classpath for this category
      */
     private CategoryType(String name, String displayName, String iconImagePath) {
         this.name = name;
@@ -56,6 +73,8 @@ public class CategoryType {
 
     /**
      * Get name of category.
+     *
+     * @return The internal name of the category.
      */
     public String getName() {
         return name;
@@ -63,13 +82,17 @@ public class CategoryType {
 
     /**
      * Get display name of category.
+     *
+     * @return The display name of the category.
      */
     public String getDisplayName() {
         return displayName;
     }
 
     /**
-     * Get category icon path on classpath.
+     * Get category icon path on the classpath.
+     *
+     * @return The category icon path on the classpath.
      */
     public String getIconImagePath() {
         return iconImagePath;

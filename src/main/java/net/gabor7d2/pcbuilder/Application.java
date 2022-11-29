@@ -14,6 +14,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Application {
+
+    /**
+     * List of different resolution app icons.
+     */
     public final static List<Image> APP_ICONS = new ArrayList<>();
 
     static {
@@ -26,6 +30,9 @@ public class Application {
         APP_ICONS.add(GUIUtils.loadImageFromClasspath("/icons/icon-16.png"));
     }
 
+    /**
+     * App settings.
+     */
     private static Settings settings;
 
     public static void main(String[] args) {
@@ -41,6 +48,9 @@ public class Application {
         //frame.createBufferStrategy(2);
     }
 
+    /**
+     * Set up Java Swing look and feel and other decorative stuff.
+     */
     private static void setupLookAndFeel() {
         if (settings.isDarkMode()) {
             FlatDarculaLaf.setup();
