@@ -1,5 +1,6 @@
 package net.gabor7d2.pcbuilder.gui;
 
+import net.gabor7d2.pcbuilder.gui.event.EventBus;
 import net.gabor7d2.pcbuilder.gui.event.ProfileEvent;
 import net.gabor7d2.pcbuilder.gui.event.ProfileEventListener;
 import net.gabor7d2.pcbuilder.gui.general.ImageLoader;
@@ -20,6 +21,7 @@ public class MainPanel extends JPanel implements ProfileEventListener {
     public MainPanel() {
         setLayout(cardLayout);
         add(new WelcomePanel(), "null");
+        EventBus.getInstance().subscribeToProfileEvents(this);
     }
 
     private void displayProfile(Profile profile) {
@@ -29,7 +31,7 @@ public class MainPanel extends JPanel implements ProfileEventListener {
         }
         if (!profileIds.contains(profile.getId())) {
             profileIds.add(profile.getId());
-            ScrollPane2D profilePane = new ScrollPane2D(new Color(160, 160, 160));
+            ScrollPane2D profilePane = new ScrollPane2D(new Color(180, 180, 180));
             profile.getCategories().forEach(c -> profilePane.addRow(new CategoryRow(c)));
             add(profilePane, profile.getId());
         }

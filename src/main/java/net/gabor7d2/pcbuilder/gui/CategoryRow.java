@@ -1,5 +1,8 @@
 package net.gabor7d2.pcbuilder.gui;
 
+import net.gabor7d2.pcbuilder.gui.event.CategoryEvent;
+import net.gabor7d2.pcbuilder.gui.event.CategoryEventListener;
+import net.gabor7d2.pcbuilder.gui.event.EventBus;
 import net.gabor7d2.pcbuilder.gui.general.ScrollPane2D;
 import net.gabor7d2.pcbuilder.gui.general.SmartScrollPane;
 import net.gabor7d2.pcbuilder.model.Category;
@@ -7,21 +10,20 @@ import net.gabor7d2.pcbuilder.model.Category;
 import javax.swing.*;
 import java.awt.*;
 
-public class CategoryRow extends ScrollPane2D.ScrollPane2DRow {
+public class CategoryRow extends ScrollPane2D.ScrollPane2DRow implements CategoryEventListener {
     private final static Color BG_COLOR = Color.WHITE;
 
-    private JPanel headerPanel;
     private final SmartScrollPane scrollPane = new SmartScrollPane();
 
     private Category category;
 
     public CategoryRow(Category category) {
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-
         scrollPane.getViewport().setBackground(BG_COLOR);
         add(scrollPane);
 
         displayCategory(category);
+        EventBus.getInstance().subscribeToCategoryEvents(this);
     }
 
     private void displayCategory(Category category) {
@@ -34,10 +36,11 @@ public class CategoryRow extends ScrollPane2D.ScrollPane2DRow {
         ComponentsPanel panel = new ComponentsPanel();
         panel.displayComponents(category.getComponents());
         scrollPane.setViewportView(panel);
+
+        setVisible(category.isEnabled());
     }
 
     public void setHeaderPanel(JPanel headerPanel) {
-        this.headerPanel = headerPanel;
         removeAll();
         add(headerPanel);
         add(scrollPane);
@@ -56,5 +59,16 @@ public class CategoryRow extends ScrollPane2D.ScrollPane2DRow {
                 outerScrollPane.getVerticalScrollBar().setValue(outerScrollPane.getVerticalScrollBar().getValue() + wheelRotation);
             }
         });
+    }
+
+    @Override
+    public void processCategoryEvent(CategoryEvent e) {
+        if (e.getCategory() == category) {
+            if (e.getType() == CategoryEvent.CategoryEventType.ENABLE) {
+                setVisible(true);
+            } else if (e.getType() == CategoryEvent.CategoryEventType.DISABLE) {
+                setVisible(false);
+            }
+        }
     }
 }

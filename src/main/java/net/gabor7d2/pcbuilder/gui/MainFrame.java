@@ -1,17 +1,16 @@
 package net.gabor7d2.pcbuilder.gui;
 
 import net.gabor7d2.pcbuilder.Application;
+import net.gabor7d2.pcbuilder.gui.event.EventBus;
 import net.gabor7d2.pcbuilder.gui.event.ProfileEvent;
-import net.gabor7d2.pcbuilder.gui.event.ProfileEventListener;
 import net.gabor7d2.pcbuilder.model.Profile;
-import net.gabor7d2.pcbuilder.model.Settings;
 import net.gabor7d2.pcbuilder.repositoryimpl.RepositoryFactory;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
-public class MainFrame extends JFrame implements ProfileEventListener {
+public class MainFrame extends JFrame {
 
     private final static String TITLE = "PC Builder";
     private final static int WIDTH = 900;
@@ -37,32 +36,18 @@ public class MainFrame extends JFrame implements ProfileEventListener {
         categorySelectorBar = new CategorySelectorBar();
         categorySelectorBar.setVisible(false);
         add(categorySelectorBar, BorderLayout.NORTH);
-        categorySelectorBar.addCategorySelectedListener((n, s) -> System.out.println(n + ":" + s));
+        //categorySelectorBar.addCategorySelectedListener((n, s) -> System.out.println(n + ":" + s));
 
-        controlBar = new ControlBar(this);
+        controlBar = new ControlBar();
         add(controlBar, BorderLayout.SOUTH);
-
-        List<Profile> profiles = RepositoryFactory.getProfileRepository().loadProfiles();
 
         mainPanel = new MainPanel();
         add(mainPanel, BorderLayout.CENTER);
 
+        List<Profile> profiles = RepositoryFactory.getProfileRepository().loadProfiles();
+
         profiles.forEach(p -> {
-            ProfileEvent pe = new ProfileEvent(ProfileEvent.ProfileEventType.ADD, p);
-            processProfileEvent(pe);
+            EventBus.getInstance().postEvent(new ProfileEvent(ProfileEvent.ProfileEventType.ADD, p));
         });
-
-/*        for (Component comp : profiles.get(0).getCategories().get(0).getComponents()) {
-            System.out.println(comp.getBrand() + " " + comp.getModelName());
-            System.out.println(comp.getImagePath());
-        }*/
-    }
-
-    @Override
-    public void processProfileEvent(ProfileEvent e) {
-        categorySelectorBar.processProfileEvent(e);
-        controlBar.processProfileEvent(e);
-        mainPanel.processProfileEvent(e);
-        //revalidate();
     }
 }

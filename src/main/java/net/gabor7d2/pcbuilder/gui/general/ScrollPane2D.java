@@ -44,6 +44,7 @@ public class ScrollPane2D extends JScrollPane implements MouseWheelListener {
         outerPanel = new ScrollablePanel();
         outerPanel.setScrollableWidth(ScrollablePanel.ScrollableSizeHint.FIT);
         outerPanel.setLayout(new BoxLayout(outerPanel, BoxLayout.Y_AXIS));
+        outerPanel.setBackground(backgroundColor);
         outerPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 8, 0, backgroundColor));
 
         // Set outer panel as the outer scroll pane's (this) viewport

@@ -2,7 +2,7 @@ package net.gabor7d2.pcbuilder.gui.event;
 
 import net.gabor7d2.pcbuilder.model.Profile;
 
-public class ProfileEvent {
+public class ProfileEvent extends PCBuilderEvent {
 
     public enum ProfileEventType {
         ADD,

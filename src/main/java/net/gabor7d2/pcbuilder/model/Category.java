@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -23,7 +24,7 @@ public class Category {
     @NotNull
     private String priceSiteUrl = "";
 
-    private List<Component> components;
+    private List<Component> components = new ArrayList<>();
 
     @Override
     public String toString() {

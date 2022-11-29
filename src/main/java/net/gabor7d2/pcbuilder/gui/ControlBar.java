@@ -1,7 +1,7 @@
 package net.gabor7d2.pcbuilder.gui;
 
-import net.gabor7d2.pcbuilder.gui.event.ProfileEvent;
-import net.gabor7d2.pcbuilder.gui.event.ProfileEventListener;
+import com.formdev.flatlaf.FlatClientProperties;
+import net.gabor7d2.pcbuilder.gui.event.*;
 import net.gabor7d2.pcbuilder.model.Profile;
 
 import javax.swing.*;
@@ -13,29 +13,42 @@ public class ControlBar extends JPanel implements ProfileEventListener {
     private static final Color BG_COLOR = Color.DARK_GRAY;
     private static final Color FG_COLOR = Color.WHITE;
     private static final Color TEXT_COLOR = Color.WHITE;
-    private final ProfileEventListener parentProfileEventListener;
+
+    private final JPanel eastPanel, westPanel;
 
     private JLabel totalPriceLabel;
 
     private JComboBox<Profile> profileSelector;
 
-    public ControlBar(ProfileEventListener parentProfileEventListener) {
-        this.parentProfileEventListener = parentProfileEventListener;
-        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+    public ControlBar() {
+        setLayout(new BorderLayout());
         setBackground(BG_COLOR);
-        setBorder(BorderFactory.createMatteBorder(12, 8, 12, 8, getBackground()));
+
+        westPanel = new JPanel();
+        westPanel.setLayout(new GridBagLayout());
+        westPanel.setBackground(getBackground());
+        westPanel.setBorder(BorderFactory.createMatteBorder(8, 16, 8, 0, getBackground()));
+        add(westPanel, BorderLayout.WEST);
+
+        eastPanel = new JPanel();
+        eastPanel.setLayout(new BoxLayout(eastPanel, BoxLayout.X_AXIS));
+        eastPanel.setBackground(getBackground());
+        eastPanel.setBorder(BorderFactory.createMatteBorder(12, 8, 12, 8, getBackground()));
+        add(eastPanel, BorderLayout.EAST);
 
         setupTotalPriceLabel();
 
-        add(Box.createRigidArea(new Dimension(4, 1)));
+        eastPanel.add(Box.createRigidArea(new Dimension(4, 1)));
         setupProfileSelector();
-        add(Box.createRigidArea(new Dimension(4, 1)));
+        eastPanel.add(Box.createRigidArea(new Dimension(4, 1)));
 
         addButton("Import", null);
         addButton("Delete", null);
         addButton("Edit Mode", null);
         JButton helpButton = addButton("Help", null);
         helpButton.putClientProperty("JButton.buttonType", "help");
+
+        EventBus.getInstance().subscribeToProfileEvents(this);
     }
 
     @Override
@@ -63,35 +76,43 @@ public class ControlBar extends JPanel implements ProfileEventListener {
         }
     }
 
-    private void setupTotalPriceLabel() {
-        totalPriceLabel = new JLabel();
-        totalPriceLabel.setForeground(TEXT_COLOR);
-        totalPriceLabel.setFont(totalPriceLabel.getFont().deriveFont(Font.BOLD, 13));
-        totalPriceLabel.setBorder(BorderFactory.createMatteBorder(0, 8, 0, 8, getBackground()));
-
-        totalPriceLabel.setVisible(false);
-        add(totalPriceLabel);
-    }
-
     private void updateTotalPrice(double value, String prefix, String suffix) {
         totalPriceLabel.setText("Total Price: " + prefix + value + suffix);
     }
 
+    private void setupTotalPriceLabel() {
+        totalPriceLabel = new JLabel();
+        totalPriceLabel.setForeground(TEXT_COLOR);
+        totalPriceLabel.setFont(totalPriceLabel.getFont().deriveFont(Font.BOLD, 13));
+
+        totalPriceLabel.setVisible(false);
+        westPanel.add(totalPriceLabel);
+    }
+
     private void setupProfileSelector() {
         profileSelector = new JComboBox<>();
+        //Profile prototypeProfile = new Profile();
+        //prototypeProfile.setName("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+        //profileSelector.setPrototypeDisplayValue(prototypeProfile);
+        //profileSelector.setMinimumSize(new Dimension(200, 1));
+        //profileSelector.setPreferredSize(new Dimension(280, profileSelector.getPreferredSize().height));
+        //profileSelector.setMinimumSize(new Dimension(200, 1));
+        // TODO max size
+        //profileSelector.setMaximumSize(new Dimension(300, 100));
+        profileSelector.putClientProperty(FlatClientProperties.MINIMUM_WIDTH, 200);
         profileSelector.addActionListener(e -> {
-            parentProfileEventListener.processProfileEvent(new ProfileEvent(ProfileEvent.ProfileEventType.SELECT, (Profile) profileSelector.getSelectedItem()));
+            EventBus.getInstance().postEvent(new ProfileEvent(ProfileEvent.ProfileEventType.SELECT, (Profile) profileSelector.getSelectedItem()));
         });
-        add(profileSelector);
+        eastPanel.add(profileSelector);
     }
 
     private JButton addButton(String name, ActionListener listener) {
         JButton btn = new JButton(name);
         btn.addActionListener(listener);
 
-        add(Box.createRigidArea(new Dimension(4, 1)));
-        add(btn);
-        add(Box.createRigidArea(new Dimension(4, 1)));
+        eastPanel.add(Box.createRigidArea(new Dimension(4, 1)));
+        eastPanel.add(btn);
+        eastPanel.add(Box.createRigidArea(new Dimension(4, 1)));
 
         return btn;
     }

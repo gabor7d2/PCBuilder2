@@ -82,6 +82,7 @@ public class JsonProfileRepository implements ProfileRepository {
             } catch (Exception e) {
                 new RuntimeException("Failed to load components from file " + categoryFile.getPath() + ": ", e).printStackTrace();
             }
+            if (category.getComponents() == null) category.setComponents(new ArrayList<>());
         }
     }
 

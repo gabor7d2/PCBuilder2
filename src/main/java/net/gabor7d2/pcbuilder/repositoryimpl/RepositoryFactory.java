@@ -5,6 +5,9 @@ import net.gabor7d2.pcbuilder.repository.SettingsRepository;
 
 public class RepositoryFactory {
 
+    private RepositoryFactory() {
+    }
+
     private final static SettingsRepository SETTINGS_REPOSITORY = new JsonSettingsRepository();
 
     public static SettingsRepository getSettingsRepository() {

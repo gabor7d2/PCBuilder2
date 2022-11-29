@@ -4,6 +4,7 @@ import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -22,7 +23,7 @@ public class Profile {
 
     private File profileFolder;
 
-    private List<Category> categories;
+    private List<Category> categories = new ArrayList<>();
 
     @Override
     public String toString() {

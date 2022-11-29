@@ -5,7 +5,6 @@ import com.formdev.flatlaf.FlatIntelliJLaf;
 import com.formdev.flatlaf.FlatLaf;
 import net.gabor7d2.pcbuilder.gui.GUIUtils;
 import net.gabor7d2.pcbuilder.gui.MainFrame;
-import net.gabor7d2.pcbuilder.gui.general.ImageLoader;
 import net.gabor7d2.pcbuilder.model.Settings;
 import net.gabor7d2.pcbuilder.repositoryimpl.RepositoryFactory;
 

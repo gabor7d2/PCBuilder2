@@ -1,10 +1,8 @@
 package net.gabor7d2.pcbuilder.gui;
 
-import net.gabor7d2.pcbuilder.gui.event.ProfileEvent;
-import net.gabor7d2.pcbuilder.gui.event.ProfileEventListener;
+import net.gabor7d2.pcbuilder.gui.event.*;
 import net.gabor7d2.pcbuilder.gui.general.SmartScrollPane;
 import net.gabor7d2.pcbuilder.model.Category;
-import net.gabor7d2.pcbuilder.model.CategoryType;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,8 +19,6 @@ public class CategorySelectorBar extends SmartScrollPane implements ProfileEvent
         void categorySelected(Category name, boolean selected);
     }
 
-    private final List<CategorySelectedListener> selectedListeners = new ArrayList<>();
-
     private final JPanel contentPanel = new JPanel();
 
     private List<Category> categories;
@@ -33,10 +29,7 @@ public class CategorySelectorBar extends SmartScrollPane implements ProfileEvent
 
         //contentPanel.setBackground(BG_COLOR);
         contentPanel.setBorder(BorderFactory.createMatteBorder(8, 8, 8, 8, contentPanel.getBackground()));
-    }
-
-    public void addCategorySelectedListener(CategorySelectedListener l) {
-        selectedListeners.add(l);
+        EventBus.getInstance().subscribeToProfileEvents(this);
     }
 
     public void addCategory(Category c) {
@@ -46,7 +39,8 @@ public class CategorySelectorBar extends SmartScrollPane implements ProfileEvent
         ch.setSelected(c.isEnabled());
         ch.setBorder(BorderFactory.createMatteBorder(0, 8, 0, 8, ch.getBackground()));
         ch.addActionListener(e -> {
-            selectedListeners.forEach(s -> s.categorySelected(c, ch.isSelected()));
+            CategoryEvent.CategoryEventType type = ch.isSelected() ? CategoryEvent.CategoryEventType.ENABLE : CategoryEvent.CategoryEventType.DISABLE;
+            EventBus.getInstance().postEvent(new CategoryEvent(type, c));
         });
         contentPanel.add(ch);
     }
