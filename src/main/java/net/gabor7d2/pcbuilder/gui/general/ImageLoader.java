@@ -132,8 +132,7 @@ public class ImageLoader {
             ImageIcon icon = new ImageIcon(image.getScaledInstance(width, height, Image.SCALE_SMOOTH));
             filePathImageIconCache.put(params, icon);
             return icon;
-        }
-        else return null;
+        } else return null;
     }
 
     /**
@@ -158,8 +157,7 @@ public class ImageLoader {
             ImageIcon icon = new ImageIcon(image.getScaledInstance(width, height, Image.SCALE_SMOOTH));
             classpathImageIconCache.put(params, icon);
             return icon;
-        }
-        else return null;
+        } else return null;
     }
 
     /**
@@ -176,34 +174,6 @@ public class ImageLoader {
     /**
      * Class used as the key for image icon caches.
      */
-    private static class ImageIconParams {
-        private final String path;
-        private final int width;
-        private final int height;
-
-        /**
-         * Creates a new ImageIconParams.
-         * @param path The path.
-         * @param width The width.
-         * @param height The height.
-         */
-        private ImageIconParams(String path, int width, int height) {
-            this.path = path;
-            this.width = width;
-            this.height = height;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            ImageIconParams that = (ImageIconParams) o;
-            return width == that.width && height == that.height && Objects.equals(path, that.path);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(path, width, height);
-        }
+    private record ImageIconParams(String path, int width, int height) {
     }
 }
