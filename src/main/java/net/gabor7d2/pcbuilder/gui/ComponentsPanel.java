@@ -4,6 +4,7 @@ import net.gabor7d2.pcbuilder.gui.general.SmartButtonGroup;
 import net.gabor7d2.pcbuilder.model.Component;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class ComponentsPanel extends JPanel {
      */
     public ComponentsPanel(List<Component> components) {
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-        //setBackground(Color.WHITE);
+        setBackground(Color.WHITE);
 
         displayComponents(components);
     }
@@ -51,7 +52,7 @@ public class ComponentsPanel extends JPanel {
         componentCards.clear();
 
         for (Component comp : components) {
-            ComponentCard card = new ComponentCard(comp, this);
+            ComponentCard card = new ComponentCard(comp, buttonGroup);
             componentCards.add(card);
             add(card);
         }

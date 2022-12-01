@@ -43,6 +43,10 @@ public class CategorySelectorBar extends SmartScrollPane implements ProfileEvent
         ch.setSelected(c.isEnabledByDefault());
         ch.setBorder(BorderFactory.createMatteBorder(0, 8, 0, 8, ch.getBackground()));
         ch.addActionListener(e -> {
+            // set category enabled/disabled
+            c.setEnabled(ch.isSelected());
+
+            // post event
             CategoryEvent.CategoryEventType type = ch.isSelected() ? CategoryEvent.CategoryEventType.ENABLE : CategoryEvent.CategoryEventType.DISABLE;
             EventBus.getInstance().postEvent(new CategoryEvent(type, c));
         });

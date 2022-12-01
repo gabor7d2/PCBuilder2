@@ -2,6 +2,8 @@ package net.gabor7d2.pcbuilder.gui;
 
 import com.formdev.flatlaf.FlatClientProperties;
 import net.gabor7d2.pcbuilder.gui.event.*;
+import net.gabor7d2.pcbuilder.model.Category;
+import net.gabor7d2.pcbuilder.model.Price;
 import net.gabor7d2.pcbuilder.model.Profile;
 
 import javax.swing.*;
@@ -13,7 +15,7 @@ import java.awt.event.ActionListener;
  * and handles profile selection, profile management, switching to edit mode,
  * and calculating and displaying the total price of the selected components.
  */
-public class ControlBar extends JPanel implements ProfileEventListener {
+public class ControlBar extends JPanel implements ProfileEventListener, CategoryEventListener, ComponentEventListener {
 
     /**
      * Background color of the panel.
@@ -77,44 +79,8 @@ public class ControlBar extends JPanel implements ProfileEventListener {
 
         // subscribe to events
         EventBus.getInstance().subscribeToProfileEvents(this);
-    }
-
-    @Override
-    public void processProfileEvent(ProfileEvent e) {
-        if (e.getType() == ProfileEvent.ProfileEventType.ADD) {
-            // a new profile was added, add it into the profile selector
-            if (profileSelector.getItemCount() == 0) {
-                // add first item without selecting it
-                ActionListener l = profileSelector.getActionListeners()[0];
-                profileSelector.removeActionListener(l);
-                profileSelector.addItem(e.getProfile());
-                profileSelector.setSelectedIndex(-1);
-                profileSelector.addActionListener(l);
-            } else {
-                profileSelector.addItem(e.getProfile());
-            }
-        }
-        if (e.getType() == ProfileEvent.ProfileEventType.SELECT) {
-            // switched to another profile, calculate new total price
-            if (e.getProfile() != null) {
-                updateTotalPrice(1234, e.getProfile().getCurrencyPrefix(), e.getProfile().getCurrencySuffix());
-                totalPriceLabel.setVisible(true);
-            } else {
-                updateTotalPrice(0, "", "");
-                totalPriceLabel.setVisible(false);
-            }
-        }
-    }
-
-    /**
-     * Updates the text of the total price label.
-     *
-     * @param value  The price value.
-     * @param prefix The prefix to print in front of the price.
-     * @param suffix The suffix to print after the price.
-     */
-    private void updateTotalPrice(double value, String prefix, String suffix) {
-        totalPriceLabel.setText("Total Price: " + prefix + value + suffix);
+        EventBus.getInstance().subscribeToCategoryEvents(this);
+        EventBus.getInstance().subscribeToComponentEvents(this);
     }
 
     /**
@@ -166,5 +132,77 @@ public class ControlBar extends JPanel implements ProfileEventListener {
         eastPanel.add(Box.createRigidArea(new Dimension(4, 1)));
 
         return btn;
+    }
+
+    /**
+     * Updates the text of the total price label.
+     *
+     * @param value  The price value.
+     * @param prefix The prefix to print in front of the price.
+     * @param suffix The suffix to print after the price.
+     */
+    private void updateTotalPrice(double value, String prefix, String suffix) {
+        totalPriceLabel.setText("Total Price: " + prefix + value + suffix);
+    }
+
+    /**
+     * Calculates the total price of the selected components in the specified profile.
+     * Each selected component's price is added to the total if the
+     * component's category is enabled.
+     *
+     * @param profile The profile.
+     */
+    private void calculateAndDisplayTotalPrice(Profile profile) {
+        if (profile == null) {
+            updateTotalPrice(0, "", "");
+            totalPriceLabel.setVisible(false);
+        } else {
+            double total = 0;
+            for (Category c : profile.getCategories()) {
+                if (c.isEnabled() && c.getSelection() >= 0 && c.getSelection() < c.getComponents().size()) {
+                    // if selection is valid and category is enabled, add selected component's price to total
+                    Price p = c.getComponents().get(c.getSelection()).getPrice();
+                    if (p != null)
+                        total += p.getValue();
+                }
+            }
+            updateTotalPrice(total, profile.getCurrencyPrefix(), profile.getCurrencySuffix());
+            totalPriceLabel.setVisible(true);
+        }
+    }
+
+    @Override
+    public void processProfileEvent(ProfileEvent e) {
+        if (e.getType() == ProfileEvent.ProfileEventType.ADD) {
+            // a new profile was added, add it into the profile selector
+            if (profileSelector.getItemCount() == 0) {
+                // add first item without selecting it
+                ActionListener l = profileSelector.getActionListeners()[0];
+                profileSelector.removeActionListener(l);
+                profileSelector.addItem(e.getProfile());
+                profileSelector.setSelectedIndex(-1);
+                profileSelector.addActionListener(l);
+            } else {
+                profileSelector.addItem(e.getProfile());
+            }
+        }
+        if (e.getType() == ProfileEvent.ProfileEventType.SELECT) {
+            // switched to another profile, calculate new total price
+            calculateAndDisplayTotalPrice(e.getProfile());
+        }
+    }
+
+    @Override
+    public void processCategoryEvent(CategoryEvent e) {
+        if (e.getType() == CategoryEvent.CategoryEventType.ENABLE || e.getType() == CategoryEvent.CategoryEventType.DISABLE) {
+            calculateAndDisplayTotalPrice(e.getCategory().getProfile());
+        }
+    }
+
+    @Override
+    public void processComponentEvent(ComponentEvent e) {
+        if (e.getType() == ComponentEvent.ComponentEventType.SELECT) {
+            calculateAndDisplayTotalPrice(e.getComponent().getCategory().getProfile());
+        }
     }
 }

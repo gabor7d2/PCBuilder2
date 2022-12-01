@@ -2,6 +2,7 @@ package net.gabor7d2.pcbuilder.gui;
 
 import net.gabor7d2.pcbuilder.gui.event.CategoryEvent;
 import net.gabor7d2.pcbuilder.gui.event.CategoryEventListener;
+import net.gabor7d2.pcbuilder.gui.event.ComponentEvent;
 import net.gabor7d2.pcbuilder.gui.event.EventBus;
 import net.gabor7d2.pcbuilder.gui.general.ScrollPane2D;
 import net.gabor7d2.pcbuilder.gui.general.SmartScrollPane;
@@ -71,12 +72,19 @@ public class CategoryRow extends ScrollPane2D.ScrollPane2DRow implements Categor
         scrollPane.setViewportView(panel);
 
         // select specified default selection
-        if (category.getDefaultSelection() > 0 && category.getDefaultSelection() <= category.getComponents().size()) {
-            panel.getButtonGroup().setSelectedIndex(category.getDefaultSelection() - 1);
+        if (category.getDefaultSelection() >= 0 && category.getDefaultSelection() < category.getComponents().size()) {
+            panel.getButtonGroup().setSelectedIndex(category.getDefaultSelection());
         }
+
+        // set button group select listener
+        panel.getButtonGroup().addButtonGroupListener((b, i) -> {
+            category.setSelection(i);
+            EventBus.getInstance().postEvent(new ComponentEvent(ComponentEvent.ComponentEventType.SELECT, category.getComponents().get(i)));
+        });
 
         // set visibility
         setVisible(category.isEnabledByDefault());
+
     }
 
     /**
@@ -111,13 +119,12 @@ public class CategoryRow extends ScrollPane2D.ScrollPane2DRow implements Categor
 
     @Override
     public void processCategoryEvent(CategoryEvent e) {
-        // TODO fix setVisible
         if (e.getCategory() == category) {
             // set visibility of category row
             if (e.getType() == CategoryEvent.CategoryEventType.ENABLE) {
-                setVisible(true);
+                outerScrollPane2D.setRowVisible(outerScrollPane2D.indexOfRow(this), true);
             } else if (e.getType() == CategoryEvent.CategoryEventType.DISABLE) {
-                setVisible(false);
+                outerScrollPane2D.setRowVisible(outerScrollPane2D.indexOfRow(this), false);
             }
         }
     }

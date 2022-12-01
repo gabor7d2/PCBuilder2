@@ -22,9 +22,9 @@ public class ComponentCard extends JPanel implements MouseListener {
     private final static int COMPONENT_CARD_WIDTH = 144;
 
     /**
-     * The ComponentsPanel this card is in.
+     * The ButtonGroup this card's radio button is in.
      */
-    private final ComponentsPanel componentsPanel;
+    private final ButtonGroup buttonGroup;
 
     /**
      * Reference to the displayed component.
@@ -35,10 +35,10 @@ public class ComponentCard extends JPanel implements MouseListener {
      * Creates a new ComponentCard.
      *
      * @param component The component to display.
-     * @param componentsPanel The ComponentsPanel this card is placed in.
+     * @param buttonGroup The ButtonGroup to place the card's radio button into.
      */
-    public ComponentCard(Component component, ComponentsPanel componentsPanel) {
-        this.componentsPanel = componentsPanel;
+    public ComponentCard(Component component, ButtonGroup buttonGroup) {
+        this.buttonGroup = buttonGroup;
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         setBorder(BorderFactory.createMatteBorder(8, 8, 8, 8, Color.WHITE));
@@ -63,7 +63,9 @@ public class ComponentCard extends JPanel implements MouseListener {
         JRadioButton radioButton = new JRadioButton();
         radioButton.setBorder(BorderFactory.createMatteBorder(4, 0, 8, 0, Color.WHITE));
         radioButton.setBackground(Color.WHITE);
-        componentsPanel.getButtonGroup().add(radioButton);
+        buttonGroup.add(radioButton);
+
+        // panel to center radio button
         JPanel rPanel = new JPanel();
         rPanel.setBackground(Color.WHITE);
         rPanel.add(radioButton);

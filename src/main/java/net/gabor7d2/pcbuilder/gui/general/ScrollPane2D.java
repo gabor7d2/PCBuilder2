@@ -149,7 +149,7 @@ public class ScrollPane2D extends JScrollPane implements MouseWheelListener {
      * @param visible Whether the row should be visible or not.
      */
     public void setRowVisible(int index, boolean visible) {
-        rows.get(index).setVisible(visible);
+        outerPanel.getComponent(index).setVisible(visible);
     }
 
     /**
@@ -159,7 +159,7 @@ public class ScrollPane2D extends JScrollPane implements MouseWheelListener {
      * @return whether the row at the specified index is visible.
      */
     public boolean isRowVisible(int index) {
-        return rows.get(index).isVisible();
+        return outerPanel.getComponent(index).isVisible();
     }
 
     /**

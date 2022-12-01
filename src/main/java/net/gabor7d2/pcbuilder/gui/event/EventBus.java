@@ -23,6 +23,11 @@ public class EventBus {
      */
     private final List<CategoryEventListener> categoryEventListeners = new ArrayList<>();
 
+    /**
+     * ComponentEventListeners list.
+     */
+    private final List<ComponentEventListener> componentEventListeners = new ArrayList<>();
+
     private EventBus() {
 
     }
@@ -61,6 +66,17 @@ public class EventBus {
     }
 
     /**
+     * Subscribe to ComponentEvents with the specified listener implementation.
+     * <p>
+     * The listener will be called when any ComponentEvent is received by the EventBus.
+     *
+     * @param listener The listener implementation to subscribe.
+     */
+    public void subscribeToComponentEvents(ComponentEventListener listener) {
+        componentEventListeners.add(listener);
+    }
+
+    /**
      * Posts an event that gets dispatched to the event listeners subscribed to it.
      *
      * @param e The event to dispatch.
@@ -68,11 +84,16 @@ public class EventBus {
     public void postEvent(PCBuilderEvent e) {
         pcBuilderEventListeners.forEach(l -> l.processPCBuilderEvent(e));
 
+        System.out.println(e.getClass());
+
         if (e instanceof ProfileEvent) {
             profileEventListeners.forEach(l -> l.processProfileEvent((ProfileEvent) e));
         }
         if (e instanceof CategoryEvent) {
             categoryEventListeners.forEach(l -> l.processCategoryEvent((CategoryEvent) e));
+        }
+        if (e instanceof ComponentEvent) {
+            componentEventListeners.forEach(l -> l.processComponentEvent((ComponentEvent) e));
         }
     }
 

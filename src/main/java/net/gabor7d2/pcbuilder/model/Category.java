@@ -31,10 +31,10 @@ public class Category {
     private boolean enabledByDefault = true;
 
     /**
-     * The index (starting from 1) of the component that should be selected by default.
+     * The index (starting from 0) of the component that should be selected by default.
      * If out of bounds, no component will be selected.
      */
-    private int defaultSelection = 0;
+    private int defaultSelection = -1;
 
     /**
      * Whether the category is currently enabled and visible on the UI.
@@ -42,9 +42,9 @@ public class Category {
     private boolean enabled = true;
 
     /**
-     * The index (starting from 1) of the component that is currently selected on the UI.
+     * The index (starting from 0) of the component that is currently selected on the UI.
      */
-    private int selected = 0;
+    private int selection = -1;
 
     /**
      * The price site url.
@@ -91,5 +91,16 @@ public class Category {
      */
     public void setType(String typeName) {
         this.type = CategoryType.getCategoryTypeFromName(typeName);
+    }
+
+    /**
+     * Sets the default selection index to the specified value.
+     * Setting this also sets the currently selected index.
+     *
+     * @param defaultSelection The index to set to.
+     */
+    public void setDefaultSelection(int defaultSelection) {
+        this.defaultSelection = defaultSelection;
+        this.selection = defaultSelection;
     }
 }
