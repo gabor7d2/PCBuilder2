@@ -4,7 +4,6 @@ import net.gabor7d2.pcbuilder.gui.GUIUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
 
 /**
  * JLabel with additional methods to easily set the image of it to
@@ -37,7 +36,7 @@ public class ImageLabel extends JLabel {
      * Creates a new ImageLabel.
      */
     public ImageLabel() {
-        currentReloadCount = ImageLoader.getReloadCount();
+        currentReloadCount = AsyncImageLoader.getReloadCount();
     }
 
     /**
@@ -49,14 +48,14 @@ public class ImageLabel extends JLabel {
      */
     public void setImageFromFile(String path, int width, int height) {
         setImageParameters(path, false, width, height);
-        setIcon(GUIUtils.loadImageIconFromFile(new File(path), width, height));
+        AsyncImageLoader.immediateAsyncImageLoad(this, AsyncImageLoader.ImageSource.FILE, path);
     }
 
     /**
      * Sets the image of the label, scaling it to the specified dimensions.
      * <p>
-     * This method doesn't load the image, just queues the loading in {@link ImageLoader}.
-     * The queue can then be processed when desired using {@link ImageLoader#processQueue()}
+     * This method doesn't load the image, just queues the loading in {@link AsyncImageLoader}.
+     * The queue can then be processed when desired using {@link AsyncImageLoader#processQueue()}
      *
      * @param path   The path of the image file on the file system.
      * @param width  The width the label should be without padding.
@@ -64,7 +63,7 @@ public class ImageLabel extends JLabel {
      */
     public void setImageFromFileAsync(String path, int width, int height) {
         setImageParameters(path, false, width, height);
-        ImageLoader.queueAsyncImageLoad(this, ImageLoader.ImageSource.FILE, path);
+        AsyncImageLoader.queueAsyncImageLoad(this, AsyncImageLoader.ImageSource.FILE, path);
     }
 
     /**
@@ -76,14 +75,14 @@ public class ImageLabel extends JLabel {
      */
     public void setImageFromClasspath(String path, int width, int height) {
         setImageParameters(path, true, width, height);
-        setIcon(GUIUtils.loadImageIconFromClasspath(path, width, height));
+        AsyncImageLoader.immediateAsyncImageLoad(this, AsyncImageLoader.ImageSource.CLASSPATH, path);
     }
 
     /**
      * Sets the image of the label, scaling it to the specified dimensions.
      * <p>
-     * This method doesn't load the image, just queues the loading in {@link ImageLoader}.
-     * The queue can then be processed when desired using {@link ImageLoader#processQueue()}
+     * This method doesn't load the image, just queues the loading in {@link AsyncImageLoader}.
+     * The queue can then be processed when desired using {@link AsyncImageLoader#processQueue()}
      *
      * @param path   The path of the image file on the classpath.
      * @param width  The width the label should be without padding.
@@ -91,7 +90,7 @@ public class ImageLabel extends JLabel {
      */
     public void setImageFromClasspathAsync(String path, int width, int height) {
         setImageParameters(path, true, width, height);
-        ImageLoader.queueAsyncImageLoad(this, ImageLoader.ImageSource.CLASSPATH, path);
+        AsyncImageLoader.queueAsyncImageLoad(this, AsyncImageLoader.ImageSource.CLASSPATH, path);
     }
 
     /**
@@ -112,6 +111,14 @@ public class ImageLabel extends JLabel {
      */
     public String getImagePath() {
         return imagePath;
+    }
+
+    /**
+     * @return Whether the imagePath refers to an image on the classpath (true)
+     * * or in the normal filesystem (false)
+     */
+    public boolean isPathOnClasspath() {
+        return isPathOnClasspath;
     }
 
     /**

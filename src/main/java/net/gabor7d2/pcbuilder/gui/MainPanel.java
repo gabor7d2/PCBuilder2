@@ -3,7 +3,7 @@ package net.gabor7d2.pcbuilder.gui;
 import net.gabor7d2.pcbuilder.gui.event.EventBus;
 import net.gabor7d2.pcbuilder.gui.event.ProfileEvent;
 import net.gabor7d2.pcbuilder.gui.event.ProfileEventListener;
-import net.gabor7d2.pcbuilder.gui.general.ImageLoader;
+import net.gabor7d2.pcbuilder.gui.general.AsyncImageLoader;
 import net.gabor7d2.pcbuilder.gui.general.ScrollPane2D;
 import net.gabor7d2.pcbuilder.model.Profile;
 
@@ -79,7 +79,7 @@ public class MainPanel extends JPanel implements ProfileEventListener {
         // show the profile's view by its id
         cardLayout.show(this, profile.getId());
         // process async
-        ImageLoader.processQueue();
+        AsyncImageLoader.processQueue();
     }
 
     @Override

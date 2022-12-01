@@ -6,15 +6,15 @@ import net.gabor7d2.pcbuilder.model.Component;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 /**
  * A ComponentCard is a panel that displays a given Component, with
  * its image, brand, model name, etc. and a radio button above it, that
  * is used to select the component.
  */
-public class ComponentCard extends JPanel implements MouseListener {
+public class ComponentCard extends JPanel {
 
     /**
      * The fixed width of ComponentCards.
@@ -34,7 +34,7 @@ public class ComponentCard extends JPanel implements MouseListener {
     /**
      * Creates a new ComponentCard.
      *
-     * @param component The component to display.
+     * @param component   The component to display.
      * @param buttonGroup The ButtonGroup to place the card's radio button into.
      */
     public ComponentCard(Component component, ButtonGroup buttonGroup) {
@@ -43,7 +43,6 @@ public class ComponentCard extends JPanel implements MouseListener {
 
         setBorder(BorderFactory.createMatteBorder(8, 8, 8, 8, Color.WHITE));
 
-        addMouseListener(this);
         setBackground(Color.WHITE);
         setAlignmentY(TOP_ALIGNMENT);
         setAlignmentX(CENTER_ALIGNMENT);
@@ -75,9 +74,15 @@ public class ComponentCard extends JPanel implements MouseListener {
         imageLabel.setImageFromFileAsync(c.getImagePath(), 104, 104);
         imageLabel.setBorder(Color.WHITE, 4);
         imageLabel.setBackground(Color.WHITE);
-        imageLabel.setName("image");
-        imageLabel.addMouseListener(this);
         imageLabel.setAlignmentX(CENTER_ALIGNMENT);
+        imageLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getButton() == MouseEvent.BUTTON1) {
+                    showComponentImageDialog();
+                }
+            }
+        });
         add(imageLabel);
 
         JPanel textPanel = new JPanel();
@@ -146,35 +151,8 @@ public class ComponentCard extends JPanel implements MouseListener {
         return component;
     }
 
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        java.awt.Component comp = e.getComponent();
-
-        if ("image".equals(comp.getName())) {
-            if (e.getButton() == MouseEvent.BUTTON1) {
-                System.out.println("image left click");
-                // TODO component image viewer
-            }
-        }
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-
+    private void showComponentImageDialog() {
+        ComponentImageDialog dialog = new ComponentImageDialog(component);
+        dialog.setVisible(true);
     }
 }

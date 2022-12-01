@@ -29,7 +29,6 @@ public class EventBus {
     private final List<ComponentEventListener> componentEventListeners = new ArrayList<>();
 
     private EventBus() {
-
     }
 
     /**
@@ -83,8 +82,6 @@ public class EventBus {
      */
     public void postEvent(PCBuilderEvent e) {
         pcBuilderEventListeners.forEach(l -> l.processPCBuilderEvent(e));
-
-        System.out.println(e.getClass());
 
         if (e instanceof ProfileEvent) {
             profileEventListeners.forEach(l -> l.processProfileEvent((ProfileEvent) e));

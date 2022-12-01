@@ -1,174 +1,199 @@
 package net.gabor7d2.pcbuilder.gui.general;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-
-import static net.gabor7d2.pcbuilder.gui.GUIUtils.loadImageIconFromClasspath;
-import static net.gabor7d2.pcbuilder.gui.GUIUtils.loadImageIconFromFile;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 /**
- * Class used for asynchronously loading ImageLabels' images. The image loading tasks
- * are queued in this class, and after queuing, the queue should be processed by calling
- * {@link ImageLoader#processQueue()} when desired, which will start executing the image load tasks.
+ * Class for loading images from file or from the classpath.
  * <p>
- * If you wish to discard the tasks that haven't finished loading images yet (because you do not need them anymore),
- * use {@link ImageLoader#discardBackgroundTasks()},
- * which will increment the Reload counter, and any tasks that were added before will stop as soon as possible,
- * and discard their results.
+ * The loaded images are cached so that images loaded multiple
+ * times will only get loaded from disk once.
+ * <p></p>
+ * The cache for images loaded from files can be cleared using
+ * {@link ImageLoader#clearCache()}.
+ * <p>
+ * The cache for images loaded from the classpath can not be cleared,
+ * as files on the classpath are not expected to change while the program is running.
  */
 public class ImageLoader {
 
     /**
-     * Counts how many full reloads have been done.
+     * Image missing image used as a substitute when an image could not be loaded.
      */
-    private static int RELOAD_COUNT = 0;
+    private final static Image IMAGE_MISSING;
 
     /**
-     * List of queued ImageWorkers.
+     * Map to cache images loaded from files.
+     * <p>
+     * The cache can be cleared using {@link ImageLoader#clearCache()}
      */
-    private static final List<ImageWorker> workers = new ArrayList<>();
+    private final static Map<String, Image> filePathImageCache = new HashMap<>();
 
     /**
-     * Image sources.
+     * Map to cache images loaded from classpath.
+     * <p>
+     * This cache can not be cleared, as files on the classpath
+     * are not expected to change while the program is running.
      */
-    public enum ImageSource {
-        FILE,
-        CLASSPATH
+    private final static Map<String, Image> classpathImageCache = new HashMap<>();
+
+    /**
+     * Map to cache ImageIcons scaled from Images which originate from files.
+     * <p>
+     * The cache can be cleared using {@link ImageLoader#clearCache()}
+     */
+    private final static Map<ImageIconParams, ImageIcon> filePathImageIconCache = new HashMap<>();
+
+    /**
+     * Map to cache ImageIcons scaled from Images which originate from the classpath.
+     * <p>
+     * This cache can not be cleared, as files on the classpath
+     * are not expected to change while the program is running.
+     */
+    private final static Map<ImageIconParams, ImageIcon> classpathImageIconCache = new HashMap<>();
+
+    static {
+        IMAGE_MISSING = loadImageFromClasspath("/image_missing_icon_general.png");
     }
 
     /**
-     * ImageWorker that loads an image in the background and places it on the label.
+     * Loads an Image from the specified file. If anything goes wrong, returns null.
+     *
+     * @param file The file of the image to load.
+     * @return The loaded image, or null if something went wrong.
      */
-    private static class ImageWorker extends SwingWorker<Icon, Object> {
-
-        /**
-         * The label to place the loaded image on.
-         */
-        private final ImageLabel label;
-
-        /**
-         * The type of the image source.
-         */
-        private final ImageSource type;
-
-        /**
-         * The image source.
-         */
-        private final Object source;
-
-        /**
-         * Create a new ImageWorker.
-         *
-         * @param label  The label to place the loaded image on.
-         * @param type   The type of the image source.
-         * @param source The image source. In case of FILE it can be
-         *               a String file path or a File, in case of CLASSPATH
-         *               it can be a path on the classpath.
-         */
-        private ImageWorker(ImageLabel label, ImageSource type, Object source) {
-            this.label = label;
-            this.type = type;
-            this.source = source;
+    public static Image loadImageFromFile(File file) {
+        // return from cache if cached
+        if (filePathImageCache.containsKey(file.getPath())) {
+            return classpathImageCache.get(file.getPath());
         }
 
-        /**
-         * Load image in a background thread.
-         *
-         * @return The loaded icon, or null if loading failed.
-         */
+        try {
+            Image image = ImageIO.read(file);
+            classpathImageCache.put(file.getPath(), image);
+            return image;
+        } catch (IOException e) {
+            System.out.println("Error while loading image from file: " + file.getPath());
+        }
+        return null;
+    }
+
+    /**
+     * Loads an Image from the specified path on the current classpath.
+     * If anything goes wrong, returns null.
+     *
+     * @param path The path of the image on the current classpath.
+     * @return The loaded image, or null if something went wrong.
+     */
+    public static Image loadImageFromClasspath(String path) {
+        path = path.replace('\\', '/');
+
+        // return from cache if cached
+        if (classpathImageCache.containsKey(path)) {
+            return classpathImageCache.get(path);
+        }
+
+        try (InputStream is = AsyncImageLoader.class.getResourceAsStream(path)) {
+            if (is == null) return null;
+            Image image = ImageIO.read(is);
+            classpathImageCache.put(path, image);
+            return image;
+        } catch (Exception e) {
+            System.out.println("Error while loading image from classpath: " + path);
+        }
+        return null;
+    }
+
+    /**
+     * Loads an ImageIcon from the specified file and smooth scales it to the specified
+     * resolution. If the image is not found, returns the no image icon.
+     *
+     * @param file   The file of the image to load.
+     * @param width  The width to scale to.
+     * @param height The height to scale to.
+     * @return The loaded icon, or the no image icon if not found, or null if something went wrong.
+     */
+    public static ImageIcon loadImageIconFromFile(File file, int width, int height) {
+        ImageIconParams params = new ImageIconParams(file.getPath(), width, height);
+        if (filePathImageIconCache.containsKey(params)) {
+            return filePathImageIconCache.get(params);
+        }
+
+        Image image = loadImageFromFile(file);
+        if (image == null) image = IMAGE_MISSING;
+        if (image != null) {
+            ImageIcon icon = new ImageIcon(image.getScaledInstance(width, height, Image.SCALE_SMOOTH));
+            filePathImageIconCache.put(params, icon);
+            return icon;
+        }
+        else return null;
+    }
+
+    /**
+     * Loads an ImageIcon from the specified path on the current classpath and smooth
+     * scales it to the specified resolution.
+     * If the image is not found, returns the no image icon.
+     *
+     * @param path   The path of the image on the current classpath.
+     * @param width  The width to scale to.
+     * @param height The height to scale to.
+     * @return The loaded icon, or the no image icon if not found, or null if something went wrong.
+     */
+    public static ImageIcon loadImageIconFromClasspath(String path, int width, int height) {
+        ImageIconParams params = new ImageIconParams(path, width, height);
+        if (classpathImageIconCache.containsKey(params)) {
+            return classpathImageIconCache.get(params);
+        }
+
+        Image image = loadImageFromClasspath(path);
+        if (image == null) image = IMAGE_MISSING;
+        if (image != null) {
+            ImageIcon icon = new ImageIcon(image.getScaledInstance(width, height, Image.SCALE_SMOOTH));
+            classpathImageIconCache.put(params, icon);
+            return icon;
+        }
+        else return null;
+    }
+
+    /**
+     * Clears all images from the filepath cache.
+     * <p>
+     * {@link ImageLoader#loadImageFromFile(File)} calls after calling
+     * this will result in them loading images again from disk, useful
+     * for reloading potentially changed images on the disk.
+     */
+    public static void clearCache() {
+        filePathImageCache.clear();
+    }
+
+    private static class ImageIconParams {
+        private String path;
+        private int width, height;
+
+        private ImageIconParams(String path, int width, int height) {
+            this.path = path;
+            this.width = width;
+            this.height = height;
+        }
+
         @Override
-        protected Icon doInBackground() {
-            if (RELOAD_COUNT > label.getCurrentReloadCount()) return null;
-
-            switch (type) {
-                case FILE -> {
-                    if (source instanceof File) {
-                        return loadImageIconFromFile((File) source, label.getImageWidth(), label.getImageHeight());
-                    }
-                    if (source instanceof String) {
-                        return loadImageIconFromFile(new File((String) source), label.getImageWidth(), label.getImageHeight());
-                    }
-                }
-                case CLASSPATH -> {
-                    if (source instanceof String) {
-                        return loadImageIconFromClasspath((String) source, label.getImageWidth(), label.getImageHeight());
-                    }
-                }
-            }
-            return null;
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            ImageIconParams that = (ImageIconParams) o;
+            return width == that.width && height == that.height && Objects.equals(path, that.path);
         }
 
-        /**
-         * Set the loaded icon as the label's image.
-         */
         @Override
-        protected void done() {
-            // Set icon on the UI thread
-            EventQueue.invokeLater(() -> {
-                try {
-                    label.setIcon(get());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            });
+        public int hashCode() {
+            return Objects.hash(path, width, height);
         }
-    }
-
-    /**
-     * Queues asynchronous loading of an image for the specified label.
-     * The queue has to be manually processed by calling {@link ImageLoader#processQueue()}
-     * when desired.
-     *
-     * @param label  The label to set the image of.
-     * @param type   The type of the image source.
-     * @param source The image source. In case of FILE it can be
-     *               a String file path or a File, in case of CLASSPATH
-     *               it can be a path on the classpath.
-     */
-    public static void queueAsyncImageLoad(ImageLabel label, ImageSource type, Object source) {
-        workers.add(new ImageWorker(label, type, source));
-    }
-
-    /**
-     * Starts asynchronously loading an image for the specified label.
-     *
-     * @param label  The label to set the image of.
-     * @param type   The type of the image source.
-     * @param source The image source. In case of FILE it can be
-     *               a String file path or a File, in case of CLASSPATH
-     *               it can be a path on the classpath.
-     */
-    public static void immediateAsyncImageLoad(ImageLabel label, ImageSource type, Object source) {
-        new ImageWorker(label, type, source).execute();
-    }
-
-    /**
-     * Starts the queued workers to load images for the labels.
-     */
-    public static void processQueue() {
-        for (ImageWorker w : workers) {
-            w.execute();
-        }
-    }
-
-    /**
-     * Discards all currently running background tasks, so any images that
-     * didn't start loading yet gets cancelled and left as an empty label.
-     * Use if the previously created labels are no longer needed.
-     */
-    public static void discardBackgroundTasks() {
-        RELOAD_COUNT++;
-    }
-
-    /**
-     * Gets current reload count.
-     *
-     * @return the current reload count
-     */
-    public static int getReloadCount() {
-        return RELOAD_COUNT;
     }
 }

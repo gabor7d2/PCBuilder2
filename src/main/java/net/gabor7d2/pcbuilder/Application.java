@@ -3,7 +3,6 @@ package net.gabor7d2.pcbuilder;
 import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatIntelliJLaf;
 import com.formdev.flatlaf.FlatLaf;
-import net.gabor7d2.pcbuilder.gui.GUIUtils;
 import net.gabor7d2.pcbuilder.gui.MainFrame;
 import net.gabor7d2.pcbuilder.model.Settings;
 import net.gabor7d2.pcbuilder.repositoryimpl.RepositoryFactory;
@@ -13,6 +12,8 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static net.gabor7d2.pcbuilder.gui.general.ImageLoader.loadImageFromClasspath;
+
 public class Application {
 
     /**
@@ -21,13 +22,13 @@ public class Application {
     public final static List<Image> APP_ICONS = new ArrayList<>();
 
     static {
-        APP_ICONS.add(GUIUtils.loadImageFromClasspath("/icons/icon.png"));
-        APP_ICONS.add(GUIUtils.loadImageFromClasspath("/icons/icon-512.png"));
-        APP_ICONS.add(GUIUtils.loadImageFromClasspath("/icons/icon-256.png"));
-        APP_ICONS.add(GUIUtils.loadImageFromClasspath("/icons/icon-128.png"));
-        APP_ICONS.add(GUIUtils.loadImageFromClasspath("/icons/icon-64.png"));
-        APP_ICONS.add(GUIUtils.loadImageFromClasspath("/icons/icon-32.png"));
-        APP_ICONS.add(GUIUtils.loadImageFromClasspath("/icons/icon-16.png"));
+        APP_ICONS.add(loadImageFromClasspath("/icons/icon.png"));
+        APP_ICONS.add(loadImageFromClasspath("/icons/icon-512.png"));
+        APP_ICONS.add(loadImageFromClasspath("/icons/icon-256.png"));
+        APP_ICONS.add(loadImageFromClasspath("/icons/icon-128.png"));
+        APP_ICONS.add(loadImageFromClasspath("/icons/icon-64.png"));
+        APP_ICONS.add(loadImageFromClasspath("/icons/icon-32.png"));
+        APP_ICONS.add(loadImageFromClasspath("/icons/icon-16.png"));
     }
 
     /**

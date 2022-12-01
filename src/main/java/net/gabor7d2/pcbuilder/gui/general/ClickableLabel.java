@@ -4,8 +4,8 @@ import net.gabor7d2.pcbuilder.Utils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.font.TextAttribute;
 import java.util.Collections;
 
@@ -15,15 +15,22 @@ import java.util.Collections;
  * set, it is shown visually by underlining the text and changing
  * the cursor to the Hand Cursor when hovering over the label.
  */
-public class ClickableLabel extends JLabel implements MouseListener {
+public class ClickableLabel extends JLabel {
 
     private String url = "";
 
     /**
-     * Create clickable label.
+     * Creates a new ClickableLabel.
      */
     public ClickableLabel() {
-        addMouseListener(this);
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getButton() == MouseEvent.BUTTON1 && !url.isBlank()) {
+                    Utils.openWebsite(url);
+                }
+            }
+        });
     }
 
     /**
@@ -63,32 +70,5 @@ public class ClickableLabel extends JLabel implements MouseListener {
                 setToolTipText(tooltip);
             }
         }
-    }
-
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        if (e.getButton() == MouseEvent.BUTTON1 && !url.isBlank()) {
-            Utils.openWebsite(url);
-        }
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-
     }
 }
