@@ -173,10 +173,20 @@ public class ImageLoader {
         filePathImageCache.clear();
     }
 
+    /**
+     * Class used as the key for image icon caches.
+     */
     private static class ImageIconParams {
-        private String path;
-        private int width, height;
+        private final String path;
+        private final int width;
+        private final int height;
 
+        /**
+         * Creates a new ImageIconParams.
+         * @param path The path.
+         * @param width The width.
+         * @param height The height.
+         */
         private ImageIconParams(String path, int width, int height) {
             this.path = path;
             this.width = width;
