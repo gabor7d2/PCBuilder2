@@ -55,6 +55,7 @@ public class Category {
     /**
      * The components in this category.
      */
+    @NotNull
     private List<Component> components = new ArrayList<>();
 
     @Override

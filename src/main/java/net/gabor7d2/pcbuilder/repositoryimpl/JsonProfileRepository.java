@@ -111,12 +111,10 @@ public class JsonProfileRepository implements ProfileRepository {
                             + File.separator + comp.getBrand().toLowerCase().replace(' ', '_')
                             + "_" + comp.getModelName().toLowerCase().replace(' ', '_') + ".png");
                 }
-
                 category.setComponents(components);
             } catch (Exception e) {
                 new RuntimeException("Failed to load components from file " + categoryFile.getPath() + ": ", e).printStackTrace();
             }
-            if (category.getComponents() == null) category.setComponents(new ArrayList<>());
         }
     }
 
