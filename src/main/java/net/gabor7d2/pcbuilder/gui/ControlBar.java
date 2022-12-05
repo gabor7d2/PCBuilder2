@@ -1,7 +1,9 @@
 package net.gabor7d2.pcbuilder.gui;
 
 import com.formdev.flatlaf.FlatClientProperties;
+import net.gabor7d2.pcbuilder.Application;
 import net.gabor7d2.pcbuilder.gui.event.*;
+import net.gabor7d2.pcbuilder.gui.general.ImageLoader;
 import net.gabor7d2.pcbuilder.model.Category;
 import net.gabor7d2.pcbuilder.model.Price;
 import net.gabor7d2.pcbuilder.model.Profile;
@@ -43,6 +45,11 @@ public class ControlBar extends JPanel implements ProfileEventListener, Category
     private JComboBox<Profile> profileSelector;
 
     /**
+     * Buttons that need icon swapping when theme is switched.
+     */
+    private JButton helpButton, themeButton;
+
+    /**
      * Creates a new ControlBar.
      */
     public ControlBar() {
@@ -73,9 +80,26 @@ public class ControlBar extends JPanel implements ProfileEventListener, Category
         addButton("Import", null);
         addButton("Delete", null);
         addButton("Edit Mode", null);
-        JButton helpButton = addButton("Help", null);
-        helpButton.putClientProperty("JButton.buttonType", "help");
-        // TODO light/dark mode switch
+
+        helpButton = addButton("", e -> {
+            JDialog diag = new JDialog();
+            diag.setModal(true);
+            diag.add(new JLabel("Help text: "));
+            diag.pack();
+            diag.setVisible(true);
+        });
+        //helpButton.putClientProperty("JButton.buttonType", "help");
+        //helpButton.setBorder(null);
+        helpButton.setMargin(new Insets(0, 0, 0, 0));
+        //helpButton.setContentAreaFilled(false);
+
+        themeButton = addButton("", e -> {
+            Application.getThemeController().setDarkMode(!themeButton.getName().equals("dark"));
+        });
+        themeButton.setMargin(new Insets(0, 0, 0, 0));
+        //helpButton.setContentAreaFilled(false);
+
+        updateTheme();
 
         // subscribe to events
         EventBus.getInstance().subscribeToProfileEvents(this);
@@ -101,14 +125,7 @@ public class ControlBar extends JPanel implements ProfileEventListener, Category
      */
     private void setupProfileSelector() {
         profileSelector = new JComboBox<>();
-        //Profile prototypeProfile = new Profile();
-        //prototypeProfile.setName("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-        //profileSelector.setPrototypeDisplayValue(prototypeProfile);
-        //profileSelector.setMinimumSize(new Dimension(200, 1));
-        //profileSelector.setPreferredSize(new Dimension(280, profileSelector.getPreferredSize().height));
-        //profileSelector.setMinimumSize(new Dimension(200, 1));
         // TODO max size
-        //profileSelector.setMaximumSize(new Dimension(300, 100));
         profileSelector.putClientProperty(FlatClientProperties.MINIMUM_WIDTH, 200);
         profileSelector.addActionListener(e -> {
             EventBus.getInstance().postEvent(new ProfileEvent(ProfileEvent.ProfileEventType.SELECT, (Profile) profileSelector.getSelectedItem()));
@@ -204,5 +221,30 @@ public class ControlBar extends JPanel implements ProfileEventListener, Category
         if (e.getType() == ComponentEvent.ComponentEventType.SELECT) {
             calculateAndDisplayTotalPrice(e.getComponent().getCategory().getProfile());
         }
+    }
+
+    /**
+     * Updates the components' look on theme change.
+     */
+    private void updateTheme() {
+        boolean darkMode = Application.getThemeController().isDarkMode();
+
+        if (helpButton != null) {
+            String helpPath = darkMode ? "/help_icon_dark.png" : "/help_icon_light.png";
+            helpButton.setIcon(ImageLoader.loadImageIconFromClasspath(helpPath, 20, 20));
+        }
+
+        if (themeButton != null) {
+            String themePath = darkMode ? "/theme_icon_dark.png" : "/theme_icon_light.png";
+            themeButton.setIcon(ImageLoader.loadImageIconFromClasspath(themePath, 20, 20));
+            themeButton.setName(darkMode ? "dark" : "light");
+        }
+    }
+
+    @Override
+    public void updateUI() {
+        // gets called on theme switching
+        super.updateUI();
+        updateTheme();
     }
 }

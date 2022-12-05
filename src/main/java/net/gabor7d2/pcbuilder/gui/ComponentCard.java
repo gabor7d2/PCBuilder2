@@ -9,6 +9,8 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import static net.gabor7d2.pcbuilder.gui.ThemeController.TRANSPARENT_COLOR;
+
 /**
  * A ComponentCard is a panel that displays a given Component, with
  * its image, brand, model name, etc. and a radio button above it, that
@@ -41,9 +43,10 @@ public class ComponentCard extends JPanel {
         this.buttonGroup = buttonGroup;
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        setBorder(BorderFactory.createMatteBorder(8, 8, 8, 8, Color.WHITE));
+        setOpaque(false);
+        setBackground(TRANSPARENT_COLOR);
+        setBorder(BorderFactory.createMatteBorder(8, 8, 8, 8, TRANSPARENT_COLOR));
 
-        setBackground(Color.WHITE);
         setAlignmentY(TOP_ALIGNMENT);
         setAlignmentX(CENTER_ALIGNMENT);
 
@@ -59,21 +62,23 @@ public class ComponentCard extends JPanel {
         component = c;
         removeAll();
 
+        // radio button to select the component with
         JRadioButton radioButton = new JRadioButton();
-        radioButton.setBorder(BorderFactory.createMatteBorder(4, 0, 8, 0, Color.WHITE));
-        radioButton.setBackground(Color.WHITE);
+        radioButton.setBorder(BorderFactory.createMatteBorder(4, 0, 8, 0, TRANSPARENT_COLOR));
         buttonGroup.add(radioButton);
 
         // panel to center radio button
         JPanel rPanel = new JPanel();
-        rPanel.setBackground(Color.WHITE);
+        rPanel.setOpaque(false);
+        rPanel.setBackground(TRANSPARENT_COLOR);
         rPanel.add(radioButton);
         add(rPanel);
 
+        // ImageLabel to show component's image
         ImageLabel imageLabel = new ImageLabel();
         imageLabel.setImageFromFileAsync(c.getImagePath(), 104, 104);
-        imageLabel.setBorder(Color.WHITE, 4);
-        imageLabel.setBackground(Color.WHITE);
+        imageLabel.setBorder(TRANSPARENT_COLOR, 4);
+        imageLabel.setOpaque(false);
         imageLabel.setAlignmentX(CENTER_ALIGNMENT);
         imageLabel.addMouseListener(new MouseAdapter() {
             @Override
@@ -85,10 +90,12 @@ public class ComponentCard extends JPanel {
         });
         add(imageLabel);
 
+        // panel to add text labels onto
         JPanel textPanel = new JPanel();
         textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS));
-        textPanel.setBorder(BorderFactory.createMatteBorder(0, 4, 0, 4, Color.WHITE));
-        textPanel.setBackground(Color.WHITE);
+        textPanel.setOpaque(false);
+        textPanel.setBackground(TRANSPARENT_COLOR);
+        textPanel.setBorder(BorderFactory.createMatteBorder(0, 4, 0, 4, TRANSPARENT_COLOR));
         textPanel.setAlignmentX(CENTER_ALIGNMENT);
         add(textPanel);
 
@@ -110,8 +117,10 @@ public class ComponentCard extends JPanel {
 
         if (c.getPrice() != null) {
             JPanel pricePanel = new JPanel();
+            pricePanel.setOpaque(false);
+            pricePanel.setBackground(TRANSPARENT_COLOR);
             pricePanel.setLayout(new BoxLayout(pricePanel, BoxLayout.X_AXIS));
-            pricePanel.setBackground(Color.WHITE);
+            //pricePanel.setBackground(Color.WHITE);
             textPanel.add(pricePanel);
 
             String prefix = c.getCategory().getProfile().getCurrencyPrefix();
@@ -151,6 +160,10 @@ public class ComponentCard extends JPanel {
         return component;
     }
 
+    /**
+     * Shows a component image dialog, which can be used
+     * to view the component's image enlarged.
+     */
     private void showComponentImageDialog() {
         ComponentImageDialog dialog = new ComponentImageDialog(component);
         dialog.setVisible(true);

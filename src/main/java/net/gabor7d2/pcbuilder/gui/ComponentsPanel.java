@@ -1,5 +1,6 @@
 package net.gabor7d2.pcbuilder.gui;
 
+import net.gabor7d2.pcbuilder.Application;
 import net.gabor7d2.pcbuilder.gui.general.SmartButtonGroup;
 import net.gabor7d2.pcbuilder.model.Component;
 
@@ -14,6 +15,16 @@ import java.util.List;
  * may be selected at any time.
  */
 public class ComponentsPanel extends JPanel {
+
+    /**
+     * The background color to use for components panels in light theme.
+     */
+    private final static Color COMPONENT_BG_COLOR_LIGHT_THEME = Color.WHITE;
+
+    /**
+     * The background color to use for components panels in dark theme.
+     */
+    private final static Color COMPONENT_BG_COLOR_DARK_THEME = new Color(51, 54, 56);
 
     /**
      * The button group that groups the ComponentCards' radio buttons.
@@ -32,8 +43,6 @@ public class ComponentsPanel extends JPanel {
      */
     public ComponentsPanel(List<Component> components) {
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-        setBackground(Color.WHITE);
-
         displayComponents(components);
     }
 
@@ -56,5 +65,19 @@ public class ComponentsPanel extends JPanel {
             componentCards.add(card);
             add(card);
         }
+    }
+
+    /**
+     * Updates the background color on theme change.
+     */
+    private void updateTheme() {
+        setBackground(Application.getThemeController().isDarkMode() ? COMPONENT_BG_COLOR_DARK_THEME : COMPONENT_BG_COLOR_LIGHT_THEME);
+    }
+
+    @Override
+    public void updateUI() {
+        // gets called on theme switching
+        super.updateUI();
+        updateTheme();
     }
 }

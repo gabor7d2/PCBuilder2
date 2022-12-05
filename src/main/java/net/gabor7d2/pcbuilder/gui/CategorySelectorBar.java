@@ -6,6 +6,8 @@ import net.gabor7d2.pcbuilder.model.Category;
 import javax.swing.*;
 import java.awt.*;
 
+import static net.gabor7d2.pcbuilder.gui.ThemeController.TRANSPARENT_COLOR;
+
 /**
  * The CategorySelectorBar is a panel that is at the top of the main window
  * and is used to select which categories of the currently displayed profile
@@ -18,7 +20,8 @@ public class CategorySelectorBar extends JPanel implements ProfileEventListener 
      */
     public CategorySelectorBar() {
         setLayout(new FlowLayout(FlowLayout.LEFT));
-        setBorder(BorderFactory.createMatteBorder(8, 8, 8, 8, getBackground()));
+        setOpaque(false);
+        setBorder(BorderFactory.createMatteBorder(4, 8, 4, 8, TRANSPARENT_COLOR));
 
         // subscribe to events
         EventBus.getInstance().subscribeToProfileEvents(this);

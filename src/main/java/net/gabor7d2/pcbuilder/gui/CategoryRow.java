@@ -9,18 +9,12 @@ import net.gabor7d2.pcbuilder.gui.general.SmartScrollPane;
 import net.gabor7d2.pcbuilder.model.Category;
 
 import javax.swing.*;
-import java.awt.*;
 
 /**
  * CategoryRow is a ScrollPane2DRow implementation that is used for
  * displaying a category's components.
  */
 public class CategoryRow extends ScrollPane2D.ScrollPane2DRow implements CategoryEventListener {
-
-    /**
-     * The background color of the row's scroll pane.
-     */
-    private final static Color BG_COLOR = Color.WHITE;
 
     private ScrollPane2D outerScrollPane2D;
 
@@ -42,7 +36,6 @@ public class CategoryRow extends ScrollPane2D.ScrollPane2DRow implements Categor
     public CategoryRow(Category category) {
         // setup scrollpane
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-        scrollPane.getViewport().setBackground(BG_COLOR);
         add(scrollPane);
 
         // display category
@@ -84,7 +77,6 @@ public class CategoryRow extends ScrollPane2D.ScrollPane2DRow implements Categor
 
         // set visibility
         setVisible(category.isEnabledByDefault());
-
     }
 
     /**

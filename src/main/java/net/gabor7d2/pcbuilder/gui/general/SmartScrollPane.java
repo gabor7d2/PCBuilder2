@@ -76,4 +76,11 @@ public class SmartScrollPane extends JScrollPane implements ComponentListener {
     public void componentHidden(ComponentEvent e) {
 
     }
+
+    @Override
+    public void updateUI() {
+        super.updateUI();
+        // counteract theme switching adding default border
+        setBorder(null);
+    }
 }

@@ -186,6 +186,13 @@ public class ScrollPane2D extends JScrollPane implements MouseWheelListener {
         getVerticalScrollBar().setValue(getVerticalScrollBar().getValue() + e.getWheelRotation() * 16);
     }
 
+    @Override
+    public void updateUI() {
+        super.updateUI();
+        // counteract theme switching adding default border
+        setBorder(null);
+    }
+
     /**
      * Abstract class for constructing a Row to be added to a ScrollPane2D using its
      * {@link ScrollPane2D#addRow(ScrollPane2DRow) addRow()} methods.
