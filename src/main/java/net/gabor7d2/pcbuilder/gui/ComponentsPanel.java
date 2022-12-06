@@ -19,12 +19,12 @@ public class ComponentsPanel extends JPanel {
     /**
      * The background color to use for components panels in light theme.
      */
-    private final static Color COMPONENT_BG_COLOR_LIGHT_THEME = Color.WHITE;
+    private final static Color COMPONENT_BG_LIGHT_THEME = Color.WHITE;
 
     /**
      * The background color to use for components panels in dark theme.
      */
-    private final static Color COMPONENT_BG_COLOR_DARK_THEME = new Color(51, 54, 56);
+    private final static Color COMPONENT_BG_DARK_THEME = new Color(51, 54, 56);
 
     /**
      * The button group that groups the ComponentCards' radio buttons.
@@ -71,7 +71,7 @@ public class ComponentsPanel extends JPanel {
      * Updates the background color on theme change.
      */
     private void updateTheme() {
-        setBackground(Application.getThemeController().isDarkMode() ? COMPONENT_BG_COLOR_DARK_THEME : COMPONENT_BG_COLOR_LIGHT_THEME);
+        setBackground(Application.getThemeController().isDarkMode() ? COMPONENT_BG_DARK_THEME : COMPONENT_BG_LIGHT_THEME);
     }
 
     @Override

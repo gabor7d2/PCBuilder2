@@ -7,6 +7,8 @@ import java.awt.event.MouseWheelListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import static net.gabor7d2.pcbuilder.gui.ThemeController.TRANSPARENT_COLOR;
+
 /**
  * Class for displaying a scrollable panel, which can contain 'rows' - horizontal
  * panels - that can also contain scrolling content. This class coordinates the
@@ -33,43 +35,26 @@ public class ScrollPane2D extends JScrollPane implements MouseWheelListener {
     private final List<ScrollPane2DRow> rows = new ArrayList<>();
 
     /**
-     * The color to use for the background.
-     */
-    private final Color backgroundColor;
-
-    /**
      * Creates a new ScrollPane2D.
-     *
-     * @param backgroundColor The background color, set to null to use default color.
      */
-    public ScrollPane2D(Color backgroundColor) {
+    public ScrollPane2D() {
         // Setup this
         setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         setWheelScrollingEnabled(false);
         addMouseWheelListener(this);
         setBorder(null);
 
-        this.backgroundColor = backgroundColor;
-        if (backgroundColor == null) backgroundColor = getViewport().getBackground();
-
         // Setup outer, vertically scrollable panel
         outerPanel = new ScrollablePanel();
         outerPanel.setScrollableWidth(ScrollablePanel.ScrollableSizeHint.FIT);
         outerPanel.setLayout(new BoxLayout(outerPanel, BoxLayout.Y_AXIS));
-        outerPanel.setBackground(backgroundColor);
-        outerPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 8, 0, backgroundColor));
+        outerPanel.setOpaque(false);
+        outerPanel.setBackground(TRANSPARENT_COLOR);
+        outerPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 8, 0, TRANSPARENT_COLOR));
 
         // Set outer panel as the outer scroll pane's (this) viewport
         setViewportView(outerPanel);
-        getViewport().setBackground(backgroundColor);
         revalidate();
-    }
-
-    /**
-     * Creates a new ScrollPane2D.
-     */
-    public ScrollPane2D() {
-        this(null);
     }
 
     /**
@@ -83,7 +68,8 @@ public class ScrollPane2D extends JScrollPane implements MouseWheelListener {
         // (the row might have some border already, we don't want to replace that)
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-        panel.setBorder(BorderFactory.createMatteBorder(8, 8, 0, 8, backgroundColor));
+        panel.setOpaque(false);
+        panel.setBorder(BorderFactory.createMatteBorder(8, 8, 0, 8, TRANSPARENT_COLOR));
         panel.add(row);
 
         if (index >= 0 && index < rows.size()) {
@@ -184,6 +170,17 @@ public class ScrollPane2D extends JScrollPane implements MouseWheelListener {
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
         getVerticalScrollBar().setValue(getVerticalScrollBar().getValue() + e.getWheelRotation() * 16);
+    }
+
+    /**
+     * Sets the background color of the borders around the rows.
+     *
+     * @param backgroundColor The background color to set to.
+     */
+    public void setBackgroundColor(Color backgroundColor) {
+        if (backgroundColor == null) return;
+
+        getViewport().setBackground(backgroundColor);
     }
 
     @Override

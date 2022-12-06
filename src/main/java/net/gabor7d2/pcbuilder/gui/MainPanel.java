@@ -1,5 +1,6 @@
 package net.gabor7d2.pcbuilder.gui;
 
+import net.gabor7d2.pcbuilder.Application;
 import net.gabor7d2.pcbuilder.gui.event.EventBus;
 import net.gabor7d2.pcbuilder.gui.event.ProfileEvent;
 import net.gabor7d2.pcbuilder.gui.event.ProfileEventListener;
@@ -23,9 +24,14 @@ import java.util.Set;
 public class MainPanel extends JPanel implements ProfileEventListener {
 
     /**
-     * The background color of the profiles' ScrollPane2Ds.
+     * The background color of the profiles' ScrollPane2Ds in light theme.
      */
-    private final static Color PROFILE_SCROLL_PANE_BG = new Color(180, 180, 180);
+    private final static Color PROFILE_SCROLL_PANE_BG_LIGHT = new Color(200, 200, 200);
+
+    /**
+     * The background color of the profiles' ScrollPane2Ds in dark theme.
+     */
+    private final static Color PROFILE_SCROLL_PANE_BG_DARK = new Color(78, 81, 84);
 
     /**
      * The CardLayout of the panel.
@@ -71,7 +77,9 @@ public class MainPanel extends JPanel implements ProfileEventListener {
             // if the profile with this id was never displayed before, create the ScrollPane2D
             // and the CategoryRows for it and add it to the MainPanel
             profileIds.add(profile.getId());
-            ScrollPane2D profilePane = new ScrollPane2D(PROFILE_SCROLL_PANE_BG);
+            ScrollPane2D profilePane = new ScrollPane2D();
+            profilePane.setBackgroundColor(
+                    Application.getThemeController().isDarkMode() ? PROFILE_SCROLL_PANE_BG_DARK : PROFILE_SCROLL_PANE_BG_LIGHT);
             profile.getCategories().forEach(c -> profilePane.addRow(new CategoryRow(c)));
             add(profilePane, profile.getId());
         }
@@ -88,6 +96,25 @@ public class MainPanel extends JPanel implements ProfileEventListener {
             // display the newly selected profile
             displayProfile(e.getProfile());
         }
+    }
+
+    /**
+     * Updates the ScrollPane2Ds' background color on theme change.
+     */
+    private void updateTheme() {
+        for (Component c : getComponents()) {
+            if (c instanceof ScrollPane2D) {
+                ((ScrollPane2D) c).setBackgroundColor(
+                        Application.getThemeController().isDarkMode() ? PROFILE_SCROLL_PANE_BG_DARK : PROFILE_SCROLL_PANE_BG_LIGHT);
+            }
+        }
+    }
+
+    @Override
+    public void updateUI() {
+        // gets called on theme switching
+        super.updateUI();
+        updateTheme();
     }
 
     /**
@@ -120,6 +147,7 @@ public class MainPanel extends JPanel implements ProfileEventListener {
             helpText.setFont(helpText.getFont().deriveFont(Font.PLAIN, 18));
             innerPanel.add(helpText);
 
+            // TODO profile chooser JList
             /*DefaultListModel<String> model = new DefaultListModel<>();
             model.addElement("hello");
             model.addElement("world");
