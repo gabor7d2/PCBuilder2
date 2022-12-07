@@ -23,12 +23,12 @@ public class JsonProfileRepository implements ProfileRepository {
     /**
      * The root directory of the app.
      */
-    private final File appDirectory = new File(System.getProperty("user.home"), ".pcbuilder");
+    final File appDirectory = new File(System.getProperty("user.home"), ".pcbuilder");
 
     /**
      * The profiles directory inside the appDir.
      */
-    private final File profilesDirectory = new File(appDirectory, "profiles");
+    final File profilesDirectory = new File(appDirectory, "profiles");
 
     /**
      * The Jackson ObjectMapper instance used for serializing/deserializing JSON from/to Java objects.
@@ -36,13 +36,27 @@ public class JsonProfileRepository implements ProfileRepository {
     private final ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 
     @Override
-    public List<Profile> loadProfiles() {
+    public Collection<Profile> loadProfiles() {
         createDefaultsIfNotFound();
+
+        File[] files = profilesDirectory.listFiles();
+        if (files == null) return Collections.emptyList();
+        return loadProfiles(Arrays.stream(files).toList());
+    }
+
+    /**
+     * Tries loading the profiles from the specified list of profile directories.
+     *
+     * @param profileDirs The profile directories to load.
+     * @return The loaded profiles, or an empty collection if profileDirs is null.
+     */
+    Collection<Profile> loadProfiles(Collection<File> profileDirs) {
+        if (profileDirs == null) return Collections.emptyList();
         List<Profile> profiles = new ArrayList<>();
 
         try {
             // Go through all folders in profiles dir
-            for (File f : Objects.requireNonNull(profilesDirectory.listFiles())) {
+            for (File f : profileDirs) {
                 if (f.isDirectory()) {
                     // Try loading the profile.json file
                     Profile p = loadProfile(f);
@@ -57,7 +71,6 @@ public class JsonProfileRepository implements ProfileRepository {
         } catch (Exception e) {
             new RuntimeException("Failed to load profiles.", e).printStackTrace();
         }
-
         return profiles;
     }
 
@@ -68,7 +81,7 @@ public class JsonProfileRepository implements ProfileRepository {
      * @return The loaded profile, or null if the profile.json file
      * is not present in this dir or if an error occurred.
      */
-    private Profile loadProfile(File profileDir) {
+    Profile loadProfile(File profileDir) {
         File profileFile = new File(profileDir, "profile.json");
         if (!profileFile.isFile()) {
             System.out.println("Failed to load profile from " + profileDir.getPath() + ": profile.json not found.");
@@ -103,13 +116,16 @@ public class JsonProfileRepository implements ProfileRepository {
                 List<Component> components = mapper.readValue(categoryFile, new TypeReference<List<Component>>() {
                 });
 
-                // construct image path string for components
+                // set category and construct image path string for components
                 for (Component comp : components) {
                     comp.setCategory(category);
-                    comp.setImagePath(p.getProfileFolder().getPath()
-                            + File.separator + category.getShortName().toLowerCase().replace(' ', '_')
-                            + File.separator + comp.getBrand().toLowerCase().replace(' ', '_')
-                            + "_" + comp.getModelName().toLowerCase().replace(' ', '_') + ".png");
+                    if (comp.getImagePath().isEmpty()) {
+                        // only set image path if it was not set in json
+                        comp.setImagePath(p.getProfileFolder().getPath()
+                                + File.separator + category.getShortName().toLowerCase().replace(' ', '_')
+                                + File.separator + comp.getBrand().toLowerCase().replace(' ', '_')
+                                + "_" + comp.getModelName().toLowerCase().replace(' ', '_') + ".png");
+                    }
                 }
                 category.setComponents(components);
             } catch (Exception e) {

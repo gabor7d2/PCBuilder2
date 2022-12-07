@@ -1,5 +1,7 @@
 package net.gabor7d2.pcbuilder.gui;
 
+import net.gabor7d2.pcbuilder.Application;
+import net.gabor7d2.pcbuilder.gui.dialog.ComponentImageDialog;
 import net.gabor7d2.pcbuilder.gui.general.ImageLabel;
 import net.gabor7d2.pcbuilder.gui.general.ClickableLabel;
 import net.gabor7d2.pcbuilder.model.Component;
@@ -165,7 +167,6 @@ public class ComponentCard extends JPanel {
      * to view the component's image enlarged.
      */
     private void showComponentImageDialog() {
-        ComponentImageDialog dialog = new ComponentImageDialog(component);
-        dialog.setVisible(true);
+        Application.getDialogManager().showComponentImageDialog(component);
     }
 }

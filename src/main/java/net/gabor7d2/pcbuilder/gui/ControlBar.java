@@ -11,6 +11,7 @@ import net.gabor7d2.pcbuilder.model.Profile;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 /**
  * The ControlBar is a panel that is at the bottom of the main window
@@ -49,6 +50,8 @@ public class ControlBar extends JPanel implements ProfileEventListener, Category
      */
     private JButton helpButton, themeButton;
 
+    private final ProfileImporter importer = new ProfileImporter(new File(System.getProperty("user.home")));
+
     /**
      * Creates a new ControlBar.
      */
@@ -77,7 +80,9 @@ public class ControlBar extends JPanel implements ProfileEventListener, Category
         setupProfileSelector();
         eastPanel.add(Box.createRigidArea(new Dimension(4, 1)));
 
-        addButton("Import", null);
+        addButton("Import", e -> {
+            importer.showDialog();
+        });
         addButton("Delete", null);
         addButton("Edit Mode", null);
 

@@ -2,12 +2,17 @@ package net.gabor7d2.pcbuilder;
 
 import net.gabor7d2.pcbuilder.gui.MainFrame;
 import net.gabor7d2.pcbuilder.gui.ThemeController;
+import net.gabor7d2.pcbuilder.gui.dialog.DialogManager;
+import net.gabor7d2.pcbuilder.gui.event.EventBus;
+import net.gabor7d2.pcbuilder.gui.event.ProfileEvent;
+import net.gabor7d2.pcbuilder.model.Profile;
 import net.gabor7d2.pcbuilder.model.Settings;
 import net.gabor7d2.pcbuilder.repositoryimpl.RepositoryFactory;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import static net.gabor7d2.pcbuilder.gui.general.ImageLoader.loadImageFromClasspath;
@@ -34,6 +39,8 @@ public class Application {
      */
     private static Settings settings;
 
+    private static DialogManager dialogManager;
+
     private static ThemeController themeController;
 
     public static void main(String[] args) {
@@ -44,9 +51,26 @@ public class Application {
         themeController = new ThemeController(settings);
         themeController.setupLookAndFeel();
 
-        // show frame
+        // create frame
         JFrame frame = new MainFrame();
+
+        // create dialog manager
+        dialogManager = new DialogManager(frame);
+
+        // load profiles
+        Collection<Profile> profiles = RepositoryFactory.getProfileRepository().loadProfiles();
+
+        // show frame
         frame.setVisible(true);
+
+        // notify listeners of loaded profiles
+        profiles.forEach(p -> {
+            EventBus.getInstance().postEvent(new ProfileEvent(ProfileEvent.ProfileEventType.ADD, p));
+        });
+    }
+
+    public static DialogManager getDialogManager() {
+        return dialogManager;
     }
 
     public static ThemeController getThemeController() {

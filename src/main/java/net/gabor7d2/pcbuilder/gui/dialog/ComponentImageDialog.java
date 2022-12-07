@@ -1,4 +1,4 @@
-package net.gabor7d2.pcbuilder.gui;
+package net.gabor7d2.pcbuilder.gui.dialog;
 
 import net.gabor7d2.pcbuilder.gui.general.ImageLabel;
 import net.gabor7d2.pcbuilder.model.Component;
@@ -21,10 +21,10 @@ public class ComponentImageDialog extends JDialog implements KeyListener {
 
     private final ImageLabel imageLabel = new ImageLabel();
 
-    public ComponentImageDialog(Component component) {
+    ComponentImageDialog(Component component) {
         setResizable(false);
         setBackground(Color.WHITE);
-        setModalityType(Dialog.DEFAULT_MODALITY_TYPE);
+        setModalityType(ModalityType.APPLICATION_MODAL);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setIconImages(APP_ICONS);
         addKeyListener(this);

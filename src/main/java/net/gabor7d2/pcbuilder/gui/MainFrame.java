@@ -1,19 +1,22 @@
 package net.gabor7d2.pcbuilder.gui;
 
 import net.gabor7d2.pcbuilder.Application;
+import net.gabor7d2.pcbuilder.gui.dialog.ProgressDialog;
+import net.gabor7d2.pcbuilder.gui.dialog.ProgressDialogType;
 import net.gabor7d2.pcbuilder.gui.event.EventBus;
 import net.gabor7d2.pcbuilder.gui.event.ProfileEvent;
+import net.gabor7d2.pcbuilder.gui.event.ProfileEventListener;
 import net.gabor7d2.pcbuilder.model.Profile;
-import net.gabor7d2.pcbuilder.repositoryimpl.RepositoryFactory;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * The main window of the app.
  */
-public class MainFrame extends JFrame {
+public class MainFrame extends JFrame implements ProfileEventListener {
 
     /**
      * The title of the main window.
@@ -40,20 +43,7 @@ public class MainFrame extends JFrame {
      */
     private final static int MIN_HEIGHT = 360;
 
-    /**
-     * CategorySelectorBar component in the main window.
-     */
-    private final CategorySelectorBar categorySelectorBar;
-
-    /**
-     * ControlBar component in the main window.
-     */
-    private final ControlBar controlBar;
-
-    /**
-     * MainPanel component in the main window.
-     */
-    private final MainPanel mainPanel;
+    private final List<Profile> profiles = new ArrayList<>();
 
     /**
      * Creates the main window.
@@ -69,24 +59,25 @@ public class MainFrame extends JFrame {
         setLocationRelativeTo(null);
 
         // Create category selector bar on the north
-        categorySelectorBar = new CategorySelectorBar();
+        CategorySelectorBar categorySelectorBar = new CategorySelectorBar();
         categorySelectorBar.setVisible(false);
         add(categorySelectorBar, BorderLayout.NORTH);
 
         // Create control bar on the south
-        controlBar = new ControlBar();
+        ControlBar controlBar = new ControlBar();
         add(controlBar, BorderLayout.SOUTH);
 
         // Create main panel on the center
-        mainPanel = new MainPanel();
+        MainPanel mainPanel = new MainPanel();
         add(mainPanel, BorderLayout.CENTER);
 
-        // Load all profiles
-        List<Profile> profiles = RepositoryFactory.getProfileRepository().loadProfiles();
+        EventBus.getInstance().subscribeToProfileEvents(this);
+    }
 
-        // Notify listeners of loaded profiles
-        profiles.forEach(p -> {
-            EventBus.getInstance().postEvent(new ProfileEvent(ProfileEvent.ProfileEventType.ADD, p));
-        });
+    @Override
+    public void processProfileEvent(ProfileEvent e) {
+        if (e.getType() == ProfileEvent.ProfileEventType.ADD && e.getProfile() != null) {
+            profiles.add(e.getProfile());
+        }
     }
 }

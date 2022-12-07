@@ -6,6 +6,7 @@ import net.gabor7d2.pcbuilder.model.Profile;
 import net.gabor7d2.pcbuilder.model.Settings;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -19,9 +20,9 @@ public interface ProfileRepository {
      * Loads all profiles found in the app directory,
      * and also loads its categories and the categories' components.
      *
-     * @return The list of loaded profiles.
+     * @return The collection of loaded profiles.
      */
-    List<Profile> loadProfiles();
+    Collection<Profile> loadProfiles();
 
     //void addProfile(Profile p);
 

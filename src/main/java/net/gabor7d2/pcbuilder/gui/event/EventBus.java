@@ -1,5 +1,6 @@
 package net.gabor7d2.pcbuilder.gui.event;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,17 +82,20 @@ public class EventBus {
      * @param e The event to dispatch.
      */
     public void postEvent(PCBuilderEvent e) {
-        pcBuilderEventListeners.forEach(l -> l.processPCBuilderEvent(e));
+        // Makes sure that the listeners get called on the UI thread
+        EventQueue.invokeLater(() -> {
+            pcBuilderEventListeners.forEach(l -> l.processPCBuilderEvent(e));
 
-        if (e instanceof ProfileEvent) {
-            profileEventListeners.forEach(l -> l.processProfileEvent((ProfileEvent) e));
-        }
-        if (e instanceof CategoryEvent) {
-            categoryEventListeners.forEach(l -> l.processCategoryEvent((CategoryEvent) e));
-        }
-        if (e instanceof ComponentEvent) {
-            componentEventListeners.forEach(l -> l.processComponentEvent((ComponentEvent) e));
-        }
+            if (e instanceof ProfileEvent) {
+                profileEventListeners.forEach(l -> l.processProfileEvent((ProfileEvent) e));
+            }
+            if (e instanceof CategoryEvent) {
+                categoryEventListeners.forEach(l -> l.processCategoryEvent((CategoryEvent) e));
+            }
+            if (e instanceof ComponentEvent) {
+                componentEventListeners.forEach(l -> l.processComponentEvent((ComponentEvent) e));
+            }
+        });
     }
 
     /**
