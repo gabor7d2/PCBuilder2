@@ -95,6 +95,18 @@ public class Category {
     }
 
     /**
+     * Sets whether this category is enabled and visible by default when opening
+     * the profile.
+     * Also sets currently enabled to the specified value.
+     *
+     * @param enabledByDefault Whether the category should be enabled by default.
+     */
+    public void setEnabledByDefault(boolean enabledByDefault) {
+        this.enabledByDefault = enabledByDefault;
+        this.enabled = enabledByDefault;
+    }
+
+    /**
      * Sets the default selection index to the specified value.
      * Setting this also sets the currently selected index.
      *

@@ -80,7 +80,11 @@ public class MainPanel extends JPanel implements ProfileEventListener {
             ScrollPane2D profilePane = new ScrollPane2D();
             profilePane.setBackgroundColor(
                     Application.getThemeController().isDarkMode() ? PROFILE_SCROLL_PANE_BG_DARK : PROFILE_SCROLL_PANE_BG_LIGHT);
-            profile.getCategories().forEach(c -> profilePane.addRow(new CategoryRow(c)));
+            profile.getCategories().forEach(c -> {
+                CategoryRow row = new CategoryRow(c);
+                profilePane.addRow(row);
+                profilePane.setRowVisible(profilePane.indexOfRow(row), c.isEnabledByDefault());
+            });
             add(profilePane, profile.getId());
         }
 

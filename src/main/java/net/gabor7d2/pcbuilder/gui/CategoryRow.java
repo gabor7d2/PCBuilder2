@@ -74,9 +74,6 @@ public class CategoryRow extends ScrollPane2D.ScrollPane2DRow implements Categor
             category.setSelection(i);
             EventBus.getInstance().postEvent(new ComponentEvent(ComponentEvent.ComponentEventType.SELECT, category.getComponents().get(i)));
         });
-
-        // set visibility
-        setVisible(category.isEnabledByDefault());
     }
 
     /**
