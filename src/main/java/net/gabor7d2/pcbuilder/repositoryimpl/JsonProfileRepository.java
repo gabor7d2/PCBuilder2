@@ -1,9 +1,10 @@
 package net.gabor7d2.pcbuilder.repositoryimpl;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.type.TypeFactory;
 import net.gabor7d2.pcbuilder.model.Category;
+import net.gabor7d2.pcbuilder.type.CategoryType;
 import net.gabor7d2.pcbuilder.model.Component;
 import net.gabor7d2.pcbuilder.model.Profile;
 import net.gabor7d2.pcbuilder.repository.ProfileRepository;
@@ -107,14 +108,16 @@ public class JsonProfileRepository implements ProfileRepository {
         for (Category category : p.getCategories()) {
             category.setProfile(p);
 
-            File categoryFile = new File(p.getProfileFolder(), category.getShortName().toLowerCase() + ".json");
+            CategoryType cType = CategoryType.getCategoryTypeFromName(category.getType());
+
+            File categoryFile = new File(p.getProfileFolder(), cType.getName().toLowerCase() + ".json");
             if (!categoryFile.isFile()) {
                 System.out.println("Failed to load components from file " + categoryFile.getPath() + ": file not found.");
                 continue;
             }
             try {
-                List<Component> components = mapper.readValue(categoryFile, new TypeReference<List<Component>>() {
-                });
+                List<Component> components = mapper.readValue(categoryFile,
+                        TypeFactory.defaultInstance().constructParametricType(List.class, cType.getComponentClass()));
 
                 // set category and construct image path string for components
                 for (Component comp : components) {
@@ -122,7 +125,7 @@ public class JsonProfileRepository implements ProfileRepository {
                     if (comp.getImagePath().isEmpty()) {
                         // only set image path if it was not set in json
                         comp.setImagePath(p.getProfileFolder().getPath()
-                                + File.separator + category.getShortName().toLowerCase().replace(' ', '_')
+                                + File.separator + cType.getName().toLowerCase().replace(' ', '_')
                                 + File.separator + comp.getBrand().toLowerCase().replace(' ', '_')
                                 + "_" + comp.getModelName().toLowerCase().replace(' ', '_') + ".png");
                     }

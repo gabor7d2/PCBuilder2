@@ -3,6 +3,7 @@ package net.gabor7d2.pcbuilder.gui;
 import net.gabor7d2.pcbuilder.gui.general.ClickableLabel;
 import net.gabor7d2.pcbuilder.gui.general.ImageLabel;
 import net.gabor7d2.pcbuilder.model.Category;
+import net.gabor7d2.pcbuilder.type.CategoryType;
 
 import javax.swing.*;
 import java.awt.*;
@@ -26,6 +27,8 @@ public class CategoryCard extends JPanel {
      * @param category The category to display.
      */
     public CategoryCard(Category category) {
+        CategoryType type = CategoryType.getCategoryTypeFromName(category.getType());
+
         // setup this
         setLayout(new GridBagLayout());
         GUIUtils.freezeSize(this, CATEGORY_CARD_SIZE);
@@ -38,11 +41,11 @@ public class CategoryCard extends JPanel {
         ImageLabel imageLabel = new ImageLabel();
         imageLabel.setOpaque(false);
         imageLabel.setBorder(BorderFactory.createMatteBorder(0, 0, 8, 0, TRANSPARENT_COLOR));
-        imageLabel.setImageFromClasspathAsync(category.getIconImagePath(), 80, 80);
+        imageLabel.setImageFromClasspathAsync(type.getIconImagePath(), 80, 80);
         imageLabel.setAlignmentX(CENTER_ALIGNMENT);
         panel.add(imageLabel);
 
-        JLabel nameLabel = new JLabel(category.toString());
+        JLabel nameLabel = new JLabel(type.getDisplayName());
         nameLabel.setFont(nameLabel.getFont().deriveFont(Font.BOLD, 14));
         nameLabel.setAlignmentX(CENTER_ALIGNMENT);
         panel.add(nameLabel);

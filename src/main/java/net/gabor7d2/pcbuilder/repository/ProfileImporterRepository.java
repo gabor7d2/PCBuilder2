@@ -9,6 +9,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public interface ProfileImporterRepository {
 
+    // TODO move to profilerepository
     void importFromZipFile(File zipFile,
                            ProgressListener<ImportResultCode, Collection<Profile>> progressListener,
                            AtomicBoolean cancellationToken);

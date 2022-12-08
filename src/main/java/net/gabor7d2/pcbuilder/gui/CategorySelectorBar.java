@@ -1,7 +1,9 @@
 package net.gabor7d2.pcbuilder.gui;
 
 import net.gabor7d2.pcbuilder.gui.event.*;
+import net.gabor7d2.pcbuilder.gui.general.WrapLayout;
 import net.gabor7d2.pcbuilder.model.Category;
+import net.gabor7d2.pcbuilder.type.CategoryType;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,7 +21,7 @@ public class CategorySelectorBar extends JPanel implements ProfileEventListener 
      * Creates a new CategorySelectorBar.
      */
     public CategorySelectorBar() {
-        setLayout(new FlowLayout(FlowLayout.LEFT));
+        setLayout(new WrapLayout(FlowLayout.LEFT));
         setOpaque(false);
         setBorder(BorderFactory.createMatteBorder(4, 8, 4, 8, TRANSPARENT_COLOR));
 
@@ -34,7 +36,9 @@ public class CategorySelectorBar extends JPanel implements ProfileEventListener 
      * @param c The category to add.
      */
     public void addCategory(Category c) {
-        JCheckBox ch = new JCheckBox(c.toString());
+        CategoryType cType = CategoryType.getCategoryTypeFromName(c.getType());
+
+        JCheckBox ch = new JCheckBox(cType.getDisplayName());
         ch.setSelected(c.isEnabledByDefault());
         ch.setBorder(BorderFactory.createMatteBorder(4, 8, 4, 8, ch.getBackground()));
         ch.addActionListener(e -> {

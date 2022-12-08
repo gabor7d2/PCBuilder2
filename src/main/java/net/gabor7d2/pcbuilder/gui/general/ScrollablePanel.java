@@ -20,7 +20,7 @@ import javax.swing.*;
  * panels size. This has the effect of ensuring the viewport is always full as
  * components added to the panel will be size to fill the area available,
  * based on the rules of the applicable layout manager of course.
- * <p>
+ * <br><br>
  * SOURCE: <a href="https://tips4java.wordpress.com/2009/12/20/scrollable-panel/">https://tips4java.wordpress.com/2009/12/20/scrollable-panel/</a>
  */
 public class ScrollablePanel extends JPanel implements Scrollable, SwingConstants {

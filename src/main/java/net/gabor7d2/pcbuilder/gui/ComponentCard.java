@@ -1,10 +1,10 @@
 package net.gabor7d2.pcbuilder.gui;
 
 import net.gabor7d2.pcbuilder.Application;
-import net.gabor7d2.pcbuilder.gui.dialog.ComponentImageDialog;
 import net.gabor7d2.pcbuilder.gui.general.ImageLabel;
 import net.gabor7d2.pcbuilder.gui.general.ClickableLabel;
 import net.gabor7d2.pcbuilder.model.Component;
+import net.gabor7d2.pcbuilder.model.Property;
 
 import javax.swing.*;
 import java.awt.*;
@@ -115,7 +115,18 @@ public class ComponentCard extends JPanel {
         modelNumber.setAlignmentX(CENTER_ALIGNMENT);
         textPanel.add(modelNumber);
 
-        textPanel.add(Box.createRigidArea(new Dimension(0, 4)));
+        textPanel.add(Box.createRigidArea(new Dimension(0, 6)));
+
+        // display properties of component
+        for (String s : component.getPropertiesDisplay()) {
+            JLabel propertyLabel = new JLabel(s);
+            propertyLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            propertyLabel.setAlignmentX(CENTER_ALIGNMENT);
+            propertyLabel.setToolTipText(s);
+            textPanel.add(propertyLabel);
+        }
+
+        textPanel.add(Box.createRigidArea(new Dimension(0, 6)));
 
         if (c.getPrice() != null) {
             JPanel pricePanel = new JPanel();

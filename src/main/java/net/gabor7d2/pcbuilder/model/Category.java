@@ -1,12 +1,14 @@
 package net.gabor7d2.pcbuilder.model;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 public class Category {
 
     /**
@@ -23,7 +25,7 @@ public class Category {
     /**
      * The type of this category.
      */
-    private CategoryType type;
+    private String type;
 
     /**
      * Whether the category should be enabled by default when displaying the profile.
@@ -57,42 +59,6 @@ public class Category {
      */
     @NotNull
     private List<Component> components = new ArrayList<>();
-
-    @Override
-    public String toString() {
-        return type.getDisplayName();
-    }
-
-    /**
-     * @return The short name of this category.
-     */
-    public String getShortName() {
-        return type.getName();
-    }
-
-    /**
-     * @return The display name of this category.
-     */
-    public String getDisplayName() {
-        return type.getDisplayName();
-    }
-
-    /**
-     * @return The icon image path of this category.
-     */
-    public String getIconImagePath() {
-        return type.getIconImagePath();
-    }
-
-    /**
-     * Set the type of the category by its internal type name.
-     * If no type exists by that name, the type will be set to null.
-     *
-     * @param typeName The internal type name.
-     */
-    public void setType(String typeName) {
-        this.type = CategoryType.getCategoryTypeFromName(typeName);
-    }
 
     /**
      * Sets whether this category is enabled and visible by default when opening
