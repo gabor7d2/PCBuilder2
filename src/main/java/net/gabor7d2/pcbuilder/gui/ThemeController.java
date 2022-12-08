@@ -17,6 +17,26 @@ public class ThemeController {
     public final static Color TRANSPARENT_COLOR = new Color(0, 0, 0, 0);
 
     /**
+     * The background color to use for component cards in light theme.
+     */
+    private final static Color COMPONENT_BG_LIGHT_THEME = Color.WHITE;
+
+    /**
+     * The background color to use for component cards in dark theme.
+     */
+    private final static Color COMPONENT_BG_DARK_THEME = new Color(51, 54, 56);
+
+    /**
+     * The background color to use for component cards in light theme, if the component is incompatible.
+     */
+    private final static Color COMPONENT_BG_LIGHT_THEME_INCOMPATIBLE = new Color(255, 186, 186);
+
+    /**
+     * The background color to use for component cards in dark theme, if the component is incompatible.
+     */
+    private final static Color COMPONENT_BG_DARK_THEME_INCOMPATIBLE = new Color(70, 54, 56);
+
+    /**
      * The settings instance shared with Application.
      */
     private final Settings settings;
@@ -69,5 +89,19 @@ public class ThemeController {
         settings.setDarkMode(darkMode);
         setupLookAndFeel();
         Application.saveSettings();
+    }
+
+    /**
+     * Gets the background color to use for a component card
+     * in the current theme, and depending on if the card is incompatible or not.
+     */
+    public Color getComponentCardBackgroundColor(boolean incompatible) {
+        if (isDarkMode()) {
+            if (incompatible) return COMPONENT_BG_DARK_THEME_INCOMPATIBLE;
+            else return COMPONENT_BG_DARK_THEME;
+        } else {
+            if (incompatible) return COMPONENT_BG_LIGHT_THEME_INCOMPATIBLE;
+            else return COMPONENT_BG_LIGHT_THEME;
+        }
     }
 }

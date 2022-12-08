@@ -1,12 +1,15 @@
 package net.gabor7d2.pcbuilder;
 
+import lombok.Getter;
 import net.gabor7d2.pcbuilder.gui.MainFrame;
 import net.gabor7d2.pcbuilder.gui.ThemeController;
 import net.gabor7d2.pcbuilder.gui.dialog.DialogManager;
+import net.gabor7d2.pcbuilder.gui.event.ComponentEvent;
 import net.gabor7d2.pcbuilder.gui.event.EventBus;
 import net.gabor7d2.pcbuilder.gui.event.ProfileEvent;
 import net.gabor7d2.pcbuilder.model.Profile;
 import net.gabor7d2.pcbuilder.model.Settings;
+import net.gabor7d2.pcbuilder.model.component.CompatibilityChecker;
 import net.gabor7d2.pcbuilder.persistence.repositoryimpl.RepositoryFactory;
 
 import javax.swing.*;
@@ -39,8 +42,17 @@ public class Application {
      */
     private static Settings settings;
 
+    /**
+     * The dialog manager used to open dialogs.
+     */
+    @Getter
     private static DialogManager dialogManager;
 
+    /**
+     * The theme controller used to query what color to use
+     * on components.
+     */
+    @Getter
     private static ThemeController themeController;
 
     public static void main(String[] args) {
@@ -66,15 +78,11 @@ public class Application {
         // notify listeners of loaded profiles
         profiles.forEach(p -> {
             EventBus.getInstance().postEvent(new ProfileEvent(ProfileEvent.ProfileEventType.ADD, p));
+            // calculate initial incompatibilities
+            CompatibilityChecker.recalculateComponentCompatibility(p);
         });
-    }
-
-    public static DialogManager getDialogManager() {
-        return dialogManager;
-    }
-
-    public static ThemeController getThemeController() {
-        return themeController;
+        // notify all component cards of initial compatibility update
+        EventBus.getInstance().postEvent(new ComponentEvent(ComponentEvent.ComponentEventType.COMPATIBILITY_UPDATE, null));
     }
 
     /**

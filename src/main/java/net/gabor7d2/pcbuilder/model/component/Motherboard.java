@@ -16,4 +16,18 @@ public class Motherboard extends Component {
         registerComponentPropertyType(new ComponentPropertyType("ram_max_mb", "Max RAM", "mb", "MB"));
         registerComponentPropertyType(new ComponentPropertyType("pcie_version", "PCIe version"));
     }
+
+    @Override
+    public boolean compatibleWith(Component other) {
+        if (other instanceof Cpu) {
+            return CompatibilityChecker.checkCpuSocket((Cpu) other, this);
+        }
+        if (other instanceof Ram) {
+            return CompatibilityChecker.checkRamSlot((Ram) other, this);
+        }
+        if (other instanceof Gpu) {
+            return CompatibilityChecker.checkPcieSlot((Gpu) other, this);
+        }
+        return super.compatibleWith(other);
+    }
 }

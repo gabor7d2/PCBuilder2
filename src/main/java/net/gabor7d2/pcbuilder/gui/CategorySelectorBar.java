@@ -3,6 +3,7 @@ package net.gabor7d2.pcbuilder.gui;
 import net.gabor7d2.pcbuilder.gui.event.*;
 import net.gabor7d2.pcbuilder.gui.general.WrapLayout;
 import net.gabor7d2.pcbuilder.model.Category;
+import net.gabor7d2.pcbuilder.model.component.CompatibilityChecker;
 import net.gabor7d2.pcbuilder.type.CategoryType;
 
 import javax.swing.*;
@@ -33,21 +34,23 @@ public class CategorySelectorBar extends JPanel implements ProfileEventListener 
      * Adds a category to the selector bar in the form of a JCheckBox that,
      * when ticked or unticked, will post a CategoryEvent with type ENABLE/DISABLE on the EventBus.
      *
-     * @param c The category to add.
+     * @param category The category to add.
      */
-    public void addCategory(Category c) {
-        CategoryType cType = CategoryType.getCategoryTypeFromName(c.getType());
+    public void addCategory(Category category) {
+        CategoryType cType = CategoryType.getCategoryTypeFromName(category.getType());
 
         JCheckBox ch = new JCheckBox(cType.getDisplayName());
-        ch.setSelected(c.isEnabledByDefault());
+        ch.setSelected(category.isEnabledByDefault());
         ch.setBorder(BorderFactory.createMatteBorder(4, 8, 4, 8, ch.getBackground()));
         ch.addActionListener(e -> {
             // set category enabled/disabled
-            c.setEnabled(ch.isSelected());
+            category.setEnabled(ch.isSelected());
 
             // post event
             CategoryEvent.CategoryEventType type = ch.isSelected() ? CategoryEvent.CategoryEventType.ENABLE : CategoryEvent.CategoryEventType.DISABLE;
-            EventBus.getInstance().postEvent(new CategoryEvent(type, c));
+            EventBus.getInstance().postEvent(new CategoryEvent(type, category));
+            CompatibilityChecker.recalculateComponentCompatibility(category.getProfile());
+            EventBus.getInstance().postEvent(new ComponentEvent(ComponentEvent.ComponentEventType.COMPATIBILITY_UPDATE, null));
         });
         add(ch);
     }

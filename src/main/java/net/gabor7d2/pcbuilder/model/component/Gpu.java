@@ -22,12 +22,21 @@ public class Gpu extends Component {
 
     @Override
     public List<String> getPropertiesDisplay() {
-        List<String> list = new ArrayList<>();
+        return super.getPropertiesDisplay();
+        /*List<String> list = new ArrayList<>();
 
         String baseF = getPropertyValueDisplay("base_frequency_mhz");
         String boostF = getPropertyValueDisplay("boost_frequency_mhz");
         if (!baseF.isEmpty() && !boostF.isEmpty()) list.add(baseF + " / " + boostF);
 
-        return list;
+        return list;*/
+    }
+
+    @Override
+    public boolean compatibleWith(Component other) {
+        if (other instanceof Motherboard) {
+            return CompatibilityChecker.checkPcieSlot(this, (Motherboard) other);
+        }
+        return super.compatibleWith(other);
     }
 }

@@ -21,4 +21,12 @@ public class Cpu extends Component {
         registerComponentPropertyType(new ComponentPropertyType("ram_max_mb", "Max RAM", "mb", "MB"));
         registerComponentPropertyType(new ComponentPropertyType("tdp_w", "TDP", "w", "W"));
     }
+
+    @Override
+    public boolean compatibleWith(Component other) {
+        if (other instanceof Motherboard) {
+            return CompatibilityChecker.checkCpuSocket(this, (Motherboard) other);
+        }
+        return super.compatibleWith(other);
+    }
 }

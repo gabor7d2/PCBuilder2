@@ -14,4 +14,12 @@ public class Ram extends Component {
         registerComponentPropertyType(new ComponentPropertyType("stick_count", "Sticks"));
         registerComponentPropertyType(new ComponentPropertyType("latency", "Latency"));
     }
+
+    @Override
+    public boolean compatibleWith(Component other) {
+        if (other instanceof Motherboard) {
+            return CompatibilityChecker.checkRamSlot(this, (Motherboard) other);
+        }
+        return super.compatibleWith(other);
+    }
 }

@@ -1,10 +1,12 @@
 package net.gabor7d2.pcbuilder.gui;
 
 import net.gabor7d2.pcbuilder.Application;
+import net.gabor7d2.pcbuilder.gui.event.ComponentEvent;
+import net.gabor7d2.pcbuilder.gui.event.ComponentEventListener;
+import net.gabor7d2.pcbuilder.gui.event.EventBus;
 import net.gabor7d2.pcbuilder.gui.general.ImageLabel;
 import net.gabor7d2.pcbuilder.gui.general.ClickableLabel;
 import net.gabor7d2.pcbuilder.model.Component;
-import net.gabor7d2.pcbuilder.model.Property;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,7 +20,7 @@ import static net.gabor7d2.pcbuilder.gui.ThemeController.TRANSPARENT_COLOR;
  * its image, brand, model name, etc. and a radio button above it, that
  * is used to select the component.
  */
-public class ComponentCard extends JPanel {
+public class ComponentCard extends JPanel implements ComponentEventListener {
 
     /**
      * The fixed width of ComponentCards.
@@ -45,8 +47,6 @@ public class ComponentCard extends JPanel {
         this.buttonGroup = buttonGroup;
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        setOpaque(false);
-        setBackground(TRANSPARENT_COLOR);
         setBorder(BorderFactory.createMatteBorder(8, 8, 8, 8, TRANSPARENT_COLOR));
 
         setAlignmentY(TOP_ALIGNMENT);
@@ -163,7 +163,11 @@ public class ComponentCard extends JPanel {
             textPanel.add(priceSite);
         }
 
+        updateTheme();
+
         GUIUtils.freezeSize(this, new Dimension(COMPONENT_CARD_WIDTH, getPreferredSize().height));
+
+        EventBus.getInstance().subscribeToComponentEvents(this);
     }
 
     /**
@@ -179,5 +183,28 @@ public class ComponentCard extends JPanel {
      */
     private void showComponentImageDialog() {
         Application.getDialogManager().showComponentImageDialog(component);
+    }
+
+    /**
+     * Updates the background color on theme change, or on compatibility change.
+     */
+    private void updateTheme() {
+        if (component != null) {
+            setBackground(Application.getThemeController().getComponentCardBackgroundColor(component.isIncompatible()));
+        }
+    }
+
+    @Override
+    public void updateUI() {
+        // gets called on theme switching
+        super.updateUI();
+        updateTheme();
+    }
+
+    @Override
+    public void processComponentEvent(ComponentEvent e) {
+        if (e.getType() == ComponentEvent.ComponentEventType.COMPATIBILITY_UPDATE) {
+            updateTheme();
+        }
     }
 }

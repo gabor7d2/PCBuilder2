@@ -7,8 +7,12 @@ import net.gabor7d2.pcbuilder.gui.event.EventBus;
 import net.gabor7d2.pcbuilder.gui.general.ScrollPane2D;
 import net.gabor7d2.pcbuilder.gui.general.SmartScrollPane;
 import net.gabor7d2.pcbuilder.model.Category;
+import net.gabor7d2.pcbuilder.model.component.CompatibilityChecker;
 
 import javax.swing.*;
+
+import static net.gabor7d2.pcbuilder.gui.event.CategoryEvent.CategoryEventType.DISABLE;
+import static net.gabor7d2.pcbuilder.gui.event.CategoryEvent.CategoryEventType.ENABLE;
 
 /**
  * CategoryRow is a ScrollPane2DRow implementation that is used for
@@ -73,6 +77,8 @@ public class CategoryRow extends ScrollPane2D.ScrollPane2DRow implements Categor
         panel.getButtonGroup().addButtonGroupListener((b, i) -> {
             category.setSelection(i);
             EventBus.getInstance().postEvent(new ComponentEvent(ComponentEvent.ComponentEventType.SELECT, category.getComponents().get(i)));
+            CompatibilityChecker.recalculateComponentCompatibility(category.getProfile());
+            EventBus.getInstance().postEvent(new ComponentEvent(ComponentEvent.ComponentEventType.COMPATIBILITY_UPDATE, null));
         });
     }
 
@@ -110,10 +116,8 @@ public class CategoryRow extends ScrollPane2D.ScrollPane2DRow implements Categor
     public void processCategoryEvent(CategoryEvent e) {
         if (e.getCategory() == category) {
             // set visibility of category row
-            if (e.getType() == CategoryEvent.CategoryEventType.ENABLE) {
-                outerScrollPane2D.setRowVisible(outerScrollPane2D.indexOfRow(this), true);
-            } else if (e.getType() == CategoryEvent.CategoryEventType.DISABLE) {
-                outerScrollPane2D.setRowVisible(outerScrollPane2D.indexOfRow(this), false);
+            if (e.getType() == ENABLE || e.getType() == DISABLE) {
+                outerScrollPane2D.setRowVisible(outerScrollPane2D.indexOfRow(this), e.getType() == ENABLE);
             }
         }
     }

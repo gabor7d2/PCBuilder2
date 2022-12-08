@@ -59,6 +59,11 @@ public class Component {
     private Price price;
 
     /**
+     * Whether this component is incompatible with any other selected component.
+     */
+    private boolean incompatible;
+
+    /**
      * The properties of this component.
      */
     private List<Property> properties = new ArrayList<>();
@@ -125,10 +130,27 @@ public class Component {
      *
      * @param key The key of the property.
      * @return The display string, or an empty string if no property with
-     *  such key exists on this component.
+     * such key exists on this component.
      */
     public String getPropertyDisplay(String key) {
         return getPropertyDisplay(getProperty(key));
+    }
+
+    /**
+     * Gets the formatted value (value + unit) of the specified property.
+     *
+     * @param property The key of the property.
+     * @return The display value, or an empty string if property is null.
+     */
+    public String getPropertyValueDisplay(Property property) {
+        if (property == null) return "";
+
+        ComponentPropertyType pType = ComponentPropertyType.getComponentPropertyTypeFromName(property.getKey());
+        if (pType == null) {
+            return property.getValue();
+        } else {
+            return property.getValue() + " " + pType.getUnitDisplayName();
+        }
     }
 
     /**
@@ -140,14 +162,6 @@ public class Component {
      * such key exists on this component.
      */
     public String getPropertyValueDisplay(String key) {
-        Property property = getProperty(key);
-        if (property == null) return "";
-
-        ComponentPropertyType pType = ComponentPropertyType.getComponentPropertyTypeFromName(property.getKey());
-        if (pType == null) {
-            return property.getValue();
-        } else {
-            return property.getValue() + " " + pType.getUnitDisplayName();
-        }
+        return getPropertyValueDisplay(getProperty(key));
     }
 }

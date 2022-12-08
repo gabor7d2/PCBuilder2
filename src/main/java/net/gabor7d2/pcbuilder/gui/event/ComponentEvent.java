@@ -11,7 +11,8 @@ public class ComponentEvent extends PCBuilderEvent {
      * Possible types of a ComponentEvent.
      */
     public enum ComponentEventType {
-        SELECT
+        SELECT,
+        COMPATIBILITY_UPDATE
     }
 
     /**
