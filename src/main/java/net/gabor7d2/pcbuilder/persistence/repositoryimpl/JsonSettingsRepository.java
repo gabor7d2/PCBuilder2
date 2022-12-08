@@ -1,10 +1,10 @@
-package net.gabor7d2.pcbuilder.repositoryimpl;
+package net.gabor7d2.pcbuilder.persistence.repositoryimpl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import net.gabor7d2.pcbuilder.Utils;
 import net.gabor7d2.pcbuilder.model.Settings;
-import net.gabor7d2.pcbuilder.repository.SettingsRepository;
+import net.gabor7d2.pcbuilder.persistence.repository.SettingsRepository;
 
 import java.io.File;
 

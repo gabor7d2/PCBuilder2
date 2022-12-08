@@ -1,4 +1,4 @@
-package net.gabor7d2.pcbuilder.repositoryimpl;
+package net.gabor7d2.pcbuilder.persistence;
 
 /**
  * Enum containing the different outcomes a profile import operation can return.

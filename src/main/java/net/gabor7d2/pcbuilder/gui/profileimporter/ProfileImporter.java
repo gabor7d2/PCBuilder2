@@ -1,8 +1,8 @@
-package net.gabor7d2.pcbuilder.gui;
+package net.gabor7d2.pcbuilder.gui.profileimporter;
 
 import net.gabor7d2.pcbuilder.Application;
 import net.gabor7d2.pcbuilder.model.Profile;
-import net.gabor7d2.pcbuilder.repositoryimpl.ImportResultCode;
+import net.gabor7d2.pcbuilder.persistence.ImportResultCode;
 
 import javax.swing.*;
 import java.io.*;

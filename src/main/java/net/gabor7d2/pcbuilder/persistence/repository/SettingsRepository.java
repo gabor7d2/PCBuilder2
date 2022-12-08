@@ -1,4 +1,4 @@
-package net.gabor7d2.pcbuilder.repository;
+package net.gabor7d2.pcbuilder.persistence.repository;
 
 import net.gabor7d2.pcbuilder.model.Settings;
 

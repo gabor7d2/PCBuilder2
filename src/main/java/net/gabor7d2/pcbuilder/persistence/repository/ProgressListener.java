@@ -1,4 +1,4 @@
-package net.gabor7d2.pcbuilder.repository;
+package net.gabor7d2.pcbuilder.persistence.repository;
 
 public interface ProgressListener<RC, R> {
 

@@ -1,4 +1,4 @@
-package net.gabor7d2.pcbuilder.gui;
+package net.gabor7d2.pcbuilder.gui.profileimporter;
 
 import net.gabor7d2.pcbuilder.Application;
 import net.gabor7d2.pcbuilder.gui.dialog.ProgressDialog;
@@ -6,9 +6,9 @@ import net.gabor7d2.pcbuilder.gui.dialog.ProgressDialogType;
 import net.gabor7d2.pcbuilder.gui.event.EventBus;
 import net.gabor7d2.pcbuilder.gui.event.ProfileEvent;
 import net.gabor7d2.pcbuilder.model.Profile;
-import net.gabor7d2.pcbuilder.repository.ProgressListener;
-import net.gabor7d2.pcbuilder.repositoryimpl.ImportResultCode;
-import net.gabor7d2.pcbuilder.repositoryimpl.RepositoryFactory;
+import net.gabor7d2.pcbuilder.persistence.repository.ProgressListener;
+import net.gabor7d2.pcbuilder.persistence.ImportResultCode;
+import net.gabor7d2.pcbuilder.persistence.repositoryimpl.RepositoryFactory;
 
 import java.awt.*;
 import java.awt.event.WindowEvent;
@@ -33,7 +33,7 @@ public class ZipProfileImporter implements ProgressListener<ImportResultCode, Co
     }
 
     public void execute() {
-        RepositoryFactory.getProfileImporterRepository().importFromZipFile(zipFile, this, cancellationToken);
+        RepositoryFactory.getProfileRepository().importFromZipFile(zipFile, this, cancellationToken);
     }
 
     private boolean first = true;

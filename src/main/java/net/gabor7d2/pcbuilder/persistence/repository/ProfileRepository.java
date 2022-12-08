@@ -1,13 +1,15 @@
-package net.gabor7d2.pcbuilder.repository;
+package net.gabor7d2.pcbuilder.persistence.repository;
 
 import net.gabor7d2.pcbuilder.model.Category;
 import net.gabor7d2.pcbuilder.model.Component;
 import net.gabor7d2.pcbuilder.model.Profile;
 import net.gabor7d2.pcbuilder.model.Settings;
+import net.gabor7d2.pcbuilder.persistence.ImportResultCode;
 
 import java.io.File;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Interface that can be implemented to handle {@link Profile} persistence,
@@ -23,6 +25,10 @@ public interface ProfileRepository {
      * @return The collection of loaded profiles.
      */
     Collection<Profile> loadProfiles();
+
+    void importFromZipFile(File zipFile,
+                           ProgressListener<ImportResultCode, Collection<Profile>> progressListener,
+                           AtomicBoolean cancellationToken);
 
     //void addProfile(Profile p);
 

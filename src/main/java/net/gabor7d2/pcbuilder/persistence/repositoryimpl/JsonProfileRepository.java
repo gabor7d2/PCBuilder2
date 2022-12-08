@@ -1,17 +1,21 @@
-package net.gabor7d2.pcbuilder.repositoryimpl;
+package net.gabor7d2.pcbuilder.persistence.repositoryimpl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import net.gabor7d2.pcbuilder.model.Category;
+import net.gabor7d2.pcbuilder.persistence.ImportResultCode;
+import net.gabor7d2.pcbuilder.persistence.ZipExtractorThread;
+import net.gabor7d2.pcbuilder.persistence.repository.ProgressListener;
 import net.gabor7d2.pcbuilder.type.CategoryType;
 import net.gabor7d2.pcbuilder.model.Component;
 import net.gabor7d2.pcbuilder.model.Profile;
-import net.gabor7d2.pcbuilder.repository.ProfileRepository;
+import net.gabor7d2.pcbuilder.persistence.repository.ProfileRepository;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Implementation for handling {@link Profile} persistence, loading and storing
@@ -148,5 +152,60 @@ public class JsonProfileRepository implements ProfileRepository {
         if (!profilesDirectory.isDirectory()) {
             profilesDirectory.mkdirs();
         }
+    }
+
+    @Override
+    public void importFromZipFile(File zipFile,
+                                  ProgressListener<ImportResultCode, Collection<Profile>> progressListener,
+                                  AtomicBoolean cancellationToken) {
+        ZipExtractorThread thread = new ZipExtractorThread(profilesDirectory, zipFile, new ProgressListener<>() {
+            @Override
+            public void preparing(int maxProgress) {
+                progressListener.preparing(maxProgress);
+            }
+
+            @Override
+            public void starting() {
+                progressListener.starting();
+            }
+
+            @Override
+            public void progress(int progress) {
+                progressListener.progress(progress);
+            }
+
+            @Override
+            public void cancelling() {
+                progressListener.cancelling();
+            }
+
+            @Override
+            public void completed(ImportResultCode resultCode, Collection<File> extractedFiles) {
+                if (resultCode == ImportResultCode.SUCCESS) {
+                    progressListener.progress(Integer.MAX_VALUE);
+                    progressListener.completed(ImportResultCode.SUCCESS,
+                            loadProfiles(getProfileDirsFromExtractedFiles(extractedFiles)));
+                } else {
+                    progressListener.completed(resultCode, null);
+                }
+            }
+        }, cancellationToken);
+        thread.start();
+    }
+
+    private Collection<File> getProfileDirsFromExtractedFiles(Collection<File> extractedFiles) {
+        List<File> profileDirs = new ArrayList<>();
+
+        for (File f : extractedFiles) {
+            try {
+                if (f.getParentFile().getCanonicalPath().equals(profilesDirectory.getCanonicalPath())) {
+                    profileDirs.add(f);
+                }
+            } catch (IOException e) {
+                new RuntimeException("Failed to load profile dir.", e).printStackTrace();
+            }
+        }
+
+        return profileDirs;
     }
 }

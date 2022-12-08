@@ -1,6 +1,6 @@
-package net.gabor7d2.pcbuilder.repositoryimpl;
+package net.gabor7d2.pcbuilder.persistence;
 
-import net.gabor7d2.pcbuilder.repository.ProgressListener;
+import net.gabor7d2.pcbuilder.persistence.repository.ProgressListener;
 
 import java.io.*;
 import java.util.ArrayList;

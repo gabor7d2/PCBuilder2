@@ -4,6 +4,7 @@ import com.formdev.flatlaf.FlatClientProperties;
 import net.gabor7d2.pcbuilder.Application;
 import net.gabor7d2.pcbuilder.gui.event.*;
 import net.gabor7d2.pcbuilder.gui.general.ImageLoader;
+import net.gabor7d2.pcbuilder.gui.profileimporter.ProfileImporter;
 import net.gabor7d2.pcbuilder.model.Category;
 import net.gabor7d2.pcbuilder.model.Price;
 import net.gabor7d2.pcbuilder.model.Profile;

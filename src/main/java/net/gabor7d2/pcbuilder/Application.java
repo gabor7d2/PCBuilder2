@@ -7,7 +7,7 @@ import net.gabor7d2.pcbuilder.gui.event.EventBus;
 import net.gabor7d2.pcbuilder.gui.event.ProfileEvent;
 import net.gabor7d2.pcbuilder.model.Profile;
 import net.gabor7d2.pcbuilder.model.Settings;
-import net.gabor7d2.pcbuilder.repositoryimpl.RepositoryFactory;
+import net.gabor7d2.pcbuilder.persistence.repositoryimpl.RepositoryFactory;
 
 import javax.swing.*;
 import java.awt.*;
