@@ -7,20 +7,46 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+/**
+ * Class for managing when certain dialogs can be opened.
+ */
 public class DialogManager {
 
+    /**
+     * Keeps track of the currently open dialogs. Used to ensure that
+     * only 1 dialog is being shown to the user.
+     */
     private int currentlyOpenDialogs = 0;
 
+    /**
+     * The parent frame to set as the parent of opened dialogs.
+     */
     private final JFrame parentFrame;
 
+    /**
+     * Creates a new DialogManager.
+     *
+     * @param parentFrame The parent frame to set as the parent of opened dialogs.
+     */
     public DialogManager(JFrame parentFrame) {
         this.parentFrame = parentFrame;
     }
 
+    /**
+     * Shows an info dialog with the specified title and message
+     *
+     * @param title   The title of the dialog to display
+     * @param message The message to display
+     */
     public void showInfoDialog(String title, String message) {
         JOptionPane.showMessageDialog(parentFrame, message, title, JOptionPane.INFORMATION_MESSAGE);
     }
 
+    /**
+     * Shows an info dialog with the specified message
+     *
+     * @param message The message to display
+     */
     public void showInfoDialog(String message) {
         showInfoDialog("", message);
     }
@@ -70,6 +96,15 @@ public class DialogManager {
         return JOptionPane.showConfirmDialog(parentFrame, message, title, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION;
     }
 
+    /**
+     * Shows an option dialog where the user can choose between one of the options by
+     * pressing the corresponding button.
+     *
+     * @param title   The title of the dialog
+     * @param message The message to display
+     * @param options The options the user can choose from
+     * @return The chosen option, or null if the dialog was cancelled.
+     */
     public int showOptionDialog(String title, String message, Object[] options) {
         if (currentlyOpenDialogs != 0) return -1;
         currentlyOpenDialogs++;
@@ -99,6 +134,17 @@ public class DialogManager {
         return input;
     }
 
+    /**
+     * Shows an input dialog to the user with the specified title and message
+     * that contains a single ComboBox where the user can choose from the specified
+     * possibilities.
+     *
+     * @param title         The title of the dialog.
+     * @param message       The message to display.
+     * @param possibilities The possibilities the user can choose from using the ComboBox.
+     * @param <T>           The type of the data to display
+     * @return The chosen option, or null if the dialog was cancelled.
+     */
     public <T> T showInputDialog(String title, String message, T[] possibilities) {
         if (currentlyOpenDialogs != 0) return null;
         currentlyOpenDialogs++;
@@ -109,6 +155,12 @@ public class DialogManager {
         return chosen;
     }
 
+    /**
+     * Shows a component image dialog displaying the enlarged image
+     * of the specified component.
+     *
+     * @param c The component to display.
+     */
     public void showComponentImageDialog(Component c) {
         if (currentlyOpenDialogs != 0) return;
         currentlyOpenDialogs++;
@@ -124,6 +176,13 @@ public class DialogManager {
         EventQueue.invokeLater(() -> d.setVisible(true));
     }
 
+    /**
+     * Shows the given file chooser dialog, and returns the result of the file choose.
+     *
+     * @param fileChooser       The dialog to display.
+     * @param approveButtonText The text of the approve button in the dialog.
+     * @return The result of the file choose.
+     */
     public int showFileChooserDialog(JFileChooser fileChooser, String approveButtonText) {
         if (currentlyOpenDialogs != 0) return -1;
         currentlyOpenDialogs++;
@@ -134,6 +193,14 @@ public class DialogManager {
         return result;
     }
 
+    /**
+     * Shows a progress dialog with the given title and ProgressDialogType.
+     *
+     * @param title The title of the dialog.
+     * @param type  The type of the progress dialog.
+     * @return The created, visible progress dialog, for manipulating it's progress
+     * and other properties.
+     */
     public ProgressDialog showProgressDialog(String title, ProgressDialogType type) {
         // dont check if there are any open dialogs, progress dialog can be
         // opened on top of any dialog
@@ -151,6 +218,14 @@ public class DialogManager {
         return d;
     }
 
+    /**
+     * Creates a {@link MultiInputDialog} that the user can use to fill out input fields.
+     * The returned dialog should be used to set up the input fields it should contain,
+     * and display the dialog using setVisible(true)
+     *
+     * @param inputDone The listener to call when the user pressed the OK button.
+     * @return The created MultiInputDialog.
+     */
     public MultiInputDialog createMultiInputDialog(MultiInputDialog.InputDone inputDone) {
         if (currentlyOpenDialogs != 0) return null;
         currentlyOpenDialogs++;

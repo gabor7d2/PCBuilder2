@@ -1,15 +1,12 @@
 package net.gabor7d2.pcbuilder.persistence.repository;
 
-import net.gabor7d2.pcbuilder.Utils;
 import net.gabor7d2.pcbuilder.model.Category;
 import net.gabor7d2.pcbuilder.model.Component;
 import net.gabor7d2.pcbuilder.model.Profile;
-import net.gabor7d2.pcbuilder.model.Settings;
 import net.gabor7d2.pcbuilder.persistence.ImportResultCode;
 
 import java.io.File;
 import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**

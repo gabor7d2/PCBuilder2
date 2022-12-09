@@ -6,12 +6,29 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Dialog that can be used to request multiple fields of input
+ * from the user.
+ */
 public class MultiInputDialog extends JDialog {
 
+    /**
+     * The input fields the dialog has.
+     */
     private final List<JTextField> inputFields = new ArrayList<>();
 
+    /**
+     * Panel that contains the input fields.
+     */
     private final JPanel inputFieldsPanel = new JPanel();
 
+    /**
+     * Creates a new MultiInputDialog.
+     *
+     * @param parentFrame The parent frame of the dialog.
+     * @param inputDone   The listener to call when the user finished inputting data,
+     *                    and pressed the accept button.
+     */
     MultiInputDialog(JFrame parentFrame, InputDone inputDone) {
         super(parentFrame);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -44,6 +61,12 @@ public class MultiInputDialog extends JDialog {
         setLocationRelativeTo(null);
     }
 
+    /**
+     * Adds an input field to the dialog.
+     *
+     * @param name The name of the input to ask for,
+     *             displayed to the left of the input field.
+     */
     public void addInputField(String name) {
         JLabel nameLabel = new JLabel(name);
         inputFieldsPanel.add(nameLabel);

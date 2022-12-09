@@ -73,6 +73,9 @@ public class ControlBar extends JPanel implements ProfileEventListener, Category
      */
     private JButton themeButton;
 
+    /**
+     * The profile importer used to import profiles.
+     */
     private final ProfileImporter importer = new ProfileImporter(new File(System.getProperty("user.home")));
 
     /**
@@ -94,6 +97,9 @@ public class ControlBar extends JPanel implements ProfileEventListener, Category
         EventBus.getInstance().subscribeToComponentEvents(this);
     }
 
+    /**
+     * Set up panel on the west side of the layout
+     */
     private void setupWestPanel() {
         // setup west panel containing the texts
         westPanel = new JPanel();
@@ -111,6 +117,9 @@ public class ControlBar extends JPanel implements ProfileEventListener, Category
         westPanel.add(totalPriceLabel);
     }
 
+    /**
+     * Set up panel on the east side of the layout
+     */
     private void setupEastPanel() {
         eastPanel = new JPanel();
         eastPanel.setLayout((new BoxLayout(eastPanel, BoxLayout.X_AXIS)));
@@ -133,6 +142,9 @@ public class ControlBar extends JPanel implements ProfileEventListener, Category
         eastPanel.setMaximumSize(eastPanel.getMinimumSize());
     }
 
+    /**
+     * Set up viewer panel
+     */
     private void setupViewerEastPanel() {
         // setup viewer east label containing the profile selector and the buttons
         viewerEastPanel = new JPanel();
@@ -157,6 +169,9 @@ public class ControlBar extends JPanel implements ProfileEventListener, Category
         addButton("Editor Mode", viewerEastPanel, e -> switchEditorMode(true));
     }
 
+    /**
+     * Set up editor panel
+     */
     private void setupEditorEastPanel() {
         // setup editor east label containing buttons
         editorEastPanel = new JPanel();

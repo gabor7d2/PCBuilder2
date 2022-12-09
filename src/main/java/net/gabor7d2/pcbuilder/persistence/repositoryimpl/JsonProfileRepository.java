@@ -227,6 +227,7 @@ public class JsonProfileRepository implements ProfileRepository {
         thread.start();
     }
 
+    // TODO javadocs
     private Collection<File> getProfileDirsFromExtractedFiles(Collection<File> extractedFiles) {
         List<File> profileDirs = new ArrayList<>();
 

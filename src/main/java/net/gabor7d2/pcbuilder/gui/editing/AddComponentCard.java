@@ -4,7 +4,6 @@ import net.gabor7d2.pcbuilder.Application;
 import net.gabor7d2.pcbuilder.gui.GUIUtils;
 import net.gabor7d2.pcbuilder.gui.ThemeController;
 import net.gabor7d2.pcbuilder.gui.dialog.MultiInputDialog;
-import net.gabor7d2.pcbuilder.gui.event.CategoryEvent;
 import net.gabor7d2.pcbuilder.gui.event.ComponentEvent;
 import net.gabor7d2.pcbuilder.gui.event.EventBus;
 import net.gabor7d2.pcbuilder.gui.general.ImageLabel;
@@ -12,7 +11,6 @@ import net.gabor7d2.pcbuilder.model.Category;
 import net.gabor7d2.pcbuilder.model.Component;
 import net.gabor7d2.pcbuilder.model.Price;
 import net.gabor7d2.pcbuilder.model.Profile;
-import net.gabor7d2.pcbuilder.type.CategoryType;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,6 +18,10 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.UUID;
 
+/**
+ * An AddComponentCard is a panel that displays an empty card with a plus
+ * sign on it, used for adding new components to a category.
+ */
 public class AddComponentCard extends JPanel {
 
     /**
@@ -32,6 +34,11 @@ public class AddComponentCard extends JPanel {
      */
     private final Category category;
 
+    /**
+     * Creates a new AddComponentCard.
+     *
+     * @param category The category this AddComponentCard belongs to.
+     */
     public AddComponentCard(Category category) {
         this.category = category;
         setLayout(new BorderLayout());
@@ -64,6 +71,10 @@ public class AddComponentCard extends JPanel {
         GUIUtils.freezeSize(this, new Dimension(ADD_COMPONENT_CARD_WIDTH, getPreferredSize().height));
     }
 
+    /**
+     * Gets input from user for the details of the component,
+     * then creates the component and notifies the listeners about it.
+     */
     private void addComponent() {
         Profile currentProfile = Application.getCurrentlySelectedProfile();
 

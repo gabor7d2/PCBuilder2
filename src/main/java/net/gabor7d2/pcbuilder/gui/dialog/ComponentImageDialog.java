@@ -11,16 +11,38 @@ import java.awt.event.WindowEvent;
 
 import static net.gabor7d2.pcbuilder.Application.APP_ICONS;
 
+/**
+ * A dialog that displays the specified components' image enlarged.
+ * The user can press the left or right arrows to navigate between components
+ * in the same category row.
+ */
 public class ComponentImageDialog extends JDialog implements KeyListener {
 
+    /**
+     * The fixed width of the dialog.
+     */
     private final static int DIALOG_WIDTH = 512;
 
+    /**
+     * The fixed height of the dialog.
+     */
     private final static int DIALOG_HEIGHT = 512;
 
+    /**
+     * The component that's currently being displayed.
+     */
     private Component component;
 
+    /**
+     * The image label that contains the components' image.
+     */
     private final ImageLabel imageLabel = new ImageLabel();
 
+    /**
+     * Creates a new ComponentImageDialog.
+     *
+     * @param component The component that should be displayed.
+     */
     ComponentImageDialog(Component component) {
         setResizable(false);
         setBackground(Color.WHITE);
@@ -39,6 +61,11 @@ public class ComponentImageDialog extends JDialog implements KeyListener {
         setLocationRelativeTo(null);
     }
 
+    /**
+     * Displays the given component.
+     *
+     * @param c The component to display.
+     */
     private void displayComponent(Component c) {
         component = c;
 
@@ -60,6 +87,7 @@ public class ComponentImageDialog extends JDialog implements KeyListener {
             case KeyEvent.VK_B:
             case KeyEvent.VK_LEFT:
                 if (compIndex > 0) {
+                    // jump to the previous image in the category
                     compIndex--;
                     displayComponent(component.getCategory().getComponents().get(compIndex));
                 }
@@ -68,6 +96,7 @@ public class ComponentImageDialog extends JDialog implements KeyListener {
             case KeyEvent.VK_N:
             case KeyEvent.VK_RIGHT:
                 if (compIndex < component.getCategory().getComponents().size() - 1) {
+                    // jump to the next image in the category
                     compIndex++;
                     displayComponent(component.getCategory().getComponents().get(compIndex));
                 }

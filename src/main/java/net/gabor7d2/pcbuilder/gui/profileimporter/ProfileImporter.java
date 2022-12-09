@@ -1,12 +1,9 @@
 package net.gabor7d2.pcbuilder.gui.profileimporter;
 
 import net.gabor7d2.pcbuilder.Application;
-import net.gabor7d2.pcbuilder.model.Profile;
-import net.gabor7d2.pcbuilder.persistence.ImportResultCode;
 
 import javax.swing.*;
 import java.io.*;
-import java.util.Collection;
 
 import static javax.swing.JFileChooser.*;
 
@@ -19,8 +16,6 @@ public class ProfileImporter {
 
     private File previouslySelectedFolder;
 
-    private ImportCompleteListener listener;
-
     /**
      * Creates a new ProfileImporter.
      *
@@ -31,10 +26,9 @@ public class ProfileImporter {
         previouslySelectedFolder = defaultSelectedFolder;
     }
 
-    public void setImportCompleteListener(ImportCompleteListener l) {
-        listener = l;
-    }
-
+    /**
+     * Shows the dialog where the user can start importing a profile.
+     */
     public void showDialog() {
         String[] dialogOptions = new String[]{"URL", "Zip file", "Folder"};
 
@@ -48,19 +42,9 @@ public class ProfileImporter {
         }
     }
 
-    private void importFromUrl() {
-        String url = Application.getDialogManager().showInputDialog("Specify URL",
-                """
-                        Please specify a URL pointing to a Zip archive:
-
-                        (Note that the progress bar might not show any
-                        progress being made if the url doesn't support it)""");
-
-        if (url != null) {
-            // TODO url import
-        }
-    }
-
+    /**
+     * Asks user for a zip file, then starts importing it.
+     */
     private void importFromZipFile() {
         JFileChooser chooser = new JFileChooser(previouslySelectedFolder);
         chooser.setFileSelectionMode(FILES_ONLY);
@@ -71,31 +55,12 @@ public class ProfileImporter {
         if (returnValue == APPROVE_OPTION) {
             File file = chooser.getSelectedFile();
             if (file != null) {
-                if (file.isFile() && file.getParentFile().isDirectory()) previouslySelectedFolder = file.getParentFile();
+                if (file.isFile() && file.getParentFile().isDirectory())
+                    previouslySelectedFolder = file.getParentFile();
 
                 ZipProfileImporter importer = new ZipProfileImporter(file);
                 importer.execute();
             }
         }
-    }
-
-    private void importFromFolder() {
-        JFileChooser chooser = new JFileChooser(previouslySelectedFolder);
-        chooser.setFileSelectionMode(DIRECTORIES_ONLY);
-        chooser.setMultiSelectionEnabled(false);
-        chooser.setDialogTitle("Choose a profile folder");
-        int returnValue = Application.getDialogManager().showFileChooserDialog(chooser, "Import");
-
-        if (returnValue == APPROVE_OPTION) {
-            File directory = chooser.getSelectedFile();
-            if (directory != null) {
-                if (directory.isDirectory()) previouslySelectedFolder = directory;
-                // TODO folder import
-            }
-        }
-    }
-
-    public interface ImportCompleteListener {
-        void importComplete(ImportResultCode resultCode, Collection<Profile> profiles);
     }
 }

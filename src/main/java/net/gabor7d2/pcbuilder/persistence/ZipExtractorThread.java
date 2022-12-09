@@ -12,11 +12,30 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+/**
+ * Thread for extracting a zip file in the background.
+ */
 public class ZipExtractorThread extends Thread {
 
+    /**
+     * The destination directory for the zip's contents.
+     */
     private final File destDir;
+
+    /**
+     * The zip file to extract.
+     */
     private final File zipFile;
+
+    /**
+     * The progress listener to post progress updates to.
+     */
     private final ProgressListener<ImportResultCode, Collection<File>> progressListener;
+
+    /**
+     * The cancellation token, that if set to true, will cancel the operation
+     * as soon as possible.
+     */
     private final AtomicBoolean cancelled;
 
     /**
@@ -24,6 +43,15 @@ public class ZipExtractorThread extends Thread {
      */
     private final AtomicLong progressInBytes = new AtomicLong();
 
+    /**
+     * Creates a new zip extractor thread.
+     *
+     * @param destDir           The destination directory for the zip's contents.
+     * @param zipFile           The zip file to extract.
+     * @param progressListener  The progress listener to post progress updates to.
+     * @param cancellationToken The cancellation token, that if set to true, will cancel the operation
+     *                          as soon as possible.
+     */
     public ZipExtractorThread(File destDir, File zipFile,
                               ProgressListener<ImportResultCode, Collection<File>> progressListener,
                               AtomicBoolean cancellationToken) {
@@ -59,6 +87,14 @@ public class ZipExtractorThread extends Thread {
         }
     }
 
+    /**
+     * Extracts the specified zip input stream to the specified destination directory.
+     *
+     * @param destDir                  The directory to extract to.
+     * @param zipFileInputStream       The input stream.
+     * @param overwriteWithZipContents Whether to overwrite contents in the destDir or
+     *                                 leave them as is.
+     */
     private void extractZip(File destDir, InputStream zipFileInputStream, boolean overwriteWithZipContents) {
         // Create dest dir if it doesn't exist
         if (!destDir.exists()) destDir.mkdirs();

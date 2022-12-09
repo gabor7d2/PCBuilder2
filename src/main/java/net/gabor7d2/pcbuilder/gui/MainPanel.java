@@ -5,7 +5,6 @@ import net.gabor7d2.pcbuilder.gui.editing.AddCategoryRow;
 import net.gabor7d2.pcbuilder.gui.event.*;
 import net.gabor7d2.pcbuilder.gui.general.AsyncImageLoader;
 import net.gabor7d2.pcbuilder.gui.general.ScrollPane2D;
-import net.gabor7d2.pcbuilder.model.Category;
 import net.gabor7d2.pcbuilder.model.Profile;
 
 import javax.swing.*;

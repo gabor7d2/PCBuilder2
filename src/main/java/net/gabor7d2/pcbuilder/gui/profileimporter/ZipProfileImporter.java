@@ -18,26 +18,55 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE;
 
+/**
+ * Class used for bridging the zip importing file task and the GUI
+ * using a progress dialog.
+ */
 public class ZipProfileImporter implements ProgressListener<ImportResultCode, Collection<Profile>>, ProgressDialog.DialogClosingListener {
 
+    /**
+     * The zip file to be loaded.
+     */
     private final File zipFile;
 
+    /**
+     * The cancellation token for cancelling the operation.
+     */
     private final AtomicBoolean cancellationToken = new AtomicBoolean();
 
+    /**
+     * The progress dialog for displaying the progress of the operation.
+     */
     private volatile ProgressDialog progressDialog;
 
+    /**
+     * Maximum progress of the operation.
+     */
     private int maxProgress;
 
+    /**
+     * Creates a new ZipProfileImporter.
+     *
+     * @param zipFile The zip file to be imported.
+     */
     public ZipProfileImporter(File zipFile) {
         this.zipFile = zipFile;
     }
 
+    /**
+     * Starts importing the zip file.
+     */
     public void execute() {
         RepositoryFactory.getProfileRepository().importFromZipFile(zipFile, this, cancellationToken);
     }
 
     private boolean first = true;
 
+    /**
+     * Updates the progress of the progress dialog.
+     *
+     * @param currentProgress The current progress of the operation.
+     */
     private void updateProgress(int currentProgress) {
         if (currentProgress < 1 || maxProgress < 1) return;
 
@@ -111,6 +140,7 @@ public class ZipProfileImporter implements ProgressListener<ImportResultCode, Co
 
     @Override
     public void dialogClosing(WindowEvent e, ProgressDialog dialog) {
+        // cancel operation if user closes the dialog.
         cancellationToken.set(true);
     }
 }

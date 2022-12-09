@@ -15,8 +15,16 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.UUID;
 
+/**
+ * AddCategoryRow is a ScrollPane2DRow implementation that is used for
+ * displaying an empty row with a plus icon, used for adding new categories
+ * to the profile.
+ */
 public class AddCategoryRow extends ScrollPane2D.ScrollPane2DRow {
 
+    /**
+     * Creates a new AddCategoryRow.
+     */
     public AddCategoryRow() {
         ImageLabel addLabel = new ImageLabel();
         addLabel.setImageFromClasspath("/add_category_icon.png", 120, 120);
@@ -35,6 +43,10 @@ public class AddCategoryRow extends ScrollPane2D.ScrollPane2DRow {
         });
     }
 
+    /**
+     * Gets input from user for the details of the category,
+     * then creates the category and notifies the listeners about it.
+     */
     private void addCategory() {
         Profile currentProfile = Application.getCurrentlySelectedProfile();
 

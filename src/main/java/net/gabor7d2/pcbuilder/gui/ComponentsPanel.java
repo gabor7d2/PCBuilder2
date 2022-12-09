@@ -35,6 +35,11 @@ public class ComponentsPanel extends JPanel {
         displayComponents(components);
     }
 
+    /**
+     * Gets the button group that groups the ComponentCards' radio buttons.
+     *
+     * @return the button group that groups the ComponentCards' radio buttons.
+     */
     public SmartButtonGroup getButtonGroup() {
         return buttonGroup;
     }
