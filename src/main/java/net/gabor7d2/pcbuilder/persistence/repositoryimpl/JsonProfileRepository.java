@@ -132,6 +132,11 @@ public class JsonProfileRepository implements ProfileRepository {
                                 + File.separator + cType.getName().toLowerCase().replace(' ', '_')
                                 + File.separator + comp.getBrand().toLowerCase().replace(' ', '_')
                                 + "_" + comp.getModelName().toLowerCase().replace(' ', '_') + ".png");
+                    } else {
+                        // otherwise, just add the profile folder path in front of it
+                        comp.setImagePath(p.getProfileFolder().getPath()
+                                + File.separator + cType.getName().toLowerCase().replace(' ', '_')
+                                + File.separator + comp.getImagePath());
                     }
                 }
                 category.setComponents(components);
