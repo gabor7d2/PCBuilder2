@@ -210,6 +210,7 @@ public class ControlBar extends JPanel implements ProfileEventListener, Category
         addButton("Save", editorEastPanel, e -> {
             if (profileSelector.getSelectedItem() != null) {
                 Application.saveProfile((Profile) profileSelector.getSelectedItem());
+                Application.getDialogManager().showInfoDialog("Save successful.");
             }
         });
 

@@ -17,23 +17,6 @@ public class ComponentPropertyType {
      */
     private static final Map<String, ComponentPropertyType> PROPERTY_TYPES_BY_NAME = new HashMap<>();
 
-    /*static {
-        // register possible property types
-        PROPERTY_TYPES.add(new ComponentPropertyType("cooler_height_mm", "Cooler height", "mm"));
-
-        PROPERTY_TYPES.add(new ComponentPropertyType("socket", "Socket"));
-        PROPERTY_TYPES.add(new ComponentPropertyType("generation", "Generation"));
-        PROPERTY_TYPES.add(new ComponentPropertyType("unlocked", "Unlocked"));
-        PROPERTY_TYPES.add(new ComponentPropertyType("cores", "Cores"));
-        PROPERTY_TYPES.add(new ComponentPropertyType("threads", "Threads"));
-
-        PROPERTY_TYPES.add(new ComponentPropertyType("base_frequency_mhz", "Base Frequency", "mhz", "MHz"));
-        PROPERTY_TYPES.add(new ComponentPropertyType("boost_frequency_mhz", "Boost Frequency", "mhz", "MHz"));
-        PROPERTY_TYPES.add(new ComponentPropertyType("vram_amount_mb", "VRAM", "mhz", "MHz"));
-
-        PROPERTY_TYPES.forEach(t -> PROPERTY_TYPES_BY_NAME.put(t.name, t));
-    }*/
-
     /**
      * Registers a component property type if it is not yet registered.
      *

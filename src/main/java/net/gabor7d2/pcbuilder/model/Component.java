@@ -145,7 +145,7 @@ public class Component {
         if (pType == null) {
             return property.getKey() + ": " + property.getValue();
         } else {
-            return pType.getDisplayName() + ": " + property.getValue() + " " + pType.getUnitDisplayName();
+            return pType.getDisplayName() + ": " + property.getValue() + (pType.getUnitDisplayName().isEmpty() ? "" : " " + pType.getUnitDisplayName());
         }
     }
 
@@ -174,7 +174,7 @@ public class Component {
         if (pType == null) {
             return property.getValue();
         } else {
-            return property.getValue() + " " + pType.getUnitDisplayName();
+            return property.getValue() + (pType.getUnitDisplayName().isEmpty() ? "" : " " + pType.getUnitDisplayName());
         }
     }
 
