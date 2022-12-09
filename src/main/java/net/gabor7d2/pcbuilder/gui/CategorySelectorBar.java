@@ -1,5 +1,6 @@
 package net.gabor7d2.pcbuilder.gui;
 
+import net.gabor7d2.pcbuilder.Application;
 import net.gabor7d2.pcbuilder.gui.event.*;
 import net.gabor7d2.pcbuilder.gui.general.WrapLayout;
 import net.gabor7d2.pcbuilder.model.Category;
@@ -44,8 +45,12 @@ public class CategorySelectorBar extends JPanel implements ProfileEventListener,
         ch.setSelected(category.isEnabledByDefault());
         ch.setBorder(BorderFactory.createMatteBorder(4, 8, 4, 8, ch.getBackground()));
         ch.addActionListener(e -> {
-            // set category enabled/disabled
-            category.setEnabled(ch.isSelected());
+            // set category enabled/disabled, or default enabled/disabled if in edit mode
+            if (!Application.isEditMode()) {
+                category.setEnabled(ch.isSelected());
+            } else {
+                category.setEnabledByDefault(ch.isSelected());
+            }
 
             // post event
             CategoryEvent.CategoryEventType type = ch.isSelected() ? CategoryEvent.CategoryEventType.ENABLE : CategoryEvent.CategoryEventType.DISABLE;

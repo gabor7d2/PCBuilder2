@@ -1,5 +1,6 @@
 package net.gabor7d2.pcbuilder.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
@@ -20,6 +21,7 @@ public class Category {
     /**
      * The profile this category resides in.
      */
+    @JsonIgnore
     private Profile profile;
 
     /**
@@ -41,11 +43,13 @@ public class Category {
     /**
      * Whether the category is currently enabled and visible on the UI.
      */
+    @JsonIgnore
     private boolean enabled = true;
 
     /**
      * The index (starting from 0) of the component that is currently selected on the UI.
      */
+    @JsonIgnore
     private int selection = -1;
 
     /**
@@ -58,6 +62,7 @@ public class Category {
      * The components in this category.
      */
     @NotNull
+    @JsonIgnore
     private List<Component> components = new ArrayList<>();
 
     /**

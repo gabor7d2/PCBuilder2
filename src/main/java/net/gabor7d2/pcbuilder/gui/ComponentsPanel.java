@@ -50,7 +50,10 @@ public class ComponentsPanel extends JPanel {
         componentCards.clear();
 
         for (Component comp : components) {
-            addComponent(comp);
+            ComponentCard card = new ComponentCard(comp, buttonGroup);
+            componentCards.add(card);
+            add(card);
+            card.setVisible(true);
         }
     }
 
@@ -63,6 +66,7 @@ public class ComponentsPanel extends JPanel {
         ComponentCard card = new ComponentCard(component, buttonGroup);
         componentCards.add(card);
         add(card, getComponentCount() - 1);
+        card.setVisible(true);
     }
 
     /**

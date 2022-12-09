@@ -47,6 +47,7 @@ public class AddCategoryRow extends ScrollPane2D.ScrollPane2DRow {
 
         // request price site url
         String priceSiteUrl = Application.getDialogManager().showInputDialog("", "Specify price site url (leave blank for none):");
+        if (priceSiteUrl == null) return;
 
         Category category = new Category();
         category.setId(UUID.randomUUID().toString());

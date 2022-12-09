@@ -1,22 +1,14 @@
 package net.gabor7d2.pcbuilder.gui;
 
 import net.gabor7d2.pcbuilder.Application;
-import net.gabor7d2.pcbuilder.gui.dialog.ProgressDialog;
-import net.gabor7d2.pcbuilder.gui.dialog.ProgressDialogType;
-import net.gabor7d2.pcbuilder.gui.event.EventBus;
-import net.gabor7d2.pcbuilder.gui.event.ProfileEvent;
-import net.gabor7d2.pcbuilder.gui.event.ProfileEventListener;
-import net.gabor7d2.pcbuilder.model.Profile;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * The main window of the app.
  */
-public class MainFrame extends JFrame implements ProfileEventListener {
+public class MainFrame extends JFrame {
 
     /**
      * The title of the main window.
@@ -26,7 +18,7 @@ public class MainFrame extends JFrame implements ProfileEventListener {
     /**
      * Default width of the main window.
      */
-    private final static int WIDTH = 900;
+    private final static int WIDTH = 1200;
 
     /**
      * Default height of the main window.
@@ -36,14 +28,12 @@ public class MainFrame extends JFrame implements ProfileEventListener {
     /**
      * Minimum width of the main window.
      */
-    private final static int MIN_WIDTH = 750;
+    private final static int MIN_WIDTH = 1000;
 
     /**
      * Minimum height of the main window.
      */
-    private final static int MIN_HEIGHT = 360;
-
-    private final List<Profile> profiles = new ArrayList<>();
+    private final static int MIN_HEIGHT = 600;
 
     /**
      * Creates the main window.
@@ -70,21 +60,5 @@ public class MainFrame extends JFrame implements ProfileEventListener {
         // Create main panel on the center
         MainPanel mainPanel = new MainPanel();
         add(mainPanel, BorderLayout.CENTER);
-
-        EventBus.getInstance().subscribeToProfileEvents(this);
-    }
-
-    @Override
-    public void processProfileEvent(ProfileEvent e) {
-        if (e.getType() == ProfileEvent.ProfileEventType.ADD && e.getProfile() != null) {
-            profiles.add(e.getProfile());
-        }
-        if (e.getType() == ProfileEvent.ProfileEventType.DELETE && e.getProfile() != null) {
-            profiles.remove(e.getProfile());
-        }
-        if (e.getType() == ProfileEvent.ProfileEventType.RELOAD && e.getProfile() != null) {
-            profiles.removeIf(p -> p.getId().equals(e.getProfile().getId()));
-            profiles.add(e.getProfile());
-        }
     }
 }

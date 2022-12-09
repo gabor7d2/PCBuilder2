@@ -242,4 +242,46 @@ public class JsonProfileRepository implements ProfileRepository {
 
         return profileDirs;
     }
+
+    @Override
+    public void saveProfiles(Collection<Profile> profiles) {
+        for (Profile p : profiles) {
+            saveProfile(p);
+        }
+    }
+
+    @Override
+    public void saveProfile(Profile profile) {
+        if (profile.getProfileFolder() == null) {
+            // this is a new profile, does not have a directory yet.
+            File profileDir = new File(profilesDirectory, profile.getId());
+            profileDir.mkdirs();
+            profile.setProfileFolder(profileDir);
+        }
+        File profileFile = new File(profile.getProfileFolder(), "profile.json");
+
+        try {
+            mapper.writeValue(profileFile, profile);
+            saveComponentsForProfile(profile);
+        } catch (IOException e) {
+            new RuntimeException("Failed to save profile " + profile.getName() + ": ", e).printStackTrace();
+        }
+    }
+
+    /**
+     * Tries saving the components of the specified profile to
+     * their corresponding category files.
+     *
+     * @param p The profile to save the components of.
+     */
+    private void saveComponentsForProfile(Profile p) {
+        for (Category category : p.getCategories()) {
+            File categoryFile = new File(p.getProfileFolder(), category.getType().toLowerCase() + ".json");
+            try {
+                mapper.writeValue(categoryFile, category.getComponents());
+            } catch (IOException e) {
+                new RuntimeException("Failed to save components from category " + category.getType() + ": ", e).printStackTrace();
+            }
+        }
+    }
 }

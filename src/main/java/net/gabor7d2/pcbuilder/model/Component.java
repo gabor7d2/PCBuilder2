@@ -1,5 +1,7 @@
 package net.gabor7d2.pcbuilder.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 import net.gabor7d2.pcbuilder.type.ComponentPropertyType;
@@ -21,6 +23,7 @@ public class Component {
     /**
      * The category this component is in.
      */
+    @JsonIgnore
     private Category category;
 
     /**
@@ -39,6 +42,7 @@ public class Component {
      * The image path for the component's image.
      */
     @NotNull
+    @JsonIgnore
     private String imagePath = "";
 
     /**
@@ -61,7 +65,27 @@ public class Component {
     /**
      * Whether this component is incompatible with any other selected component.
      */
+    @JsonIgnore
     private boolean incompatible;
+
+    /**
+     * Gets the image path.
+     *
+     * @return The image path.
+     */
+    @JsonIgnore
+    public @NotNull String getImagePath() {
+        return imagePath;
+    }
+
+    /**
+     * Sets the image path.
+     * @param imagePath The image path to set.
+     */
+    @JsonProperty
+    public void setImagePath(@NotNull String imagePath) {
+        this.imagePath = imagePath;
+    }
 
     /**
      * The properties of this component.
@@ -88,6 +112,7 @@ public class Component {
      *
      * @return a list of strings that contain the properties of the component.
      */
+    @JsonIgnore
     public List<String> getPropertiesDisplay() {
         List<String> strings = new ArrayList<>();
         properties.forEach(p -> strings.add(getPropertyDisplay(p)));

@@ -58,9 +58,16 @@ public class Application {
     @Getter
     private static ThemeController themeController;
 
-    private static ProfileRepository profileRepository = RepositoryFactory.getProfileRepository();
+    private static final ProfileRepository profileRepository = RepositoryFactory.getProfileRepository();
+
+    private static final List<Profile> profiles = new ArrayList<>();
 
     private static Profile currentlySelectedProfile;
+
+    /**
+     * Whether the UI is in edit mode right now.
+     */
+    private static boolean editMode = false;
 
     public static void main(String[] args) {
         // load settings
@@ -82,6 +89,28 @@ public class Application {
         // show frame
         frame.setVisible(true);
 
+        EventBus.getInstance().subscribeToProfileEvents(e -> {
+            if (e.getType() == ProfileEvent.ProfileEventType.SELECT) {
+                currentlySelectedProfile = e.getProfile();
+            }
+            if (e.getType() == ProfileEvent.ProfileEventType.ADD && e.getProfile() != null) {
+                profiles.add(e.getProfile());
+            }
+            if (e.getType() == ProfileEvent.ProfileEventType.DELETE && e.getProfile() != null) {
+                profiles.remove(e.getProfile());
+            }
+            if (e.getType() == ProfileEvent.ProfileEventType.RELOAD && e.getProfile() != null) {
+                profiles.removeIf(p -> p.getId().equals(e.getProfile().getId()));
+                profiles.add(e.getProfile());
+            }
+            if (e.getType() == ProfileEvent.ProfileEventType.EDIT_MODE) {
+                editMode = true;
+            }
+            if (e.getType() == ProfileEvent.ProfileEventType.VIEW_MODE) {
+                editMode = false;
+            }
+        });
+
         // notify listeners of loaded profiles
         profiles.forEach(p -> {
             EventBus.getInstance().postEvent(new ProfileEvent(ProfileEvent.ProfileEventType.ADD, p));
@@ -91,12 +120,6 @@ public class Application {
 
         // notify all component cards of initial compatibility update
         EventBus.getInstance().postEvent(new ComponentEvent(ComponentEvent.ComponentEventType.COMPATIBILITY_UPDATE, null));
-
-        EventBus.getInstance().subscribeToProfileEvents(e -> {
-           if (e.getType() == ProfileEvent.ProfileEventType.SELECT) {
-               currentlySelectedProfile = e.getProfile();
-           }
-        });
     }
 
     public static Profile getCurrentlySelectedProfile() {
@@ -112,11 +135,29 @@ public class Application {
         // load new profile data
         Profile newProfile = profileRepository.reloadProfile(p);
 
-        // clear image cache so that if some images were changed, they will be loaded again
-        ImageLoader.clearCache();
+        if (newProfile != null) {
+            // clear image cache so that if some images were changed, they will be loaded again
+            ImageLoader.clearCache();
 
-        // notify of reload
-        EventBus.getInstance().postEvent(new ProfileEvent(ProfileEvent.ProfileEventType.RELOAD, newProfile));
+            // notify of reload
+            EventBus.getInstance().postEvent(new ProfileEvent(ProfileEvent.ProfileEventType.RELOAD, newProfile));
+        }
+    }
+
+    /**
+     * Saves all currently loaded profiles.
+     */
+    public static void saveProfiles() {
+        profileRepository.saveProfiles(profiles);
+    }
+
+    /**
+     * Saves the specified profile.
+     *
+     * @param profile The profile to save.
+     */
+    public static void saveProfile(Profile profile) {
+        profileRepository.saveProfile(profile);
     }
 
     /**
@@ -124,5 +165,14 @@ public class Application {
      */
     public static void saveSettings() {
         RepositoryFactory.getSettingsRepository().saveSettings(settings);
+    }
+
+    /**
+     * Gets whether the UI is in edit mode right now.
+     *
+     * @return whether the UI is in edit mode right now.
+     */
+    public static boolean isEditMode() {
+        return editMode;
     }
 }

@@ -93,8 +93,11 @@ public class MainPanel extends JPanel implements ProfileEventListener, CategoryE
                 profilePane.addRow(row);
                 profilePane.setRowVisible(profilePane.indexOfRow(row), c.isEnabledByDefault());
             });
+
             AddCategoryRow addRow = new AddCategoryRow();
             profilePane.addRow(addRow);
+            profilePane.setRowVisible(profilePane.getRowCount() - 1, Application.isEditMode());
+
             add(profilePane, profile.getId());
             profileScrollPanes.put(profile.getId(), profilePane);
         } else {
@@ -128,6 +131,11 @@ public class MainPanel extends JPanel implements ProfileEventListener, CategoryE
         }
         if (e.getType() == ProfileEvent.ProfileEventType.DELETE) {
             deleteProfile(e.getProfile().getId());
+        }
+        if (e.getType() == ProfileEvent.ProfileEventType.EDIT_MODE || e.getType() == ProfileEvent.ProfileEventType.VIEW_MODE) {
+            for (ScrollPane2D pane2D : profileScrollPanes.values()) {
+                pane2D.setRowVisible(pane2D.getRowCount() - 1, e.getType() == ProfileEvent.ProfileEventType.EDIT_MODE);
+            }
         }
     }
 

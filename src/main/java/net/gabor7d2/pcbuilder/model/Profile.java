@@ -1,5 +1,6 @@
 package net.gabor7d2.pcbuilder.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,6 +38,7 @@ public class Profile {
     /**
      * The profile's folder.
      */
+    @JsonIgnore
     private File profileFolder;
 
     /**

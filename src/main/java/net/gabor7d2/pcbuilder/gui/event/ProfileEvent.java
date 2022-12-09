@@ -14,7 +14,9 @@ public class ProfileEvent extends PCBuilderEvent {
         ADD,
         SELECT,
         DELETE,
-        RELOAD
+        RELOAD,
+        VIEW_MODE,
+        EDIT_MODE
     }
 
     /**

@@ -28,6 +28,20 @@ public interface ProfileRepository {
     Collection<Profile> loadProfiles();
 
     /**
+     * Saves the specified list of profiles into the profiles directory.
+     *
+     * @param profiles The profiles to save.
+     */
+    void saveProfiles(Collection<Profile> profiles);
+
+    /**
+     * Saves the specified profile into the profiles directory.
+     *
+     * @param profile The profile to save.
+     */
+    void saveProfile(Profile profile);
+
+    /**
      * Deletes the specified profile from the profiles directory.
      *
      * @param p The profile to delete.
@@ -43,11 +57,14 @@ public interface ProfileRepository {
      */
     Profile reloadProfile(Profile p);
 
+    /**
+     * Imports profiles from the specified zip file into the profiles directory.
+     *
+     * @param zipFile The zip file that contains the profiles to import.
+     * @param progressListener The listener to listen for import progress.
+     * @param cancellationToken The cancellation token to cancel the operation.
+     */
     void importFromZipFile(File zipFile,
                            ProgressListener<ImportResultCode, Collection<Profile>> progressListener,
                            AtomicBoolean cancellationToken);
-
-    //void addProfile(Profile p);
-
-    //void saveProfiles(List<Profile> profiles);
 }

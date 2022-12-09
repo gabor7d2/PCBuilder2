@@ -3,8 +3,6 @@ package net.gabor7d2.pcbuilder.gui.dialog;
 import javax.swing.*;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,8 +48,7 @@ public class MultiInputDialog extends JDialog {
         JLabel nameLabel = new JLabel(name);
         inputFieldsPanel.add(nameLabel);
 
-        JTextField field = new JTextField(30);
-        //field.setMinimumSize(new Dimension(120, 30));
+        JTextField field = new JTextField(20);
         inputFieldsPanel.add(field);
 
         inputFields.add(field);

@@ -1,7 +1,9 @@
 package net.gabor7d2.pcbuilder.gui;
 
+import net.gabor7d2.pcbuilder.Application;
 import net.gabor7d2.pcbuilder.gui.editing.AddComponentCard;
 import net.gabor7d2.pcbuilder.gui.event.*;
+import net.gabor7d2.pcbuilder.gui.general.AsyncImageLoader;
 import net.gabor7d2.pcbuilder.gui.general.ScrollPane2D;
 import net.gabor7d2.pcbuilder.gui.general.SmartScrollPane;
 import net.gabor7d2.pcbuilder.model.Category;
@@ -16,7 +18,7 @@ import static net.gabor7d2.pcbuilder.gui.event.CategoryEvent.CategoryEventType.E
  * CategoryRow is a ScrollPane2DRow implementation that is used for
  * displaying a category's components.
  */
-public class CategoryRow extends ScrollPane2D.ScrollPane2DRow implements CategoryEventListener, ComponentEventListener {
+public class CategoryRow extends ScrollPane2D.ScrollPane2DRow implements CategoryEventListener, ComponentEventListener, ProfileEventListener {
 
     private ScrollPane2D outerScrollPane2D;
 
@@ -51,6 +53,7 @@ public class CategoryRow extends ScrollPane2D.ScrollPane2DRow implements Categor
         // subscribe to events
         EventBus.getInstance().subscribeToCategoryEvents(this);
         EventBus.getInstance().subscribeToComponentEvents(this);
+        EventBus.getInstance().subscribeToProfileEvents(this);
     }
 
     /**
@@ -70,7 +73,9 @@ public class CategoryRow extends ScrollPane2D.ScrollPane2DRow implements Categor
 
         // components in the scroll pane
         componentsPanel = new ComponentsPanel(category.getComponents());
-        componentsPanel.add(new AddComponentCard(category));
+        AddComponentCard addComponentCard = new AddComponentCard(category);
+        componentsPanel.add(addComponentCard);
+        addComponentCard.setVisible(Application.isEditMode());
         scrollPane.setViewportView(componentsPanel);
 
         // select specified default selection
@@ -80,7 +85,11 @@ public class CategoryRow extends ScrollPane2D.ScrollPane2DRow implements Categor
 
         // set button group select listener
         componentsPanel.getButtonGroup().addButtonGroupListener((b, i) -> {
-            category.setSelection(i);
+            if (Application.isEditMode()) {
+                category.setDefaultSelection(i);
+            } else {
+                category.setSelection(i);
+            }
             EventBus.getInstance().postEvent(new ComponentEvent(ComponentEvent.ComponentEventType.SELECT, category.getComponents().get(i)));
             CompatibilityChecker.recalculateComponentCompatibility(category.getProfile());
             EventBus.getInstance().postEvent(new ComponentEvent(ComponentEvent.ComponentEventType.COMPATIBILITY_UPDATE, null));
@@ -133,6 +142,16 @@ public class CategoryRow extends ScrollPane2D.ScrollPane2DRow implements Categor
             componentsPanel.addComponent(e.getComponent());
             componentsPanel.revalidate();
             componentsPanel.repaint();
+            AsyncImageLoader.processQueue();
+        }
+    }
+
+    @Override
+    public void processProfileEvent(ProfileEvent e) {
+        if (e.getType() == ProfileEvent.ProfileEventType.EDIT_MODE) {
+            componentsPanel.getComponent(componentsPanel.getComponentCount() - 1).setVisible(true);
+        } else if (e.getType() == ProfileEvent.ProfileEventType.VIEW_MODE) {
+            componentsPanel.getComponent(componentsPanel.getComponentCount() - 1).setVisible(false);
         }
     }
 }

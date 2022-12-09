@@ -2,6 +2,7 @@ package net.gabor7d2.pcbuilder.gui;
 
 import com.formdev.flatlaf.FlatClientProperties;
 import net.gabor7d2.pcbuilder.Application;
+import net.gabor7d2.pcbuilder.gui.dialog.MultiInputDialog;
 import net.gabor7d2.pcbuilder.gui.event.*;
 import net.gabor7d2.pcbuilder.gui.general.ImageLoader;
 import net.gabor7d2.pcbuilder.gui.profileimporter.ProfileImporter;
@@ -13,6 +14,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.UUID;
 
 /**
  * The ControlBar is a panel that is at the bottom of the main window
@@ -67,9 +69,9 @@ public class ControlBar extends JPanel implements ProfileEventListener, Category
     private ActionListener profileSelectorActionListener;
 
     /**
-     * Buttons that need icon swapping when theme is switched.
+     * Theme button that needs icon swapping when theme is switched.
      */
-    private JButton helpButton, themeButton;
+    private JButton themeButton;
 
     private final ProfileImporter importer = new ProfileImporter(new File(System.getProperty("user.home")));
 
@@ -142,15 +144,13 @@ public class ControlBar extends JPanel implements ProfileEventListener, Category
             importer.showDialog();
         });
 
-        addButton("Reload", viewerEastPanel, e -> {
-            if (profileSelector.getSelectedItem() != null) {
-                Application.reloadProfile((Profile) profileSelector.getSelectedItem());
-            }
-        });
-
         addButton("Delete", viewerEastPanel, e -> {
             if (profileSelector.getSelectedItem() != null) {
-                Application.deleteProfile((Profile) profileSelector.getSelectedItem());
+                int result = Application.getDialogManager().showQuestionDialog(
+                        "Confirm", "Are you sure? This operation cannot be undone.", JOptionPane.YES_NO_OPTION);
+                if (result == JOptionPane.YES_OPTION) {
+                    Application.deleteProfile((Profile) profileSelector.getSelectedItem());
+                }
             }
         });
 
@@ -162,7 +162,56 @@ public class ControlBar extends JPanel implements ProfileEventListener, Category
         editorEastPanel = new JPanel();
         editorEastPanel.setLayout(new BoxLayout(editorEastPanel, BoxLayout.X_AXIS));
         editorEastPanel.setBackground(getBackground());
-        //editorEastPanel.setBorder(BorderFactory.createMatteBorder(12, 8, 12, 8, getBackground()));
+
+        addButton("New", editorEastPanel, e -> {
+            MultiInputDialog inputDialog = Application.getDialogManager().createMultiInputDialog(inputs -> {
+                Profile profile = new Profile();
+                profile.setId(UUID.randomUUID().toString());
+                profile.setName(inputs.get(0));
+                profile.setCurrencyPrefix(inputs.get(1));
+                profile.setCurrencySuffix(inputs.get(2));
+
+                EventBus.getInstance().postEvent(new ProfileEvent(ProfileEvent.ProfileEventType.ADD, profile));
+                EventBus.getInstance().postEvent(new ProfileEvent(ProfileEvent.ProfileEventType.SELECT, profile));
+                return true;
+            });
+            inputDialog.addInputField("Profile name:");
+            inputDialog.addInputField("Currency prefix:");
+            inputDialog.addInputField("Currency suffix:");
+            inputDialog.pack();
+            inputDialog.setResizable(false);
+            inputDialog.setVisible(true);
+        });
+
+        addButton("Delete", editorEastPanel, e -> {
+            if (profileSelector.getSelectedItem() != null) {
+                int result = Application.getDialogManager().showQuestionDialog(
+                        "Confirm", "Are you sure? This operation cannot be undone.", JOptionPane.YES_NO_OPTION);
+                if (result == JOptionPane.YES_OPTION) {
+                    Application.deleteProfile((Profile) profileSelector.getSelectedItem());
+                }
+            }
+        });
+
+        addButton("Reload", editorEastPanel, e -> {
+            if (profileSelector.getSelectedItem() != null) {
+                if (Application.isEditMode()) {
+                    int result = Application.getDialogManager().showQuestionDialog(
+                            "Confirm", "Are you sure? Unsaved work will be lost.", JOptionPane.YES_NO_OPTION);
+                    if (result == JOptionPane.YES_OPTION) {
+                        Application.reloadProfile((Profile) profileSelector.getSelectedItem());
+                    }
+                } else {
+                    Application.reloadProfile((Profile) profileSelector.getSelectedItem());
+                }
+            }
+        });
+
+        addButton("Save", editorEastPanel, e -> {
+            if (profileSelector.getSelectedItem() != null) {
+                Application.saveProfile((Profile) profileSelector.getSelectedItem());
+            }
+        });
 
         addButton("Viewer Mode", editorEastPanel, e -> switchEditorMode(false));
     }
@@ -176,9 +225,11 @@ public class ControlBar extends JPanel implements ProfileEventListener, Category
         if (editorMode) {
             eastPanel.remove(viewerEastPanel);
             eastPanel.add(editorEastPanel, 3);
+            EventBus.getInstance().postEvent(new ProfileEvent(ProfileEvent.ProfileEventType.EDIT_MODE, null));
         } else {
             eastPanel.remove(editorEastPanel);
             eastPanel.add(viewerEastPanel, 3);
+            EventBus.getInstance().postEvent(new ProfileEvent(ProfileEvent.ProfileEventType.VIEW_MODE, null));
         }
         revalidate();
         repaint();
@@ -271,11 +322,16 @@ public class ControlBar extends JPanel implements ProfileEventListener, Category
         if (e.getType() == ProfileEvent.ProfileEventType.SELECT) {
             // switched to another profile, calculate new total price
             calculateAndDisplayTotalPrice(e.getProfile());
+
+            profileSelector.removeActionListener(profileSelectorActionListener);
+            profileSelector.setSelectedItem(e.getProfile());
+            profileSelector.addActionListener(profileSelectorActionListener);
         }
         if (e.getType() == ProfileEvent.ProfileEventType.DELETE) {
             profileSelector.removeItem(e.getProfile());
         }
         if (e.getType() == ProfileEvent.ProfileEventType.RELOAD) {
+            // replace profile entry in selector without triggering the listener
             profileSelector.removeActionListener(profileSelectorActionListener);
             int index = profileSelector.getSelectedIndex();
             profileSelector.removeItemAt(index);
@@ -304,11 +360,6 @@ public class ControlBar extends JPanel implements ProfileEventListener, Category
      */
     private void updateTheme() {
         boolean darkMode = Application.getThemeController().isDarkMode();
-
-        if (helpButton != null) {
-            String helpPath = darkMode ? "/help_icon_dark.png" : "/help_icon_light.png";
-            helpButton.setIcon(ImageLoader.loadImageIconFromClasspath(helpPath, 20, 20));
-        }
 
         if (themeButton != null) {
             String themePath = darkMode ? "/theme_icon_dark.png" : "/theme_icon_light.png";
