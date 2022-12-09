@@ -79,5 +79,12 @@ public class MainFrame extends JFrame implements ProfileEventListener {
         if (e.getType() == ProfileEvent.ProfileEventType.ADD && e.getProfile() != null) {
             profiles.add(e.getProfile());
         }
+        if (e.getType() == ProfileEvent.ProfileEventType.DELETE && e.getProfile() != null) {
+            profiles.remove(e.getProfile());
+        }
+        if (e.getType() == ProfileEvent.ProfileEventType.RELOAD && e.getProfile() != null) {
+            profiles.removeIf(p -> p.getId().equals(e.getProfile().getId()));
+            profiles.add(e.getProfile());
+        }
     }
 }

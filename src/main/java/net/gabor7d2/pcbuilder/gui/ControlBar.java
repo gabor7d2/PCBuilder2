@@ -32,9 +32,24 @@ public class ControlBar extends JPanel implements ProfileEventListener, Category
     private static final Color TEXT_COLOR = Color.WHITE;
 
     /**
-     * East and west panels of the control bar.
+     * West panel of the control bar.
      */
-    private final JPanel eastPanel, westPanel;
+    private JPanel westPanel;
+
+    /**
+     * East panel of the control bar.
+     */
+    private JPanel eastPanel;
+
+    /**
+     * East panel of the control bar in viewer mode.
+     */
+    private JPanel viewerEastPanel;
+
+    /**
+     * East panel of the control bar in editor mode.
+     */
+    private JPanel editorEastPanel;
 
     /**
      * The total price label.
@@ -45,6 +60,11 @@ public class ControlBar extends JPanel implements ProfileEventListener, Category
      * The profile selector JComboBox.
      */
     private JComboBox<Profile> profileSelector;
+
+    /**
+     * Action listener of profile selector.
+     */
+    private ActionListener profileSelectorActionListener;
 
     /**
      * Buttons that need icon swapping when theme is switched.
@@ -61,49 +81,8 @@ public class ControlBar extends JPanel implements ProfileEventListener, Category
         setLayout(new BorderLayout());
         setBackground(BG_COLOR);
 
-        // setup west panel containing the texts
-        westPanel = new JPanel();
-        westPanel.setLayout(new GridBagLayout());
-        westPanel.setBackground(getBackground());
-        westPanel.setBorder(BorderFactory.createMatteBorder(8, 16, 8, 0, getBackground()));
-        add(westPanel, BorderLayout.WEST);
-
-        setupTotalPriceLabel();
-
-        // setup east label containing the profile selector and the buttons
-        eastPanel = new JPanel();
-        eastPanel.setLayout(new BoxLayout(eastPanel, BoxLayout.X_AXIS));
-        eastPanel.setBackground(getBackground());
-        eastPanel.setBorder(BorderFactory.createMatteBorder(12, 8, 12, 8, getBackground()));
-        add(eastPanel, BorderLayout.EAST);
-
-        eastPanel.add(Box.createRigidArea(new Dimension(4, 1)));
-        setupProfileSelector();
-        eastPanel.add(Box.createRigidArea(new Dimension(4, 1)));
-
-        addButton("Import", e -> {
-            importer.showDialog();
-        });
-        addButton("Delete", null);
-        addButton("Edit Mode", null);
-
-        helpButton = addButton("", e -> {
-            JDialog diag = new JDialog();
-            diag.setModal(true);
-            diag.add(new JLabel("Help text: "));
-            diag.pack();
-            diag.setVisible(true);
-        });
-        //helpButton.putClientProperty("JButton.buttonType", "help");
-        //helpButton.setBorder(null);
-        helpButton.setMargin(new Insets(0, 0, 0, 0));
-        //helpButton.setContentAreaFilled(false);
-
-        themeButton = addButton("", e -> {
-            Application.getThemeController().setDarkMode(!themeButton.getName().equals("dark"));
-        });
-        themeButton.setMargin(new Insets(0, 0, 0, 0));
-        //helpButton.setContentAreaFilled(false);
+        setupWestPanel();
+        setupEastPanel();
 
         updateTheme();
 
@@ -113,10 +92,15 @@ public class ControlBar extends JPanel implements ProfileEventListener, Category
         EventBus.getInstance().subscribeToComponentEvents(this);
     }
 
-    /**
-     * Sets up total price label.
-     */
-    private void setupTotalPriceLabel() {
+    private void setupWestPanel() {
+        // setup west panel containing the texts
+        westPanel = new JPanel();
+        westPanel.setLayout(new GridBagLayout());
+        westPanel.setBackground(getBackground());
+        westPanel.setBorder(BorderFactory.createMatteBorder(8, 16, 8, 0, getBackground()));
+        add(westPanel, BorderLayout.WEST);
+
+        // set up total price label
         totalPriceLabel = new JLabel();
         totalPriceLabel.setForeground(TEXT_COLOR);
         totalPriceLabel.setFont(totalPriceLabel.getFont().deriveFont(Font.BOLD, 13));
@@ -125,34 +109,110 @@ public class ControlBar extends JPanel implements ProfileEventListener, Category
         westPanel.add(totalPriceLabel);
     }
 
+    private void setupEastPanel() {
+        eastPanel = new JPanel();
+        eastPanel.setLayout((new BoxLayout(eastPanel, BoxLayout.X_AXIS)));
+        eastPanel.setBackground(getBackground());
+        eastPanel.setBorder(BorderFactory.createMatteBorder(12, 8, 12, 8, getBackground()));
+        add(eastPanel, BorderLayout.EAST);
+
+        eastPanel.add(Box.createRigidArea(new Dimension(4, 1)));
+        setupProfileSelector();
+        eastPanel.add(Box.createRigidArea(new Dimension(4, 1)));
+
+        setupViewerEastPanel();
+        setupEditorEastPanel();
+
+        themeButton = addButton("", eastPanel, e -> {
+            Application.getThemeController().setDarkMode(!themeButton.getName().equals("dark"));
+        });
+        themeButton.setMargin(new Insets(0, 0, 0, 0));
+
+        eastPanel.setMaximumSize(eastPanel.getMinimumSize());
+    }
+
+    private void setupViewerEastPanel() {
+        // setup viewer east label containing the profile selector and the buttons
+        viewerEastPanel = new JPanel();
+        viewerEastPanel.setLayout(new BoxLayout(viewerEastPanel, BoxLayout.X_AXIS));
+        viewerEastPanel.setBackground(getBackground());
+        eastPanel.add(viewerEastPanel);
+
+        addButton("Import", viewerEastPanel, e -> {
+            importer.showDialog();
+        });
+
+        addButton("Reload", viewerEastPanel, e -> {
+            if (profileSelector.getSelectedItem() != null) {
+                Application.reloadProfile((Profile) profileSelector.getSelectedItem());
+            }
+        });
+
+        addButton("Delete", viewerEastPanel, e -> {
+            if (profileSelector.getSelectedItem() != null) {
+                Application.deleteProfile((Profile) profileSelector.getSelectedItem());
+            }
+        });
+
+        addButton("Editor Mode", viewerEastPanel, e -> switchEditorMode(true));
+    }
+
+    private void setupEditorEastPanel() {
+        // setup editor east label containing buttons
+        editorEastPanel = new JPanel();
+        editorEastPanel.setLayout(new BoxLayout(editorEastPanel, BoxLayout.X_AXIS));
+        editorEastPanel.setBackground(getBackground());
+        //editorEastPanel.setBorder(BorderFactory.createMatteBorder(12, 8, 12, 8, getBackground()));
+
+        addButton("Viewer Mode", editorEastPanel, e -> switchEditorMode(false));
+    }
+
+    /**
+     * Switches between the editor mode and the viewer mode buttons.
+     *
+     * @param editorMode Whether the editor mode or the viewer mode should be shown.
+     */
+    private void switchEditorMode(boolean editorMode) {
+        if (editorMode) {
+            eastPanel.remove(viewerEastPanel);
+            eastPanel.add(editorEastPanel, 3);
+        } else {
+            eastPanel.remove(editorEastPanel);
+            eastPanel.add(viewerEastPanel, 3);
+        }
+        revalidate();
+        repaint();
+    }
+
     /**
      * Sets up profile selector JComboBox. When an item is selected in the ComboBox,
      * a ProfileEvent with type SELECT is posted on the EventBus.
      */
     private void setupProfileSelector() {
         profileSelector = new JComboBox<>();
-        // TODO max size
         profileSelector.putClientProperty(FlatClientProperties.MINIMUM_WIDTH, 200);
-        profileSelector.addActionListener(e -> {
+        profileSelectorActionListener = e -> {
             EventBus.getInstance().postEvent(new ProfileEvent(ProfileEvent.ProfileEventType.SELECT, (Profile) profileSelector.getSelectedItem()));
-        });
+        };
+        profileSelector.addActionListener(profileSelectorActionListener);
         eastPanel.add(profileSelector);
     }
 
     /**
-     * Adds a button to the east panel.
+     * Adds a button to the specified panel.
      *
      * @param name     The text to show on the button.
+     * @param panel     Panel to add the button to.
      * @param listener The listener to call when clicked.
      * @return The created JButton.
      */
-    private JButton addButton(String name, ActionListener listener) {
+    private JButton addButton(String name, JPanel panel, ActionListener listener) {
         JButton btn = new JButton(name);
         btn.addActionListener(listener);
 
-        eastPanel.add(Box.createRigidArea(new Dimension(4, 1)));
-        eastPanel.add(btn);
-        eastPanel.add(Box.createRigidArea(new Dimension(4, 1)));
+        panel.add(Box.createRigidArea(new Dimension(4, 1)));
+        panel.add(btn);
+        panel.add(Box.createRigidArea(new Dimension(4, 1)));
 
         return btn;
     }
@@ -200,11 +260,10 @@ public class ControlBar extends JPanel implements ProfileEventListener, Category
             // a new profile was added, add it into the profile selector
             if (profileSelector.getItemCount() == 0) {
                 // add first item without selecting it
-                ActionListener l = profileSelector.getActionListeners()[0];
-                profileSelector.removeActionListener(l);
+                profileSelector.removeActionListener(profileSelectorActionListener);
                 profileSelector.addItem(e.getProfile());
                 profileSelector.setSelectedIndex(-1);
-                profileSelector.addActionListener(l);
+                profileSelector.addActionListener(profileSelectorActionListener);
             } else {
                 profileSelector.addItem(e.getProfile());
             }
@@ -212,6 +271,17 @@ public class ControlBar extends JPanel implements ProfileEventListener, Category
         if (e.getType() == ProfileEvent.ProfileEventType.SELECT) {
             // switched to another profile, calculate new total price
             calculateAndDisplayTotalPrice(e.getProfile());
+        }
+        if (e.getType() == ProfileEvent.ProfileEventType.DELETE) {
+            profileSelector.removeItem(e.getProfile());
+        }
+        if (e.getType() == ProfileEvent.ProfileEventType.RELOAD) {
+            profileSelector.removeActionListener(profileSelectorActionListener);
+            int index = profileSelector.getSelectedIndex();
+            profileSelector.removeItemAt(index);
+            profileSelector.addItem(e.getProfile());
+            profileSelector.addActionListener(profileSelectorActionListener);
+            profileSelector.setSelectedItem(e.getProfile());
         }
     }
 

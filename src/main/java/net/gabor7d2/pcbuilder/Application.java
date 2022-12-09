@@ -7,9 +7,11 @@ import net.gabor7d2.pcbuilder.gui.dialog.DialogManager;
 import net.gabor7d2.pcbuilder.gui.event.ComponentEvent;
 import net.gabor7d2.pcbuilder.gui.event.EventBus;
 import net.gabor7d2.pcbuilder.gui.event.ProfileEvent;
+import net.gabor7d2.pcbuilder.gui.general.ImageLoader;
 import net.gabor7d2.pcbuilder.model.Profile;
 import net.gabor7d2.pcbuilder.model.Settings;
 import net.gabor7d2.pcbuilder.model.component.CompatibilityChecker;
+import net.gabor7d2.pcbuilder.persistence.repository.ProfileRepository;
 import net.gabor7d2.pcbuilder.persistence.repositoryimpl.RepositoryFactory;
 
 import javax.swing.*;
@@ -55,6 +57,8 @@ public class Application {
     @Getter
     private static ThemeController themeController;
 
+    private static ProfileRepository profileRepository = RepositoryFactory.getProfileRepository();
+
     public static void main(String[] args) {
         // load settings
         settings = RepositoryFactory.getSettingsRepository().loadSettings();
@@ -70,7 +74,7 @@ public class Application {
         dialogManager = new DialogManager(frame);
 
         // load profiles
-        Collection<Profile> profiles = RepositoryFactory.getProfileRepository().loadProfiles();
+        Collection<Profile> profiles = profileRepository.loadProfiles();
 
         // show frame
         frame.setVisible(true);
@@ -83,6 +87,22 @@ public class Application {
         });
         // notify all component cards of initial compatibility update
         EventBus.getInstance().postEvent(new ComponentEvent(ComponentEvent.ComponentEventType.COMPATIBILITY_UPDATE, null));
+    }
+
+    public static void deleteProfile(Profile p) {
+        EventBus.getInstance().postEvent(new ProfileEvent(ProfileEvent.ProfileEventType.DELETE, p));
+        profileRepository.deleteProfile(p);
+    }
+
+    public static void reloadProfile(Profile p) {
+        // load new profile data
+        Profile newProfile = profileRepository.reloadProfile(p);
+
+        // clear image cache so that if some images were changed, they will be loaded again
+        ImageLoader.clearCache();
+
+        // notify of reload
+        EventBus.getInstance().postEvent(new ProfileEvent(ProfileEvent.ProfileEventType.RELOAD, newProfile));
     }
 
     /**

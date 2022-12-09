@@ -1,5 +1,6 @@
 package net.gabor7d2.pcbuilder.persistence.repository;
 
+import net.gabor7d2.pcbuilder.Utils;
 import net.gabor7d2.pcbuilder.model.Category;
 import net.gabor7d2.pcbuilder.model.Component;
 import net.gabor7d2.pcbuilder.model.Profile;
@@ -26,15 +27,27 @@ public interface ProfileRepository {
      */
     Collection<Profile> loadProfiles();
 
+    /**
+     * Deletes the specified profile from the profiles directory.
+     *
+     * @param p The profile to delete.
+     */
+    void deleteProfile(Profile p);
+
+    /**
+     * Reloads the specified profile from the profiles directory,
+     * and returns a new Profile instance. The old instance will not be modified.
+     *
+     * @param p The profile to reload.
+     * @return The new Profile instance, or null if loading failed.
+     */
+    Profile reloadProfile(Profile p);
+
     void importFromZipFile(File zipFile,
                            ProgressListener<ImportResultCode, Collection<Profile>> progressListener,
                            AtomicBoolean cancellationToken);
 
     //void addProfile(Profile p);
-
-    //void removeProfile(Profile p);
-
-    //void renameProfile(Profile p, String newName);
 
     //void saveProfiles(List<Profile> profiles);
 }

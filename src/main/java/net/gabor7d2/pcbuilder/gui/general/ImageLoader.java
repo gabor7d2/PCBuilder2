@@ -169,6 +169,7 @@ public class ImageLoader {
      */
     public static void clearCache() {
         filePathImageCache.clear();
+        filePathImageIconCache.clear();
     }
 
     /**

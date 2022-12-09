@@ -10,7 +10,9 @@ import net.gabor7d2.pcbuilder.model.Profile;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -42,6 +44,11 @@ public class MainPanel extends JPanel implements ProfileEventListener {
      * The set of profile ids that were displayed on this panel and that still exist.
      */
     private final Set<String> profileIds = new HashSet<>();
+
+    /**
+     * The map of profile scroll panes that can be displayed on this panel.
+     */
+    private final Map<String, ScrollPane2D> profileScrollPanes = new HashMap<>();
 
     /**
      * Creates a new MainPanel.
@@ -86,6 +93,11 @@ public class MainPanel extends JPanel implements ProfileEventListener {
                 profilePane.setRowVisible(profilePane.indexOfRow(row), c.isEnabledByDefault());
             });
             add(profilePane, profile.getId());
+            profileScrollPanes.put(profile.getId(), profilePane);
+        } else {
+            // if it was shown before, delete, then show it again
+            deleteProfile(profile.getId());
+            displayProfile(profile);
         }
 
         // show the profile's view by its id
@@ -94,11 +106,25 @@ public class MainPanel extends JPanel implements ProfileEventListener {
         AsyncImageLoader.processQueue();
     }
 
+    /**
+     * Delete profile from card layout and profile ids set.
+     *
+     * @param profileId The id of the profile to delete.
+     */
+    private void deleteProfile(String profileId) {
+        ScrollPane2D pane = profileScrollPanes.get(profileId);
+        cardLayout.removeLayoutComponent(pane);
+        profileIds.removeIf(s -> s.equals(profileId));
+        profileScrollPanes.remove(profileId);
+    }
+
     @Override
     public void processProfileEvent(ProfileEvent e) {
         if (e.getType() == ProfileEvent.ProfileEventType.SELECT) {
-            // display the newly selected profile
             displayProfile(e.getProfile());
+        }
+        if (e.getType() == ProfileEvent.ProfileEventType.DELETE) {
+            deleteProfile(e.getProfile().getId());
         }
     }
 

@@ -60,9 +60,9 @@ public class CategorySelectorBar extends JPanel implements ProfileEventListener 
         if (e.getType() == ProfileEvent.ProfileEventType.SELECT) {
             // replace category checkboxes to categories in the newly selected profile
             removeAll();
-            repaint();
             if (e.getProfile() != null) e.getProfile().getCategories().forEach(this::addCategory);
             setVisible(e.getProfile() != null);
+            repaint();
         }
     }
 }

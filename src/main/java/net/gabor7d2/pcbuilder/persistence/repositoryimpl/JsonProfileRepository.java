@@ -3,6 +3,7 @@ package net.gabor7d2.pcbuilder.persistence.repositoryimpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.TypeFactory;
+import net.gabor7d2.pcbuilder.Utils;
 import net.gabor7d2.pcbuilder.model.Category;
 import net.gabor7d2.pcbuilder.persistence.ImportResultCode;
 import net.gabor7d2.pcbuilder.persistence.ZipExtractorThread;
@@ -55,7 +56,7 @@ public class JsonProfileRepository implements ProfileRepository {
      * @param profileDirs The profile directories to load.
      * @return The loaded profiles, or an empty collection if profileDirs is null.
      */
-    Collection<Profile> loadProfiles(Collection<File> profileDirs) {
+    private Collection<Profile> loadProfiles(Collection<File> profileDirs) {
         if (profileDirs == null) return Collections.emptyList();
         List<Profile> profiles = new ArrayList<>();
 
@@ -64,13 +65,8 @@ public class JsonProfileRepository implements ProfileRepository {
             for (File f : profileDirs) {
                 if (f.isDirectory()) {
                     // Try loading the profile.json file
-                    Profile p = loadProfile(f);
-                    if (p != null) {
-                        // Set and load extra parameters of profile, add it to the list of profiles
-                        p.setProfileFolder(f);
-                        loadComponentsForProfile(p);
-                        profiles.add(p);
-                    }
+                    Profile profile = loadProfile(f);
+                    if (profile != null) profiles.add(profile);
                 }
             }
         } catch (Exception e) {
@@ -86,7 +82,7 @@ public class JsonProfileRepository implements ProfileRepository {
      * @return The loaded profile, or null if the profile.json file
      * is not present in this dir or if an error occurred.
      */
-    Profile loadProfile(File profileDir) {
+    private Profile loadProfile(File profileDir) {
         File profileFile = new File(profileDir, "profile.json");
         if (!profileFile.isFile()) {
             System.out.println("Failed to load profile from " + profileDir.getPath() + ": profile.json not found.");
@@ -94,7 +90,15 @@ public class JsonProfileRepository implements ProfileRepository {
         }
 
         try {
-            return mapper.readValue(profileFile, Profile.class);
+            Profile profile = mapper.readValue(profileFile, Profile.class);
+
+            if (profile != null) {
+                // Set and load extra parameters of profile, add it to the list of profiles
+                profile.setProfileFolder(profileDir);
+                loadComponentsForProfile(profile);
+            }
+
+            return profile;
         } catch (IOException e) {
             new RuntimeException("Failed to load profile from " + profileDir.getPath() + ": ", e).printStackTrace();
             return null;
@@ -157,6 +161,25 @@ public class JsonProfileRepository implements ProfileRepository {
         if (!profilesDirectory.isDirectory()) {
             profilesDirectory.mkdirs();
         }
+    }
+
+    @Override
+    public void deleteProfile(Profile p) {
+        if (p.getProfileFolder() != null) {
+            Utils.delete(p.getProfileFolder());
+        } else {
+            System.out.println("Failed to delete profile from profiles folder.");
+        }
+    }
+
+    @Override
+    public Profile reloadProfile(Profile p) {
+        if (p.getProfileFolder() != null) {
+            return loadProfile(p.getProfileFolder());
+        } else {
+            System.out.println("Failed to reload profile.");
+        }
+        return null;
     }
 
     @Override

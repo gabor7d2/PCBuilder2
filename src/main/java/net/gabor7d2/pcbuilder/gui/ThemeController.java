@@ -34,7 +34,7 @@ public class ThemeController {
     /**
      * The background color to use for component cards in dark theme, if the component is incompatible.
      */
-    private final static Color COMPONENT_BG_DARK_THEME_INCOMPATIBLE = new Color(70, 54, 56);
+    private final static Color COMPONENT_BG_DARK_THEME_INCOMPATIBLE = new Color(80, 54, 56);
 
     /**
      * The settings instance shared with Application.

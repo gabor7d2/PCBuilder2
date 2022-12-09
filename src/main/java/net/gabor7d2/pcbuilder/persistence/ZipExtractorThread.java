@@ -1,5 +1,6 @@
 package net.gabor7d2.pcbuilder.persistence;
 
+import net.gabor7d2.pcbuilder.Utils;
 import net.gabor7d2.pcbuilder.persistence.repository.ProgressListener;
 
 import java.io.*;
@@ -84,7 +85,7 @@ public class ZipExtractorThread extends Thread {
                     zis.closeEntry();
                     zis.close();
                     for (File file : extractedFiles) {
-                        delete(file);
+                        Utils.delete(file);
                     }
                     progressListener.completed(ImportResultCode.CANCELLED, null);
                     return;
@@ -103,7 +104,7 @@ public class ZipExtractorThread extends Thread {
                 extractedFiles.add(currentFile);
 
                 // Delete the current file first if overwriteWithZipContents is enabled
-                if (overwriteWithZipContents) delete(currentFile);
+                if (overwriteWithZipContents) Utils.delete(currentFile);
 
                 // Create a directory if this zip entry is a directory or write the file to disk if it is not
                 if (ze.isDirectory()) {
@@ -157,35 +158,6 @@ public class ZipExtractorThread extends Thread {
             out.write(buffer, 0, length);
             progressInBytes.set(progressInBytes.get() + length);
             progressListener.progress((int) progressInBytes.get());
-        }
-    }
-
-    /**
-     * Deletes the specified file, if the file is a normal file or if the file is a directory.
-     * If deleting fails for some reason, some files might stay undeleted.
-     *
-     * @param file The normal file or directory to delete
-     */
-    private static void delete(File file) {
-        if (file.isFile()) {
-            file.delete();
-        } else if (file.isDirectory()) deleteDirectory(file);
-    }
-
-    /**
-     * Deletes a directory and all of its subdirectories, including all files contained in them.
-     * If deleting fails for some reason, some files might stay undeleted.
-     *
-     * @param directory The directory to delete
-     */
-    private static void deleteDirectory(File directory) {
-        if (directory.exists()) {
-            File[] files = directory.listFiles();
-            if (files == null) return;
-            for (File file : files) {
-                if (file.isDirectory()) deleteDirectory(file);
-                else file.delete();
-            }
         }
     }
 

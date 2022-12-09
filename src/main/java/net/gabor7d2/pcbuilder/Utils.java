@@ -47,6 +47,36 @@ public class Utils {
     }
 
     /**
+     * Deletes the specified file, if the file is a normal file or if the file is a directory.
+     * If deleting fails for some reason, some files might stay undeleted.
+     *
+     * @param file The normal file or directory to delete
+     */
+    public static void delete(File file) {
+        if (file.isFile()) {
+            file.delete();
+        } else if (file.isDirectory()) deleteDirectory(file);
+    }
+
+    /**
+     * Deletes a directory and all of its subdirectories, including all files contained in them.
+     * If deleting fails for some reason, some files might stay undeleted.
+     *
+     * @param directory The directory to delete
+     */
+    private static void deleteDirectory(File directory) {
+        if (directory.exists()) {
+            File[] files = directory.listFiles();
+            if (files == null) return;
+            for (File file : files) {
+                if (file.isDirectory()) deleteDirectory(file);
+                else file.delete();
+            }
+            directory.delete();
+        }
+    }
+
+    /**
      * Opens the specified address in the default browser
      *
      * @param uri The uri which should be opened

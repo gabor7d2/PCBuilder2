@@ -12,7 +12,9 @@ public class ProfileEvent extends PCBuilderEvent {
      */
     public enum ProfileEventType {
         ADD,
-        SELECT
+        SELECT,
+        DELETE,
+        RELOAD
     }
 
     /**
