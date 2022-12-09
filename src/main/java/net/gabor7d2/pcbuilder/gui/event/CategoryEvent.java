@@ -12,7 +12,8 @@ public class CategoryEvent extends PCBuilderEvent {
      */
     public enum CategoryEventType {
         ENABLE,
-        DISABLE
+        DISABLE,
+        ADD
     }
 
     /**

@@ -99,6 +99,16 @@ public class DialogManager {
         return input;
     }
 
+    public <T> T showInputDialog(String title, String message, T[] possibilities) {
+        if (currentlyOpenDialogs != 0) return null;
+        currentlyOpenDialogs++;
+
+        T chosen = (T) JOptionPane.showInputDialog(parentFrame, message, title, JOptionPane.PLAIN_MESSAGE, null, possibilities, null);
+
+        currentlyOpenDialogs--;
+        return chosen;
+    }
+
     public void showComponentImageDialog(Component c) {
         if (currentlyOpenDialogs != 0) return;
         currentlyOpenDialogs++;
@@ -139,5 +149,19 @@ public class DialogManager {
         // set visible but do not block execution
         EventQueue.invokeLater(() -> d.setVisible(true));
         return d;
+    }
+
+    public MultiInputDialog createMultiInputDialog(MultiInputDialog.InputDone inputDone) {
+        if (currentlyOpenDialogs != 0) return null;
+        currentlyOpenDialogs++;
+
+        MultiInputDialog inputDialog = new MultiInputDialog(parentFrame, inputDone);
+        inputDialog.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                currentlyOpenDialogs--;
+            }
+        });
+        return inputDialog;
     }
 }

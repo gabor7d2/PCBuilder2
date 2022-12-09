@@ -16,7 +16,7 @@ import static net.gabor7d2.pcbuilder.gui.ThemeController.TRANSPARENT_COLOR;
  * and is used to select which categories of the currently displayed profile
  * to display in the main panel.
  */
-public class CategorySelectorBar extends JPanel implements ProfileEventListener {
+public class CategorySelectorBar extends JPanel implements ProfileEventListener, CategoryEventListener {
 
     /**
      * Creates a new CategorySelectorBar.
@@ -28,6 +28,7 @@ public class CategorySelectorBar extends JPanel implements ProfileEventListener 
 
         // subscribe to events
         EventBus.getInstance().subscribeToProfileEvents(this);
+        EventBus.getInstance().subscribeToCategoryEvents(this);
     }
 
     /**
@@ -63,6 +64,13 @@ public class CategorySelectorBar extends JPanel implements ProfileEventListener 
             if (e.getProfile() != null) e.getProfile().getCategories().forEach(this::addCategory);
             setVisible(e.getProfile() != null);
             repaint();
+        }
+    }
+
+    @Override
+    public void processCategoryEvent(CategoryEvent e) {
+        if (e.getType() == CategoryEvent.CategoryEventType.ADD) {
+            addCategory(e.getCategory());
         }
     }
 }

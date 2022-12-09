@@ -50,10 +50,19 @@ public class ComponentsPanel extends JPanel {
         componentCards.clear();
 
         for (Component comp : components) {
-            ComponentCard card = new ComponentCard(comp, buttonGroup);
-            componentCards.add(card);
-            add(card);
+            addComponent(comp);
         }
+    }
+
+    /**
+     * Adds and displays a component.
+     *
+     * @param component The component to display.
+     */
+    public void addComponent(Component component) {
+        ComponentCard card = new ComponentCard(component, buttonGroup);
+        componentCards.add(card);
+        add(card, getComponentCount() - 1);
     }
 
     /**

@@ -12,22 +12,22 @@ public class EventBus {
     /**
      * PCBuilderEventListeners list.
      */
-    private final List<PCBuilderEventListener> pcBuilderEventListeners = new ArrayList<>();
+    private final ArrayList<PCBuilderEventListener> pcBuilderEventListeners = new ArrayList<>();
 
     /**
      * ProfileEventListeners list.
      */
-    private final List<ProfileEventListener> profileEventListeners = new ArrayList<>();
+    private final ArrayList<ProfileEventListener> profileEventListeners = new ArrayList<>();
 
     /**
      * CategoryEventListeners list.
      */
-    private final List<CategoryEventListener> categoryEventListeners = new ArrayList<>();
+    private final ArrayList<CategoryEventListener> categoryEventListeners = new ArrayList<>();
 
     /**
      * ComponentEventListeners list.
      */
-    private final List<ComponentEventListener> componentEventListeners = new ArrayList<>();
+    private final ArrayList<ComponentEventListener> componentEventListeners = new ArrayList<>();
 
     private EventBus() {
     }
@@ -84,16 +84,16 @@ public class EventBus {
     public void postEvent(PCBuilderEvent e) {
         // Makes sure that the listeners get called on the UI thread
         EventQueue.invokeLater(() -> {
-            pcBuilderEventListeners.forEach(l -> l.processPCBuilderEvent(e));
+            ((List<PCBuilderEventListener>) pcBuilderEventListeners.clone()).forEach(l -> l.processPCBuilderEvent(e));
 
             if (e instanceof ProfileEvent) {
-                profileEventListeners.forEach(l -> l.processProfileEvent((ProfileEvent) e));
+                ((List<ProfileEventListener>) profileEventListeners.clone()).forEach(l -> l.processProfileEvent((ProfileEvent) e));
             }
             if (e instanceof CategoryEvent) {
-                categoryEventListeners.forEach(l -> l.processCategoryEvent((CategoryEvent) e));
+                ((List<CategoryEventListener>) categoryEventListeners.clone()).forEach(l -> l.processCategoryEvent((CategoryEvent) e));
             }
             if (e instanceof ComponentEvent) {
-                componentEventListeners.forEach(l -> l.processComponentEvent((ComponentEvent) e));
+                ((List<ComponentEventListener>) componentEventListeners.clone()).forEach(l -> l.processComponentEvent((ComponentEvent) e));
             }
         });
     }

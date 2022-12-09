@@ -125,4 +125,9 @@ public class CategoryType {
     public Class<? extends Component> getComponentClass() {
         return componentClass;
     }
+
+    @Override
+    public String toString() {
+        return displayName;
+    }
 }

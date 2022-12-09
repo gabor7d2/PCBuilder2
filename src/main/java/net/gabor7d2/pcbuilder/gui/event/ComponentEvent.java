@@ -12,6 +12,7 @@ public class ComponentEvent extends PCBuilderEvent {
      */
     public enum ComponentEventType {
         SELECT,
+        ADD,
         COMPATIBILITY_UPDATE
     }
 

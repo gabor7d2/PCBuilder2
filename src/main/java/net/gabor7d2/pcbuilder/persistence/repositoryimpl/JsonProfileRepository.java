@@ -114,6 +114,8 @@ public class JsonProfileRepository implements ProfileRepository {
     private void loadComponentsForProfile(Profile p) {
         // Go through all categories of the profile.
         for (Category category : p.getCategories()) {
+            // set ID of category if wasn't set, so that it can be easily identified.
+            if (category.getId() == null || category.getId().isEmpty()) category.setId(UUID.randomUUID().toString());
             category.setProfile(p);
 
             CategoryType cType = CategoryType.getCategoryTypeFromName(category.getType());
@@ -129,7 +131,11 @@ public class JsonProfileRepository implements ProfileRepository {
 
                 // set category and construct image path string for components
                 for (Component comp : components) {
+                    // set ID of component if wasn't set, so that it can be easily identified.
+                    if (comp.getId() == null || comp.getId().isEmpty()) comp.setId(UUID.randomUUID().toString());
                     comp.setCategory(category);
+
+                    // set image path of component
                     if (comp.getImagePath().isEmpty()) {
                         // only set image path if it was not set in json
                         comp.setImagePath(p.getProfileFolder().getPath()

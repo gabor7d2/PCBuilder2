@@ -1,11 +1,11 @@
 package net.gabor7d2.pcbuilder.gui;
 
 import net.gabor7d2.pcbuilder.Application;
-import net.gabor7d2.pcbuilder.gui.event.EventBus;
-import net.gabor7d2.pcbuilder.gui.event.ProfileEvent;
-import net.gabor7d2.pcbuilder.gui.event.ProfileEventListener;
+import net.gabor7d2.pcbuilder.gui.editing.AddCategoryRow;
+import net.gabor7d2.pcbuilder.gui.event.*;
 import net.gabor7d2.pcbuilder.gui.general.AsyncImageLoader;
 import net.gabor7d2.pcbuilder.gui.general.ScrollPane2D;
+import net.gabor7d2.pcbuilder.model.Category;
 import net.gabor7d2.pcbuilder.model.Profile;
 
 import javax.swing.*;
@@ -23,7 +23,7 @@ import java.util.Set;
  * The different views of the MainPanel are all added to a card layout,
  * which can be used to switch to the desired view with a String "key".
  */
-public class MainPanel extends JPanel implements ProfileEventListener {
+public class MainPanel extends JPanel implements ProfileEventListener, CategoryEventListener {
 
     /**
      * The background color of the profiles' ScrollPane2Ds in light theme.
@@ -61,6 +61,7 @@ public class MainPanel extends JPanel implements ProfileEventListener {
 
         // subscribe to events
         EventBus.getInstance().subscribeToProfileEvents(this);
+        EventBus.getInstance().subscribeToCategoryEvents(this);
     }
 
     /**
@@ -92,6 +93,8 @@ public class MainPanel extends JPanel implements ProfileEventListener {
                 profilePane.addRow(row);
                 profilePane.setRowVisible(profilePane.indexOfRow(row), c.isEnabledByDefault());
             });
+            AddCategoryRow addRow = new AddCategoryRow();
+            profilePane.addRow(addRow);
             add(profilePane, profile.getId());
             profileScrollPanes.put(profile.getId(), profilePane);
         } else {
@@ -125,6 +128,16 @@ public class MainPanel extends JPanel implements ProfileEventListener {
         }
         if (e.getType() == ProfileEvent.ProfileEventType.DELETE) {
             deleteProfile(e.getProfile().getId());
+        }
+    }
+
+    @Override
+    public void processCategoryEvent(CategoryEvent e) {
+        if (e.getType() == CategoryEvent.CategoryEventType.ADD) {
+            ScrollPane2D profilePane = profileScrollPanes.get(Application.getCurrentlySelectedProfile().getId());
+            profilePane.addRow(profilePane.getRowCount() - 1, new CategoryRow(e.getCategory()));
+            AsyncImageLoader.processQueue();
+            revalidate();
         }
     }
 

@@ -7,6 +7,7 @@ import net.gabor7d2.pcbuilder.gui.dialog.DialogManager;
 import net.gabor7d2.pcbuilder.gui.event.ComponentEvent;
 import net.gabor7d2.pcbuilder.gui.event.EventBus;
 import net.gabor7d2.pcbuilder.gui.event.ProfileEvent;
+import net.gabor7d2.pcbuilder.gui.event.ProfileEventListener;
 import net.gabor7d2.pcbuilder.gui.general.ImageLoader;
 import net.gabor7d2.pcbuilder.model.Profile;
 import net.gabor7d2.pcbuilder.model.Settings;
@@ -59,6 +60,8 @@ public class Application {
 
     private static ProfileRepository profileRepository = RepositoryFactory.getProfileRepository();
 
+    private static Profile currentlySelectedProfile;
+
     public static void main(String[] args) {
         // load settings
         settings = RepositoryFactory.getSettingsRepository().loadSettings();
@@ -85,8 +88,19 @@ public class Application {
             // calculate initial incompatibilities
             CompatibilityChecker.recalculateComponentCompatibility(p);
         });
+
         // notify all component cards of initial compatibility update
         EventBus.getInstance().postEvent(new ComponentEvent(ComponentEvent.ComponentEventType.COMPATIBILITY_UPDATE, null));
+
+        EventBus.getInstance().subscribeToProfileEvents(e -> {
+           if (e.getType() == ProfileEvent.ProfileEventType.SELECT) {
+               currentlySelectedProfile = e.getProfile();
+           }
+        });
+    }
+
+    public static Profile getCurrentlySelectedProfile() {
+        return currentlySelectedProfile;
     }
 
     public static void deleteProfile(Profile p) {
